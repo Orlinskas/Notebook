@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //create notification
+                openCreateNotificationActivity();
             }
         });
 
@@ -125,6 +125,11 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
         bundle.putParcelable(PARCEL_DAY, Parcels.wrap(day));
         Intent intent = new Intent(getApplicationContext(), ConcreteDayActivity.class);
         intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    public void openCreateNotificationActivity() {
+        Intent intent = new Intent(getApplicationContext(), CreateNotificationActivity.class);
         startActivity(intent);
     }
 
