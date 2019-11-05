@@ -28,6 +28,7 @@ public class DayFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+        fragmentActions = (DayFragmentActions) context;
     }
 
     @Nullable
@@ -55,6 +56,13 @@ public class DayFragment extends Fragment {
             ArrayAdapter adapter = new NotificationListAdapter(context, R.layout.item_notification_small, day.getNotifications());
             notificationList.setAdapter(adapter);
         }
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentActions.openDay(day);
+            }
+        });
 
         return view;
     }

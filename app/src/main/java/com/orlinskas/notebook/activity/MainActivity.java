@@ -1,6 +1,7 @@
 package com.orlinskas.notebook.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -8,7 +9,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.fragment.Day;
 import com.orlinskas.notebook.fragment.DayFragment;
+import com.orlinskas.notebook.fragment.DayFragmentActions;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -26,7 +29,7 @@ import java.util.List;
 import static com.orlinskas.notebook.ParcelConstants.PARCEL_DAY;
 import static com.orlinskas.notebook.ParcelConstants.PARCEL_DAYS;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DayFragmentActions {
     private List<Day> days;
     private ProgressBar progressBar;
 
@@ -49,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             new FindDaysTask().execute();
         }
-
-
     }
 
     @Override
@@ -116,5 +117,20 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
             }
         }
+    }
+
+    @Override
+    public void openDay(Day day) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PARCEL_DAY, Parcels.wrap(day));
+        Intent intent = new Intent(getApplicationContext(), ConcreteDayActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(PARCEL_DAYS, Parcels.wrap(days));
     }
 }
