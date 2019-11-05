@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.activities;
+package com.orlinskas.notebook.activity;
 
 import android.os.Bundle;
 

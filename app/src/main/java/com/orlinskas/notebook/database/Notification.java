@@ -4,7 +4,10 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import org.parceler.Parcel;
+
 @Entity
+@Parcel(Parcel.Serialization.BEAN)
 public class Notification {
     @PrimaryKey(autoGenerate = true)
     private int id;

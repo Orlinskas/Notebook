@@ -28,6 +28,9 @@ dependencies {
     implementation "androidx.room:room-runtime:2.2.1"
     annotationProcessor "androidx.room:room-compiler:2.2.1"
 
+    implementation 'org.parceler:parceler-api:1.1.12'
+    annotationProcessor 'org.parceler:parceler:1.1.12'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
