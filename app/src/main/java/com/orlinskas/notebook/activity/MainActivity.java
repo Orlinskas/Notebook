@@ -1,30 +1,56 @@
 package com.orlinskas.notebook.activity;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orlinskas.notebook.R;
+import com.orlinskas.notebook.fragment.Day;
+import com.orlinskas.notebook.fragment.DayFragment;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import org.parceler.Parcels;
+
+import java.util.List;
+
+import static com.orlinskas.notebook.ParcelConstants.PARCEL_DAY;
+import static com.orlinskas.notebook.ParcelConstants.PARCEL_DAYS;
 
 public class MainActivity extends AppCompatActivity {
+    private List<Day> days;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        progressBar = findViewById(R.id.activity_main_pb);
+        FloatingActionButton fab = findViewById(R.id.activity_main_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //create notification
             }
         });
+
+        if (savedInstanceState != null) {
+            days = Parcels.unwrap(savedInstanceState.getParcelable(PARCEL_DAYS));
+        } else {
+            new FindDaysTask().execute();
+        }
+
+
     }
 
     @Override
@@ -42,5 +68,53 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class FindDaysTask extends AsyncTask<Void, Void, List<Day>> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected List<Day> doInBackground(Void... voids) {
+            DaysBuilder DaysBuilder = new DaysBuilder();
+            return DaysBuilder.findActual();
+        }
+
+        @Override
+        protected void onPostExecute(List<Day> days) {
+            super.onPostExecute(days);
+            if (days.size() > 0) {
+                MainActivity.this.days = days;
+                showDaysList();
+            } else {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Failed to load", Toast.LENGTH_LONG);
+                toast.show();
+            }
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void showDaysList() {
+        FragmentManager fm = getSupportFragmentManager();
+
+        for (Day day : days) {
+            Fragment fragment = fm.findFragmentById(R.id.activity_main_ll_days_container);
+            if (fragment == null) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(PARCEL_DAY, Parcels.wrap(day));
+
+                fragment = new DayFragment();
+                fragment.setArguments(bundle);
+
+                fm.beginTransaction()
+                        .add(R.id.activity_main_ll_days_container, fragment)
+                        .commit();
+            }
+        }
     }
 }

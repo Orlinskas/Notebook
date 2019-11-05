@@ -1,5 +1,5 @@
 package com.orlinskas.notebook.fragment;
 
-interface DayFragmentActions {
+public interface DayFragmentActions {
     void openDay(Day day);
 }

@@ -3,19 +3,20 @@ package com.orlinskas.notebook.fragment;
 import com.orlinskas.notebook.database.Notification;
 
 import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
 
 import java.util.List;
 
 @Parcel(Parcel.Serialization.BEAN)
-class Day {
+public class Day {
     private String dayName;
     private String dayDate;
     private List<Notification> notifications;
 
-    public Day(String dayName, String dayDate, List<Notification> notifications) {
+    @ParcelConstructor
+    public Day(String dayName, String dayDate) {
         this.dayName = dayName;
         this.dayDate = dayDate;
-        this.notifications = notifications;
     }
 
     public String getDayName() {

@@ -52,7 +52,7 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
         }
 
         String body = notifications.get(position).getBodyText();
-        String time = notifications.get(position).getStartDate();
+        String time = notifications.get(position).getStartDateFull();
 
         bodyTV.setText(body);
         timeTV.setText(time);

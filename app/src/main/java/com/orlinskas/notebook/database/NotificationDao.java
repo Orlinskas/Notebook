@@ -13,7 +13,7 @@ public interface NotificationDao {
     List<Notification> findAll();
 
     @Query("SELECT * FROM notification WHERE start_date_millis > :currentDateMillis")
-    Notification findActual(long currentDateMillis);
+    List<Notification> findActual(long currentDateMillis);
 
     @Insert
     void insertAll(Notification... notifications);
