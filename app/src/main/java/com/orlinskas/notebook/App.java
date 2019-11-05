@@ -4,19 +4,19 @@ import android.app.Application;
 
 import androidx.room.Room;
 
-import com.orlinskas.notebook.database.Database;
+import com.orlinskas.notebook.database.MyDatabase;
 
 public class App extends Application {
 
     public static App instance;
 
-    private Database database;
+    private MyDatabase myDatabase;
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
-        database = Room.databaseBuilder(getApplicationContext(), Database.class, "notification")
+        myDatabase = Room.databaseBuilder(this, MyDatabase.class, "notification")
                 .build();
     }
 
@@ -24,7 +24,7 @@ public class App extends Application {
         return instance;
     }
 
-    public Database getDatabase() {
-        return database;
+    public MyDatabase getMyDatabase() {
+        return myDatabase;
     }
 }

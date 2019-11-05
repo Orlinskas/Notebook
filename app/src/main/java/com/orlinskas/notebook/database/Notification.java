@@ -15,13 +15,17 @@ public class Notification {
     @ColumnInfo(name = "start_date_millis")
     private long startDateMillis;
 
+    @ColumnInfo(name = "start_date")
+    private String startDate;
+
     @ColumnInfo(name = "body_text")
     private String bodyText;
 
-    public Notification(long createDateMillis, long startDateMillis, String bodyText) {
+    public Notification(long createDateMillis, long startDateMillis, String startDate, String bodyText) {
         this.createDateMillis = createDateMillis;
         this.startDateMillis = startDateMillis;
         this.bodyText = bodyText;
+        this.startDate = startDate;
     }
 
     public long getCreateDateMillis() {
@@ -32,7 +36,19 @@ public class Notification {
         return startDateMillis;
     }
 
+    public String getStartDate() {
+        return startDate;
+    }
+
     public String getBodyText() {
         return bodyText;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
