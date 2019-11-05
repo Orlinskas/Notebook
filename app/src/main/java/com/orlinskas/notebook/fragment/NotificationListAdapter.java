@@ -51,8 +51,14 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
                 break;
         }
 
-        String body = notifications.get(position).getBodyText();
-        String time = notifications.get(position).getStartDateFull();
+        String body = "default";
+        String time = "default";
+        try {
+            body = notifications.get(position).getBodyText();
+            time = notifications.get(position).getStartDateFull();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         bodyTV.setText(body);
         timeTV.setText(time);

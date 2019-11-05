@@ -26,6 +26,6 @@ public class DaysBuilderTest {
     public void findActual() {
         List<Day> days = daysBuilder.findActual();
         String checkedDate = new DateCalculator().plusDays(currentDate, 6, DateFormat.YYYY_MM_DD);
-        assertEquals(days.get(7).getDayDate(), checkedDate);
+        assertEquals(days.get(6).getDayDate(), checkedDate);
     }
 }
