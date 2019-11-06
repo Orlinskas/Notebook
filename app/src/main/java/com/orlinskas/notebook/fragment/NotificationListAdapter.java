@@ -12,8 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.orlinskas.notebook.R;
+import com.orlinskas.notebook.date.DateFormater;
 import com.orlinskas.notebook.entity.Notification;
 
+import java.util.Date;
 import java.util.List;
 
 public class NotificationListAdapter extends ArrayAdapter<Notification> {
@@ -55,7 +57,8 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
         String time = "default";
         try {
             body = notifications.get(position).getBodyText();
-            time = notifications.get(position).getStartDateFull();
+            Date notificationDate = new Date(notifications.get(position).getStartDateMillis());
+            time = DateFormater.format(notificationDate, DateFormater.HH_MM);
         } catch (Exception e) {
             e.printStackTrace();
         }

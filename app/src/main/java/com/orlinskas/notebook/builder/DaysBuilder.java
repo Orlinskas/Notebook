@@ -5,11 +5,12 @@ import com.orlinskas.notebook.CustomMockObjects;
 import com.orlinskas.notebook.database.MyDatabase;
 import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.date.DateCalculator;
-import com.orlinskas.notebook.date.DateFormat;
-import com.orlinskas.notebook.date.DateHelper;
-import com.orlinskas.notebook.entity.Day;
+import com.orlinskas.notebook.date.DateFormater;
+import com.orlinskas.notebook.date.DateCurrent;
+import com.orlinskas.notebook.value.Day;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DaysBuilder {
@@ -18,7 +19,7 @@ public class DaysBuilder {
     private List<Notification> notifications;
 
     public DaysBuilder() {
-        this.currentDate = DateHelper.getCurrent(DateFormat.YYYY_MM_DD);
+        this.currentDate = DateCurrent.getLine(DateFormater.YYYY_MM_DD);
         MyDatabase database = App.getInstance().getMyDatabase();
         notifications = database.notifiationDao().findActual(System.currentTimeMillis());
     }
@@ -39,8 +40,8 @@ public class DaysBuilder {
         DateCalculator dateCalculator = new DateCalculator();
 
         for(int i = 0; i < COUNT_DAYS_IN_LIST; i++) {
-            String dayDate = dateCalculator.plusDays(currentDate, i, DateFormat.YYYY_MM_DD);
-            String dayName = dateCalculator.plusDays(currentDate, i, DateFormat.EEEE);
+            String dayDate = dateCalculator.plusDays(currentDate, i, DateFormater.YYYY_MM_DD);
+            String dayName = dateCalculator.plusDays(currentDate, i, DateFormater.EEEE);
             days.add(new Day(dayName, dayDate));
         }
 
@@ -51,7 +52,10 @@ public class DaysBuilder {
         List<Notification> dayNotifications = new ArrayList<>();
 
         for(Notification notification : notifications) {
-            if(day.getDayDate().equals(notification.getStartDayDate())) {
+            Date date = new Date(notification.getStartDateMillis());
+            String notificationDate = DateFormater.format(date, DateFormater.YYYY_MM_DD);
+
+            if(day.getDayDate().equals(notificationDate)) {
                 dayNotifications.add(notification);
             }
         }

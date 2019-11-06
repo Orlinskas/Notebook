@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.orlinskas.notebook.R;
-import com.orlinskas.notebook.entity.Day;
+import com.orlinskas.notebook.value.Day;
 
 import org.parceler.Parcels;
 

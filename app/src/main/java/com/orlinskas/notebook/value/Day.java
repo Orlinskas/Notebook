@@ -1,4 +1,6 @@
-package com.orlinskas.notebook.entity;
+package com.orlinskas.notebook.value;
+
+import com.orlinskas.notebook.entity.Notification;
 
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
@@ -8,8 +10,8 @@ import java.util.Objects;
 
 @Parcel(Parcel.Serialization.BEAN)
 public class Day {
-    private String dayName;
     private String dayDate;
+    private String dayName;
     private List<Notification> notifications;
 
     @ParcelConstructor

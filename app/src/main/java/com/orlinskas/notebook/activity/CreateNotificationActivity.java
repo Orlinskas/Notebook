@@ -5,7 +5,6 @@ import android.app.DatePickerDialog;
 
 import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.database.MyDatabase;
-import com.orlinskas.notebook.date.DateParcer;
 import com.orlinskas.notebook.entity.Notification;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -28,11 +27,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.builder.NotificationBuilder;
-import com.orlinskas.notebook.date.DateFormat;
-import com.orlinskas.notebook.date.DateHelper;
+import com.orlinskas.notebook.date.DateFormater;
+import com.orlinskas.notebook.date.DateCurrent;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class CreateNotificationActivity extends AppCompatActivity {
     ProgressBar progressBar;
@@ -105,16 +103,16 @@ public class CreateNotificationActivity extends AppCompatActivity {
     };
 
     private void setInitialDateTime() {
-        Date notificationDate = new Date(dateTime.getTimeInMillis());
-        dateTimeTV.setText(DateParcer.parse(notificationDate, DateFormat.YYYY_MM_DD_HH_MM));
+        java.util.Date notificationDate = new java.util.Date(dateTime.getTimeInMillis());
+        dateTimeTV.setText(DateFormater.format(notificationDate, DateFormater.YYYY_MM_DD_HH_MM));
     }
 
     private boolean checkValidDateTime() {
         try {
-            Date notificationDate = new Date(dateTime.getTimeInMillis());
+            java.util.Date notificationDate = new java.util.Date(dateTime.getTimeInMillis());
 
             if(notificationBody.getText().length() > 0) {
-                return notificationDate.after(DateHelper.getCurrentDate());
+                return notificationDate.after(DateCurrent.get());
             }
 
         } catch (Exception e) {
@@ -156,6 +154,7 @@ public class CreateNotificationActivity extends AppCompatActivity {
             toast.show();
 
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
     }

@@ -2,9 +2,9 @@ package com.orlinskas.notebook.activity;
 
 import com.orlinskas.notebook.builder.DaysBuilder;
 import com.orlinskas.notebook.date.DateCalculator;
-import com.orlinskas.notebook.date.DateFormat;
-import com.orlinskas.notebook.date.DateHelper;
-import com.orlinskas.notebook.entity.Day;
+import com.orlinskas.notebook.date.DateFormater;
+import com.orlinskas.notebook.date.DateCurrent;
+import com.orlinskas.notebook.value.Day;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,14 +19,14 @@ public class DaysBuilderTest {
 
     @Before
     public void setUp() {
-        currentDate = DateHelper.getCurrent(DateFormat.YYYY_MM_DD);
+        currentDate = DateCurrent.getLine(DateFormater.YYYY_MM_DD);
         daysBuilder = new DaysBuilder();
     }
 
     @Test
     public void findActual() {
         List<Day> days = daysBuilder.findActual();
-        String checkedDate = new DateCalculator().plusDays(currentDate, 6, DateFormat.YYYY_MM_DD);
+        String checkedDate = new DateCalculator().plusDays(currentDate, 6, DateFormater.YYYY_MM_DD);
         assertEquals(days.get(6).getDayDate(), checkedDate);
     }
 }
