@@ -51,8 +51,8 @@
             android:id="@+id/activity_create_notification_tv_date_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="false"
-            android:layout_marginStart="100dp"
             android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-medium"
             android:text="На дату"
@@ -62,10 +62,11 @@
             android:id="@+id/activity_create_notification_iv_plus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentEnd="false"
             android:layout_centerVertical="false"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="100dp"
+            android:layout_toEndOf="@+id/activity_create_notification_tv_date_hint"
             android:tint="@color/colorPrimaryDark"
             app:srcCompat="@android:drawable/ic_input_add" />
 

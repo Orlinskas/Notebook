@@ -31,6 +31,7 @@ import com.orlinskas.notebook.date.DateFormater;
 import com.orlinskas.notebook.date.DateCurrent;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class CreateNotificationActivity extends AppCompatActivity {
     ProgressBar progressBar;
@@ -63,7 +64,7 @@ public class CreateNotificationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 createButton.startAnimation(clickAnimation);
-                if(checkValidDateTime()){
+                if(checkValidData()){
                     new CreateNotificationTask().execute();
                 }
             }
@@ -103,25 +104,34 @@ public class CreateNotificationActivity extends AppCompatActivity {
     };
 
     private void setInitialDateTime() {
-        java.util.Date notificationDate = new java.util.Date(dateTime.getTimeInMillis());
+        Date notificationDate = new Date(dateTime.getTimeInMillis());
         dateTimeTV.setText(DateFormater.format(notificationDate, DateFormater.YYYY_MM_DD_HH_MM));
     }
 
-    private boolean checkValidDateTime() {
-        try {
-            java.util.Date notificationDate = new java.util.Date(dateTime.getTimeInMillis());
+    private boolean checkValidData() {
+        Date notificationDate =
+                DateFormater.format(dateTimeTV.getText().toString(), DateFormater.YYYY_MM_DD_HH_MM);
 
-            if(notificationBody.getText().length() > 0) {
-                return notificationDate.after(DateCurrent.get());
-            }
-
-        } catch (Exception e) {
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "Not valid date, try again", Toast.LENGTH_LONG);
-            toast.show();
-            e.printStackTrace();
+        if(notificationBody.getText().length() < 1) {
+            doToast("Empty note");
+            return false;
         }
-        return false;
+        if(notificationDate.before(DateCurrent.get())){
+            doToast("Not valid date, try again");
+            return false;
+        }
+        if(dateTimeTV.getText().toString().equals("—")){
+            doToast("Not valid date, try again");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void doToast(String message) {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                message, Toast.LENGTH_LONG);
+        toast.show();
     }
 
     @SuppressLint("StaticFieldLeak")
