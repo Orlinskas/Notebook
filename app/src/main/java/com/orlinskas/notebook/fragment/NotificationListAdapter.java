@@ -15,6 +15,7 @@ import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.date.DateFormater;
 import com.orlinskas.notebook.entity.Notification;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
         this.context = context;
         this.item_id = item_id;
         this.notifications = notifications;
+        Collections.sort(this.notifications);
     }
 
     @NonNull

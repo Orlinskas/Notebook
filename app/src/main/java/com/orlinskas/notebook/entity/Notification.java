@@ -10,7 +10,7 @@ import org.parceler.ParcelConstructor;
 
 @Entity
 @Parcel(Parcel.Serialization.BEAN)
-public class Notification {
+public class Notification implements Comparable<Notification>{
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -28,6 +28,17 @@ public class Notification {
         this.createDateMillis = createDateMillis;
         this.startDateMillis = startDateMillis;
         this.bodyText = bodyText;
+    }
+
+    @Override
+    public int compareTo(Notification o) {
+        int result = (int) (startDateMillis - o.startDateMillis);
+
+        if(result != 0) {
+            return result / Math.abs(result);
+        }
+
+        return result;
     }
 
     public void setId(int id) {
