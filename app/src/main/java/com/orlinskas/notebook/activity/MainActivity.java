@@ -28,8 +28,8 @@ import org.parceler.Parcels;
 import java.util.List;
 
 import static com.orlinskas.notebook.Constants.AFTER_CREATE_OPEN_MAIN;
-import static com.orlinskas.notebook.ParcelConstants.PARCEL_DAY;
-import static com.orlinskas.notebook.ParcelConstants.PARCEL_DAYS;
+import static com.orlinskas.notebook.Constants.PARCEL_DAY;
+import static com.orlinskas.notebook.Constants.PARCEL_DAYS;
 
 public class MainActivity extends AppCompatActivity implements DayFragmentActions {
     private List<Day> days;

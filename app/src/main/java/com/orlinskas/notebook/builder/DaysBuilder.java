@@ -13,8 +13,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.orlinskas.notebook.Constants.COUNT_DAYS_IN_LIST;
+
 public class DaysBuilder {
-    private final int COUNT_DAYS_IN_LIST = 7;
     private String currentDate;
     private List<Notification> notifications;
 

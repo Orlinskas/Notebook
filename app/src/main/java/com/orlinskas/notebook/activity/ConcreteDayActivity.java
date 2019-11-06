@@ -15,7 +15,7 @@ import com.orlinskas.notebook.value.Day;
 import org.parceler.Parcels;
 
 import static com.orlinskas.notebook.Constants.AFTER_CREATE_OPEN_DAY;
-import static com.orlinskas.notebook.ParcelConstants.PARCEL_DAY;
+import static com.orlinskas.notebook.Constants.PARCEL_DAY;
 
 public class ConcreteDayActivity extends AppCompatActivity {
     private ProgressBar progressBar;

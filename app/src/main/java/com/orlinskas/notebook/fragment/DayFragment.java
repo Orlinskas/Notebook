@@ -21,8 +21,8 @@ import com.orlinskas.notebook.value.Day;
 
 import org.parceler.Parcels;
 
-import static com.orlinskas.notebook.Constants.MAX_NOTIFICATION_IN_MAIN_LIST;
-import static com.orlinskas.notebook.ParcelConstants.PARCEL_DAY;
+import static com.orlinskas.notebook.Constants.COUNT_NOTIFICATION_IN_SHORT_LIST;
+import static com.orlinskas.notebook.Constants.PARCEL_DAY;
 
 public class DayFragment extends Fragment {
     private Day day;
@@ -87,8 +87,8 @@ public class DayFragment extends Fragment {
         int totalHeight = 0;
         int maxCount;
 
-        if(listAdapter.getCount() >= MAX_NOTIFICATION_IN_MAIN_LIST){
-            maxCount = MAX_NOTIFICATION_IN_MAIN_LIST;
+        if(listAdapter.getCount() >= COUNT_NOTIFICATION_IN_SHORT_LIST){
+            maxCount = COUNT_NOTIFICATION_IN_SHORT_LIST;
         }
         else {
             maxCount = listAdapter.getCount();
