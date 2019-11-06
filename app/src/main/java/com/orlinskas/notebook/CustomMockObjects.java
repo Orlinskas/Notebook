@@ -1,6 +1,6 @@
 package com.orlinskas.notebook;
 
-import com.orlinskas.notebook.database.Notification;
+import com.orlinskas.notebook.entity.Notification;
 
 public class CustomMockObjects {
     public static Notification getEmptyNotification() {

@@ -4,7 +4,7 @@ import com.orlinskas.notebook.builder.DaysBuilder;
 import com.orlinskas.notebook.date.DateCalculator;
 import com.orlinskas.notebook.date.DateFormat;
 import com.orlinskas.notebook.date.DateHelper;
-import com.orlinskas.notebook.fragment.Day;
+import com.orlinskas.notebook.entity.Day;
 
 import org.junit.Before;
 import org.junit.Test;

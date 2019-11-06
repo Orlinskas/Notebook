@@ -1,6 +1,4 @@
-package com.orlinskas.notebook.fragment;
-
-import com.orlinskas.notebook.database.Notification;
+package com.orlinskas.notebook.entity;
 
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;

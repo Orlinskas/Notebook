@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.database;
+package com.orlinskas.notebook.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

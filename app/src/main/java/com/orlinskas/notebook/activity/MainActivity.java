@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.builder.DaysBuilder;
-import com.orlinskas.notebook.fragment.Day;
+import com.orlinskas.notebook.entity.Day;
 import com.orlinskas.notebook.fragment.DayFragment;
 import com.orlinskas.notebook.fragment.DayFragmentActions;
 
@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
 
     public void openCreateNotificationActivity() {
         Intent intent = new Intent(getApplicationContext(), CreateNotificationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
 

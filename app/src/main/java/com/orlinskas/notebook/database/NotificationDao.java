@@ -5,6 +5,8 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import com.orlinskas.notebook.entity.Notification;
+
 import java.util.List;
 
 @Dao

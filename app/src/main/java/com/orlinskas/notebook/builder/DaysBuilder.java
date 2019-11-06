@@ -3,11 +3,11 @@ package com.orlinskas.notebook.builder;
 import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.CustomMockObjects;
 import com.orlinskas.notebook.database.MyDatabase;
-import com.orlinskas.notebook.database.Notification;
+import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.date.DateCalculator;
 import com.orlinskas.notebook.date.DateFormat;
 import com.orlinskas.notebook.date.DateHelper;
-import com.orlinskas.notebook.fragment.Day;
+import com.orlinskas.notebook.entity.Day;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.orlinskas.notebook.R;
-import com.orlinskas.notebook.database.Notification;
+import com.orlinskas.notebook.entity.Notification;
 
 import java.util.List;
 

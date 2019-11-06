@@ -5,7 +5,8 @@ import android.app.DatePickerDialog;
 
 import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.database.MyDatabase;
-import com.orlinskas.notebook.database.Notification;
+import com.orlinskas.notebook.date.DateParcer;
+import com.orlinskas.notebook.entity.Notification;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -104,18 +105,16 @@ public class CreateNotificationActivity extends AppCompatActivity {
     };
 
     private void setInitialDateTime() {
-        Date date = new Date(dateTime.getTimeInMillis());
-        dateTimeTV.setText(DateHelper.parse(date, DateFormat.YYYY_MM_DD_HH_MM));
+        Date notificationDate = new Date(dateTime.getTimeInMillis());
+        dateTimeTV.setText(DateParcer.parse(notificationDate, DateFormat.YYYY_MM_DD_HH_MM));
     }
 
     private boolean checkValidDateTime() {
         try {
-            String dateTime = dateTimeTV.getText().toString();
-            Date notificationDate = DateHelper.parse(dateTime, DateFormat.YYYY_MM_DD_HH_MM);
-            Date currentDate = DateHelper.getCurrentDate(DateFormat.YYYY_MM_DD_HH_MM);
+            Date notificationDate = new Date(dateTime.getTimeInMillis());
 
             if(notificationBody.getText().length() > 0) {
-                return notificationDate.after(currentDate);
+                return notificationDate.after(DateHelper.getCurrentDate());
             }
 
         } catch (Exception e) {
@@ -157,7 +156,6 @@ public class CreateNotificationActivity extends AppCompatActivity {
             toast.show();
 
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
     }
