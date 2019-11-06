@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -57,9 +60,19 @@ public class DayFragment extends Fragment {
         notificationList.setAdapter(adapter);
         setListViewHeightBasedOnChildren(notificationList);
 
+        final Animation clickAnimation = AnimationUtils.loadAnimation(context, R.anim.animation_button);
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(clickAnimation);
+                fragmentActions.openDay(day);
+            }
+        });
+        notificationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                view.startAnimation(clickAnimation);
                 fragmentActions.openDay(day);
             }
         });
