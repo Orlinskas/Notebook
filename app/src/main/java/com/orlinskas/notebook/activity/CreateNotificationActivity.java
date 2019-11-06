@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 
 import com.orlinskas.notebook.App;
+import com.orlinskas.notebook.ToastBuilder;
 import com.orlinskas.notebook.database.MyDatabase;
 import com.orlinskas.notebook.entity.Notification;
 import android.app.TimePickerDialog;
@@ -20,8 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,6 +33,10 @@ import com.orlinskas.notebook.date.DateCurrent;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
+
+import static com.orlinskas.notebook.Constants.AFTER_CREATE_OPEN_DAY;
+import static com.orlinskas.notebook.Constants.AFTER_CREATE_OPEN_MAIN;
 
 public class CreateNotificationActivity extends AppCompatActivity {
     ProgressBar progressBar;
@@ -49,7 +54,6 @@ public class CreateNotificationActivity extends AppCompatActivity {
         dateTimeTV = findViewById(R.id.activity_create_notification_tv_date_value);
         final RelativeLayout relativeLayout = findViewById(R.id.activity_create_notification_rl_date_block);
         final Button createButton = findViewById(R.id.activity_create_notification_btn_create);
-
         final Animation clickAnimation = AnimationUtils.loadAnimation(this, R.anim.animation_button);
 
         relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +73,10 @@ public class CreateNotificationActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if (savedInstanceState != null) {
+            dateTimeTV.setText(savedInstanceState.getString("date"));
+        }
     }
 
     public void setDate() {
@@ -113,25 +121,19 @@ public class CreateNotificationActivity extends AppCompatActivity {
                 DateFormater.format(dateTimeTV.getText().toString(), DateFormater.YYYY_MM_DD_HH_MM);
 
         if(notificationBody.getText().length() < 1) {
-            doToast("Empty note");
+            ToastBuilder.doToast(this, "Empty note");
             return false;
         }
         if(notificationDate.before(DateCurrent.get())){
-            doToast("Not valid date, try again");
+            ToastBuilder.doToast(this, "Not valid date, try again");
             return false;
         }
         if(dateTimeTV.getText().toString().equals("—")){
-            doToast("Not valid date, try again");
+            ToastBuilder.doToast(this, "Not valid date, try again");
             return false;
         }
 
         return true;
-    }
-
-    private void doToast(String message) {
-        Toast toast = Toast.makeText(getApplicationContext(),
-                message, Toast.LENGTH_LONG);
-        toast.show();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -159,13 +161,31 @@ public class CreateNotificationActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             progressBar.setVisibility(View.INVISIBLE);
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "Done", Toast.LENGTH_LONG);
-            toast.show();
-
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            ToastBuilder.doToast(getApplicationContext(), "Done");
+            openPreviousActivity();
         }
+    }
+
+    private void openPreviousActivity() {
+        Intent intent;
+
+        switch (Objects.requireNonNull(getIntent().getAction())) {
+            case AFTER_CREATE_OPEN_DAY:
+                intent = new Intent(getApplicationContext(), ConcreteDayActivity.class);
+                break;
+            case AFTER_CREATE_OPEN_MAIN:
+            default:
+                intent = new Intent(getApplicationContext(), MainActivity.class);
+                break;
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("date", dateTimeTV.getText().toString());
     }
 }

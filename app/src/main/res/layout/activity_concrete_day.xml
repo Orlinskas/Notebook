@@ -2,29 +2,27 @@
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main_rl"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_concrete_day_rl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
     <ScrollView
-        android:id="@+id/activity_main_sv"
+        android:id="@+id/activity_concrete_day_sv"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/activity_main_ll_days_container"
+            android:id="@+id/activity_concrete_day_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </ScrollView>
 
-
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/activity_main_fab"
+        android:id="@+id/activity_concrete_day_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -34,8 +32,9 @@
         app:backgroundTint="@color/colorPrimaryDark"
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
+
     <ProgressBar
-        android:id="@+id/activity_main_pb"
+        android:id="@+id/activity_concrete_day_pb"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
