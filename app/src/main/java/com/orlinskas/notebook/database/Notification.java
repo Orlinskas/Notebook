@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey;
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
+import java.util.Objects;
+
 @Entity
 @Parcel(Parcel.Serialization.BEAN)
 public class Notification {
@@ -45,6 +47,26 @@ public class Notification {
         this.startDayTime = startDayTime;
         this.startDayName = startDayName;
         this.bodyText = bodyText;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Notification that = (Notification) o;
+        return id == that.id &&
+                createDateMillis == that.createDateMillis &&
+                startDateMillis == that.startDateMillis &&
+                Objects.equals(startDateFull, that.startDateFull) &&
+                Objects.equals(startDayDate, that.startDayDate) &&
+                Objects.equals(startDayTime, that.startDayTime) &&
+                Objects.equals(startDayName, that.startDayName) &&
+                Objects.equals(bodyText, that.bodyText);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, createDateMillis, startDateMillis, startDateFull, startDayDate, startDayTime, startDayName, bodyText);
     }
 
     public void setId(int id) {
