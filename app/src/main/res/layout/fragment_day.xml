@@ -44,15 +44,17 @@
     </RelativeLayout>
 
     <ListView
-        android:id="@+id/fragment_notification_lv_notifications"
+        android:id="@+id/fragment_notification_ll_notification_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/fragment_notification_rl_head"
-        android:background="@color/colorRowBody" />
+        android:isScrollContainer="true">
+
+    </ListView>
 
     <View
         android:id="@+id/fragment_notification_divider"
         style="@style/Divider"
         android:layout_height="2dp"
-        android:layout_below="@id/fragment_notification_lv_notifications" />
+        android:layout_below="@id/fragment_notification_ll_notification_container" />
 </RelativeLayout>

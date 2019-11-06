@@ -48,15 +48,14 @@ public class DayFragment extends Fragment {
 
         TextView dayName = view.findViewById(R.id.fragment_notification_tv_day_name);
         TextView dayDate = view.findViewById(R.id.fragment_notification_tv_day_date);
-        ListView notificationList = view.findViewById(R.id.fragment_notification_lv_notifications);
+        ListView notificationList = view.findViewById(R.id.fragment_notification_ll_notification_container);
 
         dayName.setText(day.getDayName());
         dayDate.setText(day.getDayDate());
 
-        if(day.getNotifications() != null) {
-            ArrayAdapter adapter = new NotificationListAdapter(context, R.layout.item_notification_small, day.getNotifications());
-            notificationList.setAdapter(adapter);
-        }
+        ArrayAdapter adapter = new NotificationListAdapter(context, R.layout.item_notification_small, day.getNotifications());
+        notificationList.setAdapter(adapter);
+        setListViewHeightBasedOnChildren(notificationList);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +65,31 @@ public class DayFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void setListViewHeightBasedOnChildren(ListView listView) {
+        ArrayAdapter listAdapter = (ArrayAdapter) listView.getAdapter();
+
+        int totalHeight = 0;
+        int maxCount;
+
+        if(listAdapter.getCount() >= 3){
+            maxCount = 3;
+        }
+        else {
+            maxCount = listAdapter.getCount();
+        }
+
+        for (int i = 0; i < maxCount; i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     @Override

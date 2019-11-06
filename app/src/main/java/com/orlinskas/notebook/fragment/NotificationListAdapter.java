@@ -23,7 +23,6 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
     private int item_id;
     private List<Notification> notifications;
 
-
     NotificationListAdapter(Context context, int item_id, List<Notification> notifications) {
         super(context, item_id, notifications);
         this.context = context;
@@ -53,14 +52,15 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
                 break;
         }
 
-        String body = "default";
-        String time = "default";
-        try {
-            body = notifications.get(position).getBodyText();
+        String body = notifications.get(position).getBodyText();
+        String time;
+
+        if(body.equals("no notes")) {
+            time = "—";
+        }
+        else {
             Date notificationDate = new Date(notifications.get(position).getStartDateMillis());
             time = DateFormater.format(notificationDate, DateFormater.HH_MM);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         bodyTV.setText(body);
@@ -69,5 +69,3 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
         return row;
     }
 }
-
-
