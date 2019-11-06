@@ -10,7 +10,6 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -34,7 +33,7 @@ import com.orlinskas.notebook.date.DateHelper;
 import java.util.Calendar;
 import java.util.Date;
 
-class CreateNotificationActivity extends AppCompatActivity {
+public class CreateNotificationActivity extends AppCompatActivity {
     ProgressBar progressBar;
     EditText notificationBody;
     TextView dateTimeTV;
@@ -105,8 +104,8 @@ class CreateNotificationActivity extends AppCompatActivity {
     };
 
     private void setInitialDateTime() {
-        dateTimeTV.setText(DateUtils.formatDateTime(this, dateTime.getTimeInMillis(),
-                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_SHOW_TIME));
+        Date date = new Date(dateTime.getTimeInMillis());
+        dateTimeTV.setText(DateHelper.parse(date, DateFormat.YYYY_MM_DD_HH_MM));
     }
 
     private boolean checkValidDateTime() {
@@ -156,8 +155,9 @@ class CreateNotificationActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(getApplicationContext(),
                     "Done", Toast.LENGTH_LONG);
             toast.show();
-            
+
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
     }
