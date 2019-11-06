@@ -51,7 +51,8 @@
         android:background="@color/colorRowBody" />
 
     <View
-        android:id="@+id/fragment_day_divider"
+        android:id="@+id/fragment_notification_divider"
         style="@style/Divider"
+        android:layout_height="2dp"
         android:layout_below="@id/fragment_notification_lv_notifications" />
 </RelativeLayout>

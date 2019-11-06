@@ -66,4 +66,10 @@ public class DayFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(PARCEL_DAY, Parcels.wrap(day));
+    }
 }

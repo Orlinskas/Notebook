@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.activity;
+package com.orlinskas.notebook.builder;
 
 import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.CustomMockObjects;
@@ -51,7 +51,7 @@ public class DaysBuilder {
         List<Notification> dayNotifications = new ArrayList<>();
 
         for(Notification notification : notifications) {
-            if(day.getDayDate().equals(notification.getStart_day_date())) {
+            if(day.getDayDate().equals(notification.getStartDayDate())) {
                 dayNotifications.add(notification);
             }
         }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orlinskas.notebook.R;
+import com.orlinskas.notebook.builder.DaysBuilder;
 import com.orlinskas.notebook.fragment.Day;
 import com.orlinskas.notebook.fragment.DayFragment;
 import com.orlinskas.notebook.fragment.DayFragmentActions;

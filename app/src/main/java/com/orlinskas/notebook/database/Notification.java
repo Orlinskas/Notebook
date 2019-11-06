@@ -23,28 +23,27 @@ public class Notification {
     private String startDateFull;
 
     @ColumnInfo(name = "start_day_date")
-    private String start_day_date;
+    private String startDayDate;
 
     @ColumnInfo(name = "start_day_time")
-    private String start_day_time;
+    private String startDayTime;
 
     @ColumnInfo(name = "start_day_name")
-    private String start_day_name;
+    private String startDayName;
 
     @ColumnInfo(name = "body_text")
     private String bodyText;
 
     @ParcelConstructor
-    public Notification(int id, long createDateMillis, long startDateMillis, String startDateFull,
-                        String start_day_date, String start_day_time, String start_day_name,
+    public Notification(long createDateMillis, long startDateMillis, String startDateFull,
+                        String startDayDate, String startDayTime, String startDayName,
                         String bodyText) {
-        this.id = id;
         this.createDateMillis = createDateMillis;
         this.startDateMillis = startDateMillis;
         this.startDateFull = startDateFull;
-        this.start_day_date = start_day_date;
-        this.start_day_time = start_day_time;
-        this.start_day_name = start_day_name;
+        this.startDayDate = startDayDate;
+        this.startDayTime = startDayTime;
+        this.startDayName = startDayName;
         this.bodyText = bodyText;
     }
 
@@ -68,16 +67,16 @@ public class Notification {
         return startDateFull;
     }
 
-    public String getStart_day_date() {
-        return start_day_date;
+    public String getStartDayDate() {
+        return startDayDate;
     }
 
-    public String getStart_day_time() {
-        return start_day_time;
+    public String getStartDayTime() {
+        return startDayTime;
     }
 
-    public String getStart_day_name() {
-        return start_day_name;
+    public String getStartDayName() {
+        return startDayName;
     }
 
     public String getBodyText() {
