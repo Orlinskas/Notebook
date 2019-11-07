@@ -8,7 +8,11 @@
  + Использована ORM ROOM 
  + Объекты сериализовались с помощью Parceler https://github.com/johncarl81/parceler
  + Использован Mockito 3.0.0 тесты на JUnit:4.12
+ + Для правильной работы Background Service на Андроид Oreo and higher использована библиотека
+   https://github.com/Euzee/serviceManager
  
- #### Уведомления создаются по схеме AlarmManager -> BroadcastReciver -> NotificationService -> создание и запуск.
+ #### Уведомления создаются по схеме AlarmManager -> BroadcastReciver -> ServiceManager -> создание и запуск.
+      (уведомления приходят только с запущенным приложением ).
+ 
  
  #### Так же реализовано сохранение состояния при смене landscape
