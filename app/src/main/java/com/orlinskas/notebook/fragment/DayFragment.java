@@ -60,7 +60,15 @@ public class DayFragment extends Fragment {
         dayName.setText(day.getDayName());
         dayDate.setText(day.getDayDate());
 
-        ArrayAdapter adapter = new NotificationListAdapter(context, R.layout.item_notification_small, day.getNotifications());
+        ArrayAdapter adapter;
+
+        if(isFullDisplay){
+            adapter = new NotificationListAdapter(context, R.layout.item_notification_full, day.getNotifications());
+        }
+        else {
+            adapter = new NotificationListAdapter(context, R.layout.item_notification_small, day.getNotifications());
+        }
+
         notificationList.setAdapter(adapter);
         setListViewHeightBasedOnChildren(notificationList);
 
