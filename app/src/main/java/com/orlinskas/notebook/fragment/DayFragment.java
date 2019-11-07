@@ -15,11 +15,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.value.Day;
 
 import org.parceler.Parcels;
+
+import java.util.Objects;
 
 import static com.orlinskas.notebook.Constants.COUNT_NOTIFICATION_IN_SHORT_LIST;
 import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
@@ -93,7 +96,10 @@ public class DayFragment extends Fragment {
             notificationList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
+                    FragmentManager manager = getFragmentManager();
+                    DeleteDialogFragment deleteDialogFragment
+                            = new DeleteDialogFragment(day.getNotifications().get(position).getId());
+                    deleteDialogFragment.show(Objects.requireNonNull(manager), "dialog");
                     return true;
                 }
             });

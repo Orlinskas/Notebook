@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orlinskas.notebook.R;
+import com.orlinskas.notebook.ToastBuilder;
 import com.orlinskas.notebook.builder.DaysBuilder;
 import com.orlinskas.notebook.value.Day;
 import com.orlinskas.notebook.fragment.DayFragment;
@@ -21,13 +22,11 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import org.parceler.Parcels;
 
 import java.util.List;
 
-import static com.orlinskas.notebook.Constants.AFTER_CREATE_OPEN_MAIN;
 import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
 import static com.orlinskas.notebook.Constants.PARCEL_DAY;
 import static com.orlinskas.notebook.Constants.PARCEL_DAYS;
@@ -95,9 +94,7 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
                 MainActivity.this.days = days;
                 showDaysList();
             } else {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Failed to load", Toast.LENGTH_LONG);
-                toast.show();
+                ToastBuilder.doToast(getApplicationContext(), "Failed to load");
             }
             progressBar.setVisibility(View.INVISIBLE);
         }
@@ -130,6 +127,11 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
         Intent intent = new Intent(getApplicationContext(), ConcreteDayActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public void deleteNotification(int deletedNotificationID) {
+
     }
 
     public void openCreateNotificationActivity() {

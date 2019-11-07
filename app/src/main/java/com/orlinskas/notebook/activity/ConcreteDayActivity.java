@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orlinskas.notebook.R;
+import com.orlinskas.notebook.ToastBuilder;
 import com.orlinskas.notebook.fragment.DayFragment;
 import com.orlinskas.notebook.fragment.DayFragmentActions;
 import com.orlinskas.notebook.value.Day;
@@ -90,5 +91,10 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
     @Override
     public void openDay(Day day) {
 
+    }
+
+    @Override
+    public void deleteNotification(int deletedNotificationID) {
+        ToastBuilder.doToast(getApplicationContext(), "Delete...");
     }
 }
