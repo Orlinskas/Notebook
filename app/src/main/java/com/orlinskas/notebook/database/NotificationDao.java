@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.orlinskas.notebook.entity.Notification;
 
@@ -11,10 +12,10 @@ import java.util.List;
 
 @Dao
 public interface NotificationDao {
-    @Query("SELECT * FROM notification")
+    @Query("SELECT * FROM notification WHERE deleted_at IS NULL")
     List<Notification> findAll();
 
-    @Query("SELECT * FROM notification WHERE start_date_millis > :currentDateMillis")
+    @Query("SELECT * FROM notification WHERE start_date_millis > :currentDateMillis AND deleted_at IS NULL")
     List<Notification> findActual(long currentDateMillis);
 
     @Insert
@@ -22,4 +23,7 @@ public interface NotificationDao {
 
     @Delete
     void delete(Notification notification);
+
+    @Update
+    void update(Notification notification);
 }

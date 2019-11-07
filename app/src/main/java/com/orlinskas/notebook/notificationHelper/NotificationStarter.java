@@ -21,7 +21,7 @@ class NotificationStarter {
 
     private Notification findNotification(int id) {
         MyDatabase database = App.getInstance().getMyDatabase();
-        for(Notification notification : database.notifiationDao().findAll()) {
+        for(Notification notification : database.notificationDao().findAll()) {
             if(notification.getId() == id) {
                 return notification;
             }

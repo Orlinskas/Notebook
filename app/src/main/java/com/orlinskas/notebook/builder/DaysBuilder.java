@@ -22,7 +22,7 @@ public class DaysBuilder {
     public DaysBuilder() {
         this.currentDate = DateCurrent.getLine(DateFormater.YYYY_MM_DD);
         MyDatabase database = App.getInstance().getMyDatabase();
-        notifications = database.notifiationDao().findActual(System.currentTimeMillis());
+        notifications = database.notificationDao().findActual(System.currentTimeMillis());
     }
 
     public List<Day> findActual() {

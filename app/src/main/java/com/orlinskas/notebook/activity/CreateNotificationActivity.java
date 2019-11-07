@@ -149,7 +149,7 @@ public class CreateNotificationActivity extends AppCompatActivity {
             NotificationBuilder builder = new NotificationBuilder(getApplicationContext());
             Notification notification = builder.build(bodyText, dateTime);
             MyDatabase database = App.getInstance().getMyDatabase();
-            database.notifiationDao().insertAll(notification);
+            database.notificationDao().insertAll(notification);
             return null;
         }
 
