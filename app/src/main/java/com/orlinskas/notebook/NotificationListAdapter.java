@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.fragment;
+package com.orlinskas.notebook;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.date.DateFormater;
 import com.orlinskas.notebook.entity.Notification;
 
@@ -24,7 +23,7 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
     private int item_id;
     private List<Notification> notifications;
 
-    NotificationListAdapter(Context context, int item_id, List<Notification> notifications) {
+    public NotificationListAdapter(Context context, int item_id, List<Notification> notifications) {
         super(context, item_id, notifications);
         this.context = context;
         this.item_id = item_id;

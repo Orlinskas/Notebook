@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orlinskas.notebook.R;
-import com.orlinskas.notebook.ToastBuilder;
+import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.builder.DaysBuilder;
 import com.orlinskas.notebook.value.Day;
 import com.orlinskas.notebook.fragment.DayFragment;

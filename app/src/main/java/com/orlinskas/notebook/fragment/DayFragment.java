@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.orlinskas.notebook.NotificationListAdapter;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.value.Day;
 

@@ -1,4 +1,4 @@
-package com.orlinskas.notebook;
+package com.orlinskas.notebook.builder;
 
 import android.content.Context;
 import android.widget.Toast;

@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 
 import com.orlinskas.notebook.App;
-import com.orlinskas.notebook.ToastBuilder;
+import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.database.MyDatabase;
 import com.orlinskas.notebook.entity.Notification;
 import android.app.TimePickerDialog;
