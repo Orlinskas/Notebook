@@ -11,4 +11,5 @@ public class Constants {
 
     public final static String PARCEL_DAY = "parcel_day";
     public final static String PARCEL_DAYS = "parcel_days";
+    public final static String PARCEL_NOTIFICATION = "parcel_notification";
 }

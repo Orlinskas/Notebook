@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.orlinskas.notebook.NotificationDeleter;
+import com.orlinskas.notebook.notificationHelper.NotificationDeleter;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.fragment.DayFragment;

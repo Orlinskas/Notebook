@@ -1,5 +1,6 @@
-package com.orlinskas.notebook;
+package com.orlinskas.notebook.notificationHelper;
 
+import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.database.MyDatabase;
 import com.orlinskas.notebook.entity.Notification;
 

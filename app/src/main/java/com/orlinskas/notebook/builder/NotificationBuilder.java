@@ -2,7 +2,7 @@ package com.orlinskas.notebook.builder;
 
 import android.content.Context;
 
-import com.orlinskas.notebook.NotificationHomeScreenCreator;
+import com.orlinskas.notebook.notificationHelper.NotificationAlarmSetter;
 import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.date.DateFormater;
 
@@ -22,8 +22,8 @@ public class NotificationBuilder {
 
         Notification notification = new Notification(createDateMillis, startDateMillis, bodyText);
 
-        NotificationHomeScreenCreator creator = new NotificationHomeScreenCreator();
-        creator.create(context, notification);
+        NotificationAlarmSetter alarmSetter = new NotificationAlarmSetter();
+        alarmSetter.set(context, notification);
 
         return notification;
     }

@@ -1,4 +1,4 @@
-package com.orlinskas.notebook;
+package com.orlinskas.notebook.notificationHelper;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.date.DateFormater;
 import com.orlinskas.notebook.entity.Notification;
 
