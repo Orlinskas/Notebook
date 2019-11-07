@@ -22,12 +22,14 @@ import com.orlinskas.notebook.value.Day;
 import org.parceler.Parcels;
 
 import static com.orlinskas.notebook.Constants.COUNT_NOTIFICATION_IN_SHORT_LIST;
+import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
 import static com.orlinskas.notebook.Constants.PARCEL_DAY;
 
 public class DayFragment extends Fragment {
     private Day day;
     private DayFragmentActions fragmentActions;
     private Context context;
+    private boolean isFullDisplay;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -47,6 +49,7 @@ public class DayFragment extends Fragment {
         else {
             if (getArguments() != null) {
                 day = Parcels.unwrap(getArguments().getParcelable(PARCEL_DAY));
+                isFullDisplay = getArguments().getBoolean(IS_FULL_DISPLAY);
             }
         }
 
@@ -87,7 +90,7 @@ public class DayFragment extends Fragment {
         int totalHeight = 0;
         int maxCount;
 
-        if(listAdapter.getCount() >= COUNT_NOTIFICATION_IN_SHORT_LIST){
+        if(listAdapter.getCount() >= COUNT_NOTIFICATION_IN_SHORT_LIST && !isFullDisplay){
             maxCount = COUNT_NOTIFICATION_IN_SHORT_LIST;
         }
         else {

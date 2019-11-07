@@ -33,16 +33,12 @@ import com.orlinskas.notebook.date.DateCurrent;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
-
-import static com.orlinskas.notebook.Constants.AFTER_CREATE_OPEN_DAY;
-import static com.orlinskas.notebook.Constants.AFTER_CREATE_OPEN_MAIN;
 
 public class CreateNotificationActivity extends AppCompatActivity {
-    ProgressBar progressBar;
-    EditText notificationBody;
-    TextView dateTimeTV;
-    Calendar dateTime;
+    private ProgressBar progressBar;
+    private EditText notificationBody;
+    private TextView dateTimeTV;
+    private Calendar dateTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -167,18 +163,7 @@ public class CreateNotificationActivity extends AppCompatActivity {
     }
 
     private void openPreviousActivity() {
-        Intent intent;
-
-        switch (Objects.requireNonNull(getIntent().getAction())) {
-            case AFTER_CREATE_OPEN_DAY:
-                intent = new Intent(getApplicationContext(), ConcreteDayActivity.class);
-                break;
-            case AFTER_CREATE_OPEN_MAIN:
-            default:
-                intent = new Intent(getApplicationContext(), MainActivity.class);
-                break;
-        }
-
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

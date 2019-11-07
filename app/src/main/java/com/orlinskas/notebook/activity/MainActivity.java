@@ -28,6 +28,7 @@ import org.parceler.Parcels;
 import java.util.List;
 
 import static com.orlinskas.notebook.Constants.AFTER_CREATE_OPEN_MAIN;
+import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
 import static com.orlinskas.notebook.Constants.PARCEL_DAY;
 import static com.orlinskas.notebook.Constants.PARCEL_DAYS;
 
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
     public void openDay(Day day) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(PARCEL_DAY, Parcels.wrap(day));
+        bundle.putBoolean(IS_FULL_DISPLAY, true);
         Intent intent = new Intent(getApplicationContext(), ConcreteDayActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -133,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
     public void openCreateNotificationActivity() {
         Intent intent = new Intent(getApplicationContext(), CreateNotificationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.setAction(AFTER_CREATE_OPEN_MAIN);
         startActivity(intent);
     }
 
