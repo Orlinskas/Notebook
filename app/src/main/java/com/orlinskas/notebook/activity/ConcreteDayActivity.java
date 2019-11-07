@@ -1,6 +1,8 @@
 package com.orlinskas.notebook.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -11,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.orlinskas.notebook.NotificationDeleter;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.fragment.DayFragment;
@@ -90,11 +93,51 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
 
     @Override
     public void openDay(Day day) {
-
+        //not specified in the technical specifications for this window
     }
 
     @Override
     public void deleteNotification(int deletedNotificationID) {
-        ToastBuilder.doToast(getApplicationContext(), "Delete...");
+        new DeleteNotificationTask(deletedNotificationID).execute();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    class DeleteNotificationTask extends AsyncTask<Void, Void, Boolean> {
+        int deletedNotificationID;
+
+        DeleteNotificationTask(int deletedNotificationID) {
+            this.deletedNotificationID = deletedNotificationID;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            NotificationDeleter deleter = new NotificationDeleter();
+            return deleter.delete(deletedNotificationID);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            String message;
+            if(result){
+                message = "Deleted";
+            }
+            else {
+                message = "Error";
+            }
+            ToastBuilder.doToast(getApplicationContext(), message);
+
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
 }

@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
 
     @Override
     public void deleteNotification(int deletedNotificationID) {
-
+        //not specified in the technical specifications for this window
     }
 
     public void openCreateNotificationActivity() {
