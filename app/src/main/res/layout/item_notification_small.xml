@@ -15,6 +15,7 @@
         android:layout_marginStart="3dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_toStartOf="@+id/item_notification_small_tv_time"
         android:layout_toEndOf="@+id/item_notification_small_iv"
         android:fontFamily="monospace"
@@ -31,6 +32,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         android:drawableTop="@android:drawable/ic_lock_idle_alarm"
         android:text="time" />
 

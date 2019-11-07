@@ -16,11 +16,11 @@
         android:layout_marginStart="3dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_toStartOf="@+id/item_notification_full_tv_time"
         android:layout_toEndOf="@+id/item_notification_full_iv"
         android:fontFamily="monospace"
         android:maxLength="100"
-        android:maxLines="2"
         android:text="body"
         android:textColor="@android:color/black"
         android:textStyle="italic" />
@@ -32,6 +32,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         android:drawableTop="@android:drawable/ic_lock_idle_alarm"
         android:text="time" />
 

@@ -9,17 +9,11 @@
     android:background="@color/colorRowBody"
     tools:context=".activity.MainActivity">
 
-    <ScrollView
-        android:id="@+id/activity_concrete_day_sv"
+    <LinearLayout
+        android:id="@+id/activity_concrete_day_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/activity_concrete_day_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/activity_concrete_day_fab"
