@@ -14,7 +14,7 @@ import java.util.Objects;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-class NotificationHomeScreenCreator {
+class NotificationHomeScreenShower {
     void create(Context context, Notification userNotification) {
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
