@@ -2,6 +2,7 @@ package com.orlinskas.notebook.notificationHelper;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
@@ -20,14 +21,14 @@ public class NotificationShowService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        final int id = intent.getIntExtra("ID", 1);
+        final int id = intent.getIntExtra("ID", 0);
 
-        new Thread(new Runnable() {
+        AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 Notification notification = findNotification(id);
                 NotificationHomeScreenShower notificationHomeScreenShower = new NotificationHomeScreenShower();
-                if (notification.getCreateDateMillis() != 1) {
+                if (notification.getCreateDateMillis() != 0) {
                     notificationHomeScreenShower.create(getApplicationContext(), notification);
                 }
             }

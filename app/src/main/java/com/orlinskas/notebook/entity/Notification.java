@@ -7,11 +7,10 @@ import androidx.room.PrimaryKey;
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
-
 @Entity
 @Parcel(Parcel.Serialization.BEAN)
 public class Notification implements Comparable<Notification>{
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int id;
 
     @ColumnInfo(name = "create_date_millis")
@@ -24,7 +23,8 @@ public class Notification implements Comparable<Notification>{
     private String bodyText;
 
     @ParcelConstructor
-    public Notification(long createDateMillis, long startDateMillis, String bodyText) {
+    public Notification(int id, long createDateMillis, long startDateMillis, String bodyText) {
+        this.id = id;
         this.createDateMillis = createDateMillis;
         this.startDateMillis = startDateMillis;
         this.bodyText = bodyText;
@@ -39,10 +39,6 @@ public class Notification implements Comparable<Notification>{
         }
 
         return result;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getId() {
