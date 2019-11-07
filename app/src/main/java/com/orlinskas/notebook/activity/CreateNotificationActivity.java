@@ -146,7 +146,7 @@ public class CreateNotificationActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            NotificationBuilder builder = new NotificationBuilder();
+            NotificationBuilder builder = new NotificationBuilder(getApplicationContext());
             Notification notification = builder.build(bodyText, dateTime);
             MyDatabase database = App.getInstance().getMyDatabase();
             database.notifiationDao().insertAll(notification);
