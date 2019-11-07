@@ -42,10 +42,6 @@
             android:name=".notificationHelper.NotificationAlarmReceiver">
         </receiver>
 
-        <service
-            android:name=".notificationHelper.NotificationShowService"
-            android:enabled="true"
-            android:exported="false"/>
     </application>
 
 </manifest>
