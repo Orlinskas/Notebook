@@ -1,25 +1,39 @@
 package com.orlinskas.notebook.repository
 
 import com.orlinskas.notebook.App
+import com.orlinskas.notebook.database.MyDatabase
 import com.orlinskas.notebook.entity.Notification
-import com.orlinskas.notebook.server.ApiResponsibleListener
-import com.orlinskas.notebook.server.NotificationApiService
-import com.orlinskas.notebook.server.NotificationRemoteRepository
-import com.orlinskas.notebook.server.Synchronizer
+import com.orlinskas.notebook.service.ApiFactory
+import com.orlinskas.notebook.service.NotificationRemoteRepository
+import com.orlinskas.notebook.service.Synchronizer
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 
-class NotificationRepository(private val apiResponsibleListener: ApiResponsibleListener) {
-    fun findAll() : List<Notification> {
-        val database = App.getInstance().myDatabase
-        val localNotifications = database.notificationDao().findAll()
+class NotificationRepository() {
+    private val database: MyDatabase = App.getInstance().myDatabase
+    private val remoteService = NotificationRemoteRepository(ApiFactory.notificationApi)
 
-        val remoteService = NotificationRemoteRepository()
-        val remoteNotification = remoteService.findAll()
+    suspend fun findAll() : List<Notification> {
 
-        return if (remoteNotification != null) {
-            Synchronizer().sync(localNotifications, remoteNotification)
+        val local = GlobalScope.async {
+            database.notificationDao().findAll()
         }
-        else {
-            localNotifications
+
+        val remote = GlobalScope.async {
+            remoteService.findAll()
         }
+
+        return Synchronizer().sync(local.await(), remote.await()!!)
+    }
+
+    fun add(notification: Notification) {
+        database.notificationDao().insertAll(notification)
+        remoteService.add(notification)
+    }
+
+    fun delete(notification: Notification) {
+        database.notificationDao().delete(notification)
+        remoteService.delete(notification)
     }
 }

@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.server
+package com.orlinskas.notebook.service
 
 import com.orlinskas.notebook.entity.Notification
 
