@@ -4,29 +4,40 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
 import java.util.Objects;
 
+import static com.orlinskas.notebook.Constants.*;
+
 @Entity
 @Parcel(Parcel.Serialization.BEAN)
-public class Notification implements Comparable<Notification>{
+public class Notification implements Comparable<Notification> {
+
+    @SerializedName(NOTIFICATION_ID_API_NAME)
     @PrimaryKey
     private int id;
 
+    @SerializedName(NOTIFICATION_CREATE_DATE_API_NAME)
     @ColumnInfo(name = "create_date_millis")
     private long createDateMillis;
 
+    @SerializedName(NOTIFICATION_START_DATE_API_NAME)
     @ColumnInfo(name = "start_date_millis")
     private long startDateMillis;
 
+    @SerializedName(NOTIFICATION_BODY_TEXT_API_NAME)
     @ColumnInfo(name = "body_text")
     private String bodyText;
 
+    @SerializedName(NOTIFICATION_IS_SYNCHRONIZED_API_NAME)
     @ColumnInfo(name = "is_synchronized")
     private boolean isSynchronized;
 
+    @SerializedName(NOTIFICATION_DELETED_AT_API_NAME)
     @ColumnInfo(name = "deleted_at")
     private String deleted_at;
 

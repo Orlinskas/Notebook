@@ -12,4 +12,14 @@ public class Constants {
     public final static String PARCEL_DAY = "parcel_day";
     public final static String PARCEL_DAYS = "parcel_days";
     public final static String PARCEL_NOTIFICATION = "parcel_notification";
+
+    public final static String BASE_URL = "www.wait.com/";
+    public final static String NOTIFICATION_PATH = "notification/";
+
+    public final static String NOTIFICATION_ID_API_NAME = "id";
+    public final static String NOTIFICATION_CREATE_DATE_API_NAME = "create_date";
+    public final static String NOTIFICATION_START_DATE_API_NAME = "start_date";
+    public final static String NOTIFICATION_BODY_TEXT_API_NAME = "body_text";
+    public final static String NOTIFICATION_IS_SYNCHRONIZED_API_NAME = "is_synchronized";
+    public final static String NOTIFICATION_DELETED_AT_API_NAME = "deleted_at";
 }
