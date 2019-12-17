@@ -2,28 +2,11 @@ package com.orlinskas.notebook.server
 
 import com.orlinskas.notebook.entity.Notification
 
-class NotificationRemoteRepository(private val apiResponsibleListener: ApiResponsibleListener,
-                                   private var apiService: NotificationApiService) {
+class NotificationRemoteRepository() {
+    private var apiService = NotificationApiService.create()
 
-    init {
-        apiService = NotificationApiService.create()
-    }
-
-    fun findAll() {
-        Thread(Runnable {
-            try {
-                val notifications = apiService.findAll().execute().body()
-                if(notifications != null) {
-                    apiResponsibleListener.onDoneNotificationsResponse(notifications)
-                }
-                else {
-                    apiResponsibleListener.onFailResponse("Fail, null object")
-                }
-            } catch (e: Exception) {
-                apiResponsibleListener.onFailResponse(e.message.toString())
-                e.printStackTrace()
-            }
-        }).start()
+    fun findAll(): List<Notification>? {
+        return apiService.findAll().execute().body()
     }
 
     fun add(notification: Notification) {
@@ -31,7 +14,7 @@ class NotificationRemoteRepository(private val apiResponsibleListener: ApiRespon
             try {
                 apiService.add(notification.id)
             } catch (e: Exception) {
-                apiResponsibleListener.onFailResponse("Fail to put object")
+                //apiResponsibleListener.onFailResponse("Fail to put object")
                 e.printStackTrace()
             }
         })
@@ -42,7 +25,7 @@ class NotificationRemoteRepository(private val apiResponsibleListener: ApiRespon
             try {
                 apiService.delete(notification.id)
             } catch (e: Exception) {
-                apiResponsibleListener.onFailResponse("Fail to put object")
+                //apiResponsibleListener.onFailResponse("Fail to put object")
                 e.printStackTrace()
             }
         })
