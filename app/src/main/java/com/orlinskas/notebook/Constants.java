@@ -13,7 +13,7 @@ public class Constants {
     public final static String PARCEL_DAYS = "parcel_days";
     public final static String PARCEL_NOTIFICATION = "parcel_notification";
 
-    public final static String BASE_URL = "www.wait.com/";
+    public final static String BASE_URL = "https://www.wait.com/";
     public final static String NOTIFICATION_PATH = "notification/";
 
     public final static String NOTIFICATION_ID_API_NAME = "id";

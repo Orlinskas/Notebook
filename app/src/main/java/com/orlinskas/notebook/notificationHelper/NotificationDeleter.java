@@ -5,16 +5,30 @@ import com.orlinskas.notebook.database.MyDatabase;
 import com.orlinskas.notebook.date.DateCurrent;
 import com.orlinskas.notebook.date.DateFormater;
 import com.orlinskas.notebook.entity.Notification;
+import com.orlinskas.notebook.repository.NotificationRepository;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class NotificationDeleter {
     public boolean delete(int deletedNotificationID) {
-        MyDatabase database = App.getInstance().getMyDatabase();
+        NotificationRepository repository = new NotificationRepository();
 
-        for(Notification notification : database.notificationDao().findAll()){
-            if(notification.getId() == deletedNotificationID){
-                database.notificationDao().delete(notification);
-                return true;
+        CompletableFuture<List<Notification>> futureList = repository.findAll();
+        List<Notification> notifications;
+
+        try {
+            notifications = futureList.get();
+
+            for (Notification notification : notifications) {
+                if(notification.getId() == deletedNotificationID){
+                    return repository.delete(notification).get();
+                }
+
             }
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
         }
 
         return false;

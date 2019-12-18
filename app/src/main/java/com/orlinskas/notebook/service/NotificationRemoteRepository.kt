@@ -4,16 +4,27 @@ import com.orlinskas.notebook.entity.Notification
 
 class NotificationRemoteRepository(private val apiService: NotificationApiService) {
 
-    suspend fun findAll(): List<Notification>? {
+    fun findAll(): List<Notification>? {
         return apiService.findAll()
     }
 
-    suspend fun add(notification: Notification) {
-        apiService.add(notification.id)
+    fun add(notification: Notification) : Boolean {
+        return try {
+            apiService.add(notification.id)
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
-    suspend fun delete(notification: Notification) {
-        apiService.delete(notification.id)
+    fun delete(notification: Notification) : Boolean {
+        return try {
+            apiService.delete(notification.id)
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
-
 }

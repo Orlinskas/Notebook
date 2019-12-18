@@ -8,32 +8,46 @@ import com.orlinskas.notebook.service.NotificationRemoteRepository
 import com.orlinskas.notebook.service.Synchronizer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.future.future
+import java.util.concurrent.CompletableFuture
 
-class NotificationRepository() {
+class NotificationRepository {
     private val database: MyDatabase = App.getInstance().myDatabase
     private val remoteService = NotificationRemoteRepository(ApiFactory.notificationApi)
 
-    suspend fun findAll() : List<Notification> {
-
+    fun findAll() : CompletableFuture<List<Notification>> = GlobalScope.future {
         val local = GlobalScope.async {
             database.notificationDao().findAll()
         }
 
-        val remote = GlobalScope.async {
-            remoteService.findAll()
+        //val remote = GlobalScope.async {
+        //    remoteService.findAll()
+        //}
+
+        return@future Synchronizer().sync(local.await(), local.await()!!)
+    }
+
+    suspend fun add(notification: Notification) : Boolean {
+        val local = GlobalScope.async {
+            database.notificationDao().insertAll(notification)
         }
 
-        return Synchronizer().sync(local.await(), remote.await()!!)
+        val remote = GlobalScope.async {
+            remoteService.add(notification)
+        }
+
+        return remote.await()
     }
 
-    fun add(notification: Notification) {
-        database.notificationDao().insertAll(notification)
-        remoteService.add(notification)
-    }
+    fun delete(notification: Notification) : CompletableFuture<Boolean> = GlobalScope.future {
+        val local = GlobalScope.async {
+            database.notificationDao().delete(notification)
+        }
 
-    fun delete(notification: Notification) {
-        database.notificationDao().delete(notification)
-        remoteService.delete(notification)
+        val remote = GlobalScope.async {
+            remoteService.delete(notification)
+        }
+
+        return@future remote.await()
     }
 }

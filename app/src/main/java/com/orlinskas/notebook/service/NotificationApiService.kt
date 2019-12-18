@@ -1,22 +1,21 @@
 package com.orlinskas.notebook.service
 
-import com.orlinskas.notebook.Constants.BASE_URL
 import com.orlinskas.notebook.Constants.NOTIFICATION_PATH
 import com.orlinskas.notebook.entity.Notification
-import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.*
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface NotificationApiService {
     @GET(NOTIFICATION_PATH)
-    suspend fun findAll(): List<Notification>
+    fun findAll(): List<Notification>
 
     @PUT("notification{id}")
-    suspend fun add(@Path("id") id: Int): Notification
+    fun add(@Path("id") id: Int): Boolean
 
     @DELETE("notification{id}")
-    suspend fun delete(@Path("id") id: Int): Notification
+    fun delete(@Path("id") id: Int): Boolean
 }
 
 private fun <E> List<E>.await(): List<E> {
