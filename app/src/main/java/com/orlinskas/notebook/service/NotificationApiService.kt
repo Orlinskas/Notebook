@@ -18,7 +18,7 @@ interface NotificationApiService {
     fun delete(@Path("id") id: Int)
 }
 
-private fun <E> List<E>.await(): List<E> {
-    //перешел на версию retroFit 2.6.0
-    return emptyList()
-}
+//private fun <E> List<E>.await(): List<E> {
+//    //перешел на версию retroFit 2.6.0
+//    return emptyList()
+//}

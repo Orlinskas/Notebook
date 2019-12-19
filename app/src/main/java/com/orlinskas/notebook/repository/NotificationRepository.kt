@@ -2,7 +2,6 @@ package com.orlinskas.notebook.repository
 
 import com.orlinskas.notebook.App
 import com.orlinskas.notebook.database.MyDatabase
-import com.orlinskas.notebook.database.NotificationDao
 import com.orlinskas.notebook.entity.Notification
 import com.orlinskas.notebook.service.ApiFactory
 import com.orlinskas.notebook.service.NotificationRemoteRepository

@@ -23,7 +23,8 @@ public class NotificationDeleter {
 
             for (Notification notification : notifications) {
                 if(notification.getId() == deletedNotificationID){
-                    return repository.delete(notification).get();
+                    repository.delete(notification);
+                    return true;
                 }
 
             }

@@ -2,6 +2,7 @@ package com.orlinskas.notebook.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -41,6 +42,11 @@ public class Notification implements Comparable<Notification> {
     @ColumnInfo(name = "deleted_at")
     private String deleted_at;
 
+    @Ignore
+    public Notification() {
+        //constructor to Mockito
+    }
+
     @ParcelConstructor
     public Notification(int id, long createDateMillis, long startDateMillis, String bodyText) {
         this.id = id;
@@ -54,12 +60,14 @@ public class Notification implements Comparable<Notification> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Notification that = (Notification) o;
-        return id == that.id;
+        return id == that.id &&
+                createDateMillis == that.createDateMillis &&
+                startDateMillis == that.startDateMillis;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, createDateMillis, startDateMillis);
     }
 
     @Override
