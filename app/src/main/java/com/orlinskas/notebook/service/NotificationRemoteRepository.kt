@@ -1,30 +1,52 @@
 package com.orlinskas.notebook.service
 
+import com.orlinskas.notebook.database.NotificationDao
 import com.orlinskas.notebook.entity.Notification
 
-class NotificationRemoteRepository(private val apiService: NotificationApiService) {
+class NotificationRemoteRepository(private val apiService: NotificationApiService) : NotificationDao {
 
-    fun findAll(): List<Notification>? {
-        return apiService.findAll()
-    }
-
-    fun add(notification: Notification) : Boolean {
-        return try {
-            apiService.add(notification.id)
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
+    override fun findAll(): List<Notification>? {
+        var notifications = ArrayList<Notification>()
+        try {
+            notifications = apiService.findAll() as ArrayList<Notification>
+        } finally {
+            return notifications
         }
     }
 
-    fun delete(notification: Notification) : Boolean {
-        return try {
+    override fun findActual(currentDateMillis: Long): MutableList<Notification> {
+        val actualNotifications = ArrayList<Notification>()
+
+        val notifications = try {
+            apiService.findAll()
+        } catch (e: Exception) {
+            return actualNotifications
+        }
+
+        for (notification in notifications) {
+            if (notification.startDateMillis > currentDateMillis && notification.deleted_at == null) {
+                actualNotifications.add(notification)
+            }
+        }
+
+        return actualNotifications
+    }
+
+    override fun insertAll(vararg notifications: Notification?) {
+        for (notification in notifications) {
+            if (notification != null) {
+                apiService.add(notification.id)
+            }
+        }
+    }
+
+    override fun delete(notification: Notification?) {
+        if (notification != null) {
             apiService.delete(notification.id)
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
         }
+    }
+
+    override fun update(notification: Notification?) {
+        //
     }
 }

@@ -12,10 +12,10 @@ interface NotificationApiService {
     fun findAll(): List<Notification>
 
     @PUT("notification{id}")
-    fun add(@Path("id") id: Int): Boolean
+    fun add(@Path("id") id: Int)
 
     @DELETE("notification{id}")
-    fun delete(@Path("id") id: Int): Boolean
+    fun delete(@Path("id") id: Int)
 }
 
 private fun <E> List<E>.await(): List<E> {
