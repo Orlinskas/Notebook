@@ -1,26 +1,25 @@
 package com.orlinskas.notebook.service
 
-import com.orlinskas.notebook.database.NotificationDao
+import android.util.Log
 import com.orlinskas.notebook.entity.Notification
 
-class NotificationRemoteRepository(private val apiService: NotificationApiService) : NotificationDao {
+class NotificationRemoteRepository(private val apiService: NotificationApiService) {
 
-    override fun findAll(): List<Notification>? {
-        var notifications = ArrayList<Notification>()
-        try {
-            notifications = apiService.findAll() as ArrayList<Notification>
-        } finally {
-            return notifications
+    suspend fun findAll(): List<Notification>? {
+        return try {
+            apiService.findAll()
+        } catch (e: Exception) {
+            throw Exception()
         }
     }
 
-    override fun findActual(currentDateMillis: Long): MutableList<Notification> {
+    suspend fun findActual(currentDateMillis: Long): MutableList<Notification> {
         val actualNotifications = ArrayList<Notification>()
 
         val notifications = try {
             apiService.findAll()
         } catch (e: Exception) {
-            return actualNotifications
+            throw Exception()
         }
 
         for (notification in notifications) {
@@ -32,21 +31,25 @@ class NotificationRemoteRepository(private val apiService: NotificationApiServic
         return actualNotifications
     }
 
-    override fun insertAll(vararg notifications: Notification?) {
+    suspend fun insertAll(vararg notifications: Notification?) {
         for (notification in notifications) {
-            if (notification != null) {
-                apiService.add(notification.id)
+            try {
+                apiService.add(notification!!.id)
+            } catch (e: Exception) {
+                Log.e(javaClass.name, "Ошибка добавления на сервер -- " + (notification?.id ?: "null object"))
             }
         }
     }
 
-    override fun delete(notification: Notification?) {
-        if (notification != null) {
-            apiService.delete(notification.id)
+    suspend fun delete(notification: Notification?) {
+        try {
+            apiService.delete(notification!!.id)
+        } catch (e: Exception) {
+            Log.e(javaClass.name, "Ошибка удаления с сервера -- " + (notification?.id ?: "null object"))
         }
     }
 
-    override fun update(notification: Notification?) {
+    fun update(notification: Notification?) {
         //
     }
 }

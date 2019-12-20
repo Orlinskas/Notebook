@@ -9,13 +9,13 @@ import retrofit2.http.Path
 
 interface NotificationApiService {
     @GET(NOTIFICATION_PATH)
-    fun findAll(): List<Notification>
+    suspend fun findAll(): List<Notification>
 
     @PUT("notification{id}")
-    fun add(@Path("id") id: Int)
+    suspend fun add(@Path("id") id: Int)
 
     @DELETE("notification{id}")
-    fun delete(@Path("id") id: Int)
+    suspend fun delete(@Path("id") id: Int)
 }
 
 //private fun <E> List<E>.await(): List<E> {
