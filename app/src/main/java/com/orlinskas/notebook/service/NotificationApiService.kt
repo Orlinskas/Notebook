@@ -11,7 +11,7 @@ interface NotificationApiService {
     @GET("notifications/")
     suspend fun findAll() : List<Notification>
 
-    @PUT("notification{id}")
+    @POST("notification{id}")
     suspend fun add(@Path("id") id: Int)
 
     @DELETE("notification{id}")

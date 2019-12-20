@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<manifest
+<manifest android:targetSandboxVersion="1"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.orlinskas.notebook">
@@ -18,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning"
+        android:usesCleartextTraffic="true">
 
         <activity
             android:name=".activity.MainActivity"
