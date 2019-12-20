@@ -1,9 +1,10 @@
 package com.orlinskas.notebook.service
 
-import com.orlinskas.notebook.Constants.NOTIFICATION_PATH
 import com.orlinskas.notebook.entity.Notification
-import retrofit2.http.*
-
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 
 
 interface NotificationApiService {
