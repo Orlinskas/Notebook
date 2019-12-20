@@ -2,14 +2,14 @@ package com.orlinskas.notebook.service
 
 import com.orlinskas.notebook.Constants.NOTIFICATION_PATH
 import com.orlinskas.notebook.entity.Notification
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.PUT
-import retrofit2.http.Path
+import retrofit2.http.*
+
+
 
 interface NotificationApiService {
-    @GET(NOTIFICATION_PATH)
-    suspend fun findAll(): List<Notification>
+
+    @GET("notifications/")
+    suspend fun findAll() : List<Notification>
 
     @PUT("notification{id}")
     suspend fun add(@Path("id") id: Int)

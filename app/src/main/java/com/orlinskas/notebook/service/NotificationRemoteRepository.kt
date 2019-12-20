@@ -1,6 +1,7 @@
 package com.orlinskas.notebook.service
 
 import android.util.Log
+import com.orlinskas.notebook.Constants.USER_ID
 import com.orlinskas.notebook.entity.Notification
 
 class NotificationRemoteRepository(private val apiService: NotificationApiService) {
@@ -9,7 +10,7 @@ class NotificationRemoteRepository(private val apiService: NotificationApiServic
         return try {
             apiService.findAll()
         } catch (e: Exception) {
-            throw Exception()
+            throw e
         }
     }
 
@@ -19,7 +20,7 @@ class NotificationRemoteRepository(private val apiService: NotificationApiServic
         val notifications = try {
             apiService.findAll()
         } catch (e: Exception) {
-            throw Exception()
+            throw e
         }
 
         for (notification in notifications) {

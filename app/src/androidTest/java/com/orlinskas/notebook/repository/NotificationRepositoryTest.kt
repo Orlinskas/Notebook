@@ -43,10 +43,11 @@ class NotificationRepositoryTest {
 
     @Test
     fun findAll() = runBlocking {
+        Log.v(javaClass.name, "Начало тестирования findAll функции")
         val mockNotification = buildRandomTestNote()
         var isContain = false
 
-        withContext(Dispatchers.Default) {
+        withContext(scope.coroutineContext) {
             try {
                 repo.insertAll(mockNotification)
             } catch (e: Exception) {
@@ -75,6 +76,7 @@ class NotificationRepositoryTest {
 
     @Test
     fun delete() = runBlocking {
+        Log.v(javaClass.name, "Начало тестирования delete функции")
         val mockNotification = buildRandomTestNote()
         var count = 0
 
