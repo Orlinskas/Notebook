@@ -1,93 +1,117 @@
 package com.orlinskas.notebook.repository
 
-import android.util.Log
 import com.orlinskas.notebook.App
-import com.orlinskas.notebook.Constants.*
 import com.orlinskas.notebook.database.MyDatabase
 import com.orlinskas.notebook.entity.Notification
 import com.orlinskas.notebook.service.ApiFactory
 import com.orlinskas.notebook.service.NotificationRemoteRepository
-import com.orlinskas.notebook.service.Synchronizer
 
 class NotificationRepository {
     private val database: MyDatabase = App.getInstance().myDatabase
     private val remoteService = NotificationRemoteRepository(ApiFactory.notificationApi)
 
     suspend fun findAll(): List<Notification> {
-        val local = try {
-            database.notificationDao().findAll()
-        } catch (e: Exception) {
-            Log.e(javaClass.name, DATA_BASE_FAIL)
-        }
+        val localList = database.notificationDao().findAll()
 
-        val remote = try {
-            remoteService.findAll()
-        } catch (e: Exception) {
-            Log.e(javaClass.name, SERVER_FAIL)
-        }
+        val response = remoteService.findAll()
 
-        return Synchronizer().sync(local, remote)
+        return if (response.code == 200) {
+            Synchronizer().sync(localList, response.data)
+        }
+        else {
+            localList
+        }
     }
 
     suspend fun findActual(currentDateMillis: Long): List<Notification> {
-        val local = try {
-            database.notificationDao().findActual(currentDateMillis)
-        } catch (e: Exception) {
-            Log.e(javaClass.name, DATA_BASE_FAIL)
-        }
+        val localList = database.notificationDao().findActual(currentDateMillis)
+        localList.removeAll { notification -> notification.is_deleted  }
 
-        val remote = try {
-            remoteService.findActual(currentDateMillis)
-        } catch (e: Exception) {
-            Log.e(javaClass.name, SERVER_FAIL)
-        }
+        val response = remoteService.findAll()
 
-        return Synchronizer().sync(local, remote)
+        return if (response.code == 200) {
+            for (notification in response.data) {
+                if (notification.startDateMillis < currentDateMillis && notification.is_deleted) {
+                    response.data.remove(notification)
+                }
+            }
+            Synchronizer().sync(localList, response.data)
+        }
+        else {
+            localList
+        }
     }
 
-    suspend fun insertAll(vararg notifications: Notification?) {
-        try {
-            database.notificationDao().insertAll(*notifications)
-            Log.v(javaClass.name, "-БД- Добавленно- -- ${notifications.size} -- объектов")
-        } catch (e: Exception) {
-            Log.e(javaClass.name, DATA_BASE_FAIL)
-        }
+    suspend fun insert(notification: Notification) {
+        val response = remoteService.insertAll(notification)
 
-        try {
-            remoteService.insertAll(*notifications)
-        } catch (e: Exception) {
-            Log.e(javaClass.name, SERVER_FAIL)
+        if (response[0].code == 201) {
+            val remoteNotification = response[0].data
+            remoteNotification.isSynchronized = true
+            database.notificationDao().insertAll(remoteNotification)
+        }
+        else {
+            notification.isSynchronized = false
+            database.notificationDao().insertAll(notification)
         }
     }
 
     suspend fun delete(notification: Notification) {
-        try {
-            database.notificationDao().delete(notification)
-            Log.v(javaClass.name, "-БД- Удален объект -- ${notification.id}")
-        } catch (e: Exception) {
-            Log.e(javaClass.name, DATA_BASE_FAIL)
-        }
+        val response = remoteService.delete(notification)
 
-        try {
-            remoteService.delete(notification)
-        } catch (e: Exception) {
-            Log.e(javaClass.name, SERVER_FAIL)
+        if(response.code != 200) {
+            notification.is_deleted = true
+            database.notificationDao().update(notification)
+        }
+        else {
+            database.notificationDao().delete(notification)
         }
     }
 
-    suspend fun update(notification: Notification?) {
-        try {
-            database.notificationDao().update(notification)
-            Log.v(javaClass.name, "-БД- Обновлен объект -- ${notification?.id}")
-        } catch (e: Exception) {
-            Log.e(javaClass.name, DATA_BASE_FAIL)
+    suspend fun sync() : Boolean {
+        val localList = database.notificationDao().findAll()
+
+        //проверка удаления данных, нужно догнать сервер
+        if(localList.isEmpty()) {
+            val response = remoteService.findAll()
+
+            if(response.code == 200 && response.data.isNotEmpty()) {
+                for (notification in response.data) {
+                    database.notificationDao().insertAll(notification)
+                    return true
+                }
+            }
+            else {
+                return false
+            }
         }
 
-        try {
-            remoteService.update(notification)
-            Log.v(javaClass.name, SERVER_DONE)
-        } catch (e: Exception) {
-            Log.e(javaClass.name, SERVER_FAIL)
+        //попытка сервера догнать локальную базу
+        for (notification in localList) {
+            if (!notification.isSynchronized) {
+                val response = remoteService.insertAll(notification)
+
+                if (response[0].code == 201) {
+                    database.notificationDao().insertAll(response[0].data)
+                    database.notificationDao().delete(notification)
+                }
+                else {
+                    return false
+                }
+            }
+
+            if (notification.is_deleted) {
+                val response = remoteService.delete(notification)
+
+                if(response.code == 200) {
+                    database.notificationDao().delete(notification)
+                }
+                else {
+                    return false
+                }
+            }
         }
+
+        return true
     }
 }

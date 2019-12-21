@@ -16,24 +16,6 @@ class NotificationRemoteRepository(private val apiService: NotificationApiServic
         }
     }
 
-    suspend fun findActual(currentDateMillis: Long): MutableList<Notification> {
-        val actualNotifications = ArrayList<Notification>()
-
-        val notifications = try {
-            apiService.findAll()
-        } catch (e: Exception) {
-            throw e
-        }
-
-        for (notification in notifications.data) {
-            if (notification.startDateMillis > currentDateMillis && notification.deleted_at == null) {
-                actualNotifications.add(notification)
-            }
-        }
-
-        return actualNotifications
-    }
-
     suspend fun insertAll(vararg notifications: Notification?) : List<ResponsePOST> {
         val responseList = ArrayList<ResponsePOST>()
 
@@ -57,9 +39,5 @@ class NotificationRemoteRepository(private val apiService: NotificationApiServic
         } catch (e: Exception) {
             throw e
         }
-    }
-
-    fun update(notification: Notification?) {
-        //
     }
 }

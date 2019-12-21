@@ -37,7 +37,7 @@ public class NotificationDaoTest {
         Mockito.when(mockNotification .getBodyText()).thenReturn("Test");
         Mockito.when(mockNotification .getCreateDateMillis()).thenReturn(System.currentTimeMillis() + (60 * 60 * 1000));
         Mockito.when(mockNotification .getStartDateMillis()).thenReturn(System.currentTimeMillis() + 2 *(60 * 60 * 1000));
-        Mockito.when(mockNotification .getDeleted_at()).thenReturn(null);
+        Mockito.when(mockNotification .getIs_deleted()).thenReturn(null);
         Mockito.when(mockNotification .isSynchronized()).thenReturn(true);
     }
 

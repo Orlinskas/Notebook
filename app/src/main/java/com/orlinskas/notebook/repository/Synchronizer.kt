@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.service
+package com.orlinskas.notebook.repository
 
 import android.util.Log
 import com.orlinskas.notebook.entity.Notification
@@ -6,6 +6,7 @@ import com.orlinskas.notebook.entity.Notification
 class Synchronizer {
     fun sync(localData: Any, remoteData: Any): List<Notification> {
         val syncSet = mutableSetOf<Notification>()
+
         Log.v(javaClass.name, "Начало синхронизации" )
 
         if (localData is List<*>) {

@@ -3,9 +3,6 @@ package com.orlinskas.notebook.service.response;
 import com.google.gson.annotations.SerializedName;
 import com.orlinskas.notebook.entity.Notification;
 
-import org.parceler.Parcel;
-import org.parceler.ParcelConstructor;
-
 public class ResponsePOST {
 
     @SerializedName("code")

@@ -12,10 +12,10 @@ import java.util.List;
 
 @Dao
 public interface NotificationDao {
-    @Query("SELECT * FROM notification WHERE deleted_at IS NULL")
+    @Query("SELECT * FROM notification")
     List<Notification> findAll();
 
-    @Query("SELECT * FROM notification WHERE start_date_millis > :currentDateMillis AND deleted_at IS NULL")
+    @Query("SELECT * FROM notification WHERE start_date_millis > :currentDateMillis AND deleted_at IS 0")
     List<Notification> findActual(long currentDateMillis);
 
     @Insert

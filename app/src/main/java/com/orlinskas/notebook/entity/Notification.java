@@ -43,7 +43,7 @@ public class Notification implements Comparable<Notification> {
     //@SerializedName(NOTIFICATION_DELETED_AT_API_NAME)
     @ColumnInfo(name = "deleted_at")
     @Expose(serialize = false)
-    private String deleted_at;
+    private boolean is_deleted;
 
     @Ignore
     public Notification() {
@@ -63,14 +63,12 @@ public class Notification implements Comparable<Notification> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Notification that = (Notification) o;
-        return id == that.id &&
-                createDateMillis == that.createDateMillis &&
-                startDateMillis == that.startDateMillis;
+        return id == that.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createDateMillis, startDateMillis);
+        return Objects.hash(id);
     }
 
     @Override
@@ -104,15 +102,15 @@ public class Notification implements Comparable<Notification> {
         return isSynchronized;
     }
 
-    public String getDeleted_at() {
-        return deleted_at;
+    public boolean getIs_deleted() {
+        return is_deleted;
     }
 
     public void setSynchronized(boolean aSynchronized) {
         isSynchronized = aSynchronized;
     }
 
-    public void setDeleted_at(String deleted_at) {
-        this.deleted_at = deleted_at;
+    public void setIs_deleted(boolean is_deleted) {
+        this.is_deleted = is_deleted;
     }
 }
