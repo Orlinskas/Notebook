@@ -29,19 +29,4 @@ public class NotificationDeleter {
 
         return false;
     }
-
-    public boolean softDelete(int deletedNotificationID) {
-        MyDatabase database = App.getInstance().getMyDatabase();
-
-        for(Notification notification : database.notificationDao().findAll()){
-            if(notification.getId() == deletedNotificationID){
-                notification.setIs_deleted(DateCurrent.getLine(DateFormater.YYYY_MM_DD_HH_MM));
-                notification.setSynchronized(false);
-                database.notificationDao().update(notification);
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

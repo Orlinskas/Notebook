@@ -1,6 +1,7 @@
 package com.orlinskas.notebook.database;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -17,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static junit.framework.TestCase.assertTrue;
@@ -37,7 +39,7 @@ public class NotificationDaoTest {
         Mockito.when(mockNotification .getBodyText()).thenReturn("Test");
         Mockito.when(mockNotification .getCreateDateMillis()).thenReturn(System.currentTimeMillis() + (60 * 60 * 1000));
         Mockito.when(mockNotification .getStartDateMillis()).thenReturn(System.currentTimeMillis() + 2 *(60 * 60 * 1000));
-        Mockito.when(mockNotification .getIs_deleted()).thenReturn(null);
+        Mockito.when(mockNotification .getIs_deleted()).thenReturn(false);
         Mockito.when(mockNotification .isSynchronized()).thenReturn(true);
     }
 
@@ -54,16 +56,6 @@ public class NotificationDaoTest {
             }
         }
         assertTrue(isContain);
-    }
-
-    @Test
-    public void findActual() {
-
-    }
-
-    @Test
-    public void insertAll() {
-
     }
 
     @Test
@@ -84,7 +76,16 @@ public class NotificationDaoTest {
     }
 
     @Test
-    public void update() {
+    private void deleteTestNotes() {
+        Log.v(getClass().getName(), "Запущен метод удаления всех тестовых заметок");
 
+        List<Notification> localList = database.notificationDao().findAll();
+
+        for (Notification notification : localList) {
+            if(notification.getBodyText().equals("Test") || notification.getBodyText().equals("TestRemote")) {
+                database.notificationDao().delete(notification);
+                Log.v(getClass().getName(), "Удалена -- " + notification.getId() + " -- ");
+            }
+        }
     }
 }

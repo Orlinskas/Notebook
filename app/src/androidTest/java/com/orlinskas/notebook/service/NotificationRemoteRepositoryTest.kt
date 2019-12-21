@@ -14,7 +14,7 @@ import java.util.*
 class NotificationRemoteRepositoryTest {
     private var job: Job = Job()
     private var scope = CoroutineScope(Dispatchers.Default + job)
-    private val api = NotificationRemoteRepository(ApiFactory.notificationApi)
+    private val api = ApiFactory.notificationApi
     private val notification = buildRandomTestNote()
 
     private fun buildRandomTestNote() : Notification {
@@ -48,27 +48,26 @@ class NotificationRemoteRepositoryTest {
         Log.v(javaClass.name, "Начало тестирования insertAll функции")
 
         withContext(scope.coroutineContext) {
-            val responseList = api.insertAll(notification)
+            val response = api.add(notification)
 
-            if(responseList.isEmpty()) {
+            if(response.code != 201) {
                 fail("Ошибка добавления")
             }
 
-            Log.v(javaClass.name, "Попытка добавления -- ${responseList.size} -- объектов на сервер")
+            Log.v(javaClass.name, "Попытка добавления -- ${response.data.id} -- объекта на сервер")
+            Log.v(javaClass.name, "Код ответа -- ${response.code} -- объект -- ${response.data.id}")
 
-            for (response in responseList) {
-                Log.v(javaClass.name, "Код ответа -- ${response.code} -- объект -- ${response.data.id} ")
-                assertTrue(javaClass.name, response.code == 201)
-            }
+            assertTrue(javaClass.name, response.code == 201)
         }
     }
+
 
     @Test
     fun delete() = runBlocking {
         Log.v(javaClass.name, "Начало тестирования delete функции")
 
         withContext(scope.coroutineContext) {
-            val response = api.delete(notification)
+            val response = api.delete(notification.id)
 
             Log.v(javaClass.name, "Попытка удаления -- ${notification.id} -- объекта")
             Log.v(javaClass.name, "Код ответа -- ${response.code} -- (200 done), удален ${notification.id}")

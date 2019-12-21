@@ -4,22 +4,28 @@ import com.orlinskas.notebook.App
 import com.orlinskas.notebook.database.MyDatabase
 import com.orlinskas.notebook.entity.Notification
 import com.orlinskas.notebook.service.ApiFactory
-import com.orlinskas.notebook.service.NotificationRemoteRepository
+import com.orlinskas.notebook.service.response.ResponseDELETE
+import com.orlinskas.notebook.service.response.ResponseGET
+import com.orlinskas.notebook.service.response.ResponsePOST
 
 class NotificationRepository {
     private val database: MyDatabase = App.getInstance().myDatabase
-    private val remoteService = NotificationRemoteRepository(ApiFactory.notificationApi)
+    private val remoteService = ApiFactory.notificationApi
 
     suspend fun findAll(): List<Notification> {
         val localList = database.notificationDao().findAll()
 
-        val response = remoteService.findAll()
+        var response = ResponseGET(404, "", emptyList())
 
-        return if (response.code == 200) {
-            Synchronizer().sync(localList, response.data)
-        }
-        else {
-            localList
+        try {
+            response = remoteService.findAll()
+        } finally {
+            return if (response.code == 200) {
+                Synchronizer().sync(localList, response.data)
+            }
+            else {
+                localList
+            }
         }
     }
 
@@ -27,48 +33,60 @@ class NotificationRepository {
         val localList = database.notificationDao().findActual(currentDateMillis)
         localList.removeAll { notification -> notification.is_deleted  }
 
-        val response = remoteService.findAll()
+        var response = ResponseGET(404, "", emptyList())
 
-        return if (response.code == 200) {
-            for (notification in response.data) {
-                if (notification.startDateMillis < currentDateMillis && notification.is_deleted) {
-                    response.data.remove(notification)
+        try {
+            response = remoteService.findAll()
+        } finally {
+            return if (response.code == 200) {
+                for (notification in response.data) {
+                    if (notification.startDateMillis < currentDateMillis && notification.is_deleted) {
+                        response.data.remove(notification)
+                    }
                 }
+                Synchronizer().sync(localList, response.data)
             }
-            Synchronizer().sync(localList, response.data)
-        }
-        else {
-            localList
+            else {
+                localList
+            }
         }
     }
 
     suspend fun insert(notification: Notification) {
-        val response = remoteService.insertAll(notification)
+        var response = ResponsePOST(404, "", notification)
 
-        if (response[0].code == 201) {
-            val remoteNotification = response[0].data
-            remoteNotification.isSynchronized = true
-            database.notificationDao().insertAll(remoteNotification)
-        }
-        else {
-            notification.isSynchronized = false
-            database.notificationDao().insertAll(notification)
+        try {
+            response = remoteService.add(notification)
+        } finally {
+            if (response.code == 201) {
+                val remoteNotification = response.data
+                remoteNotification.isSynchronized = true
+                database.notificationDao().insertAll(remoteNotification)
+            }
+            else {
+                notification.isSynchronized = false
+                database.notificationDao().insertAll(notification)
+            }
         }
     }
 
     suspend fun delete(notification: Notification) {
-        val response = remoteService.delete(notification)
+        var response = ResponseDELETE(404, "", notification)
 
-        if(response.code != 200) {
-            notification.is_deleted = true
-            database.notificationDao().update(notification)
-        }
-        else {
-            database.notificationDao().delete(notification)
+        try {
+            response = remoteService.delete(notification.id)
+        } finally {
+            if(response.code == 200) {
+                database.notificationDao().delete(notification)
+            }
+            else {
+                notification.is_deleted = true
+                database.notificationDao().update(notification)
+            }
         }
     }
 
-    suspend fun sync() : Boolean {
+    suspend fun sync() : Boolean { //обработать исключения!!
         val localList = database.notificationDao().findAll()
 
         //проверка удаления данных, нужно догнать сервер
@@ -89,10 +107,10 @@ class NotificationRepository {
         //попытка сервера догнать локальную базу
         for (notification in localList) {
             if (!notification.isSynchronized) {
-                val response = remoteService.insertAll(notification)
+                val response = remoteService.add(notification)
 
-                if (response[0].code == 201) {
-                    database.notificationDao().insertAll(response[0].data)
+                if (response.code == 201) {
+                    database.notificationDao().insertAll(response.data)
                     database.notificationDao().delete(notification)
                 }
                 else {
@@ -101,7 +119,7 @@ class NotificationRepository {
             }
 
             if (notification.is_deleted) {
-                val response = remoteService.delete(notification)
+                val response = remoteService.delete(notification.id)
 
                 if(response.code == 200) {
                     database.notificationDao().delete(notification)

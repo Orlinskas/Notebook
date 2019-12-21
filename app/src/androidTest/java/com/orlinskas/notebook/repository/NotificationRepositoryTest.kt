@@ -4,9 +4,10 @@ import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import com.orlinskas.notebook.entity.Notification
 import junit.framework.TestCase.assertTrue
-import junit.framework.TestCase.fail
-import kotlinx.coroutines.*
-import org.junit.Before
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
@@ -14,11 +15,12 @@ import java.util.*
 
 @RunWith(MockitoJUnitRunner::class)
 class NotificationRepositoryTest {
-    private val repo = NotificationRepository()
+    private val repository = NotificationRepository()
     private val context = InstrumentationRegistry.getInstrumentation().context
-    //private var mockNotification : Notification = Mockito.mock(Notification::class.java)
     private var job: Job = Job()
     private var scope = CoroutineScope(Dispatchers.Default + job)
+    private val notification = buildRandomTestNote()
+    private val AYOUSHURE = true
 
     private fun buildRandomTestNote() : Notification {
         val id = Random().nextInt(2000000000 - 10 + 1) + 10
@@ -28,86 +30,39 @@ class NotificationRepositoryTest {
         return Notification(id, createDateMillis, startDateMillis, bodyText)
     }
 
-    @Before
-    fun setUp() {
-        //val currentDate = DateCurrent.getLine(DateFormater.YYYY_MM_DD_HH_MM)
-        //val datePlusHour = DateCalculator().plusHours(currentDate, 1, DateFormater.YYYY_MM_DD_HH_MM)
-        //val notification = NotificationBuilder(context).build("Test", datePlusHour)
-        //Mockito.`when`(mockNotification .id).thenReturn(Random().nextInt(2000000000 - 10 + 1) + 10)
-        //Mockito.`when`(mockNotification .bodyText).thenReturn("Test")
-        //Mockito.`when`(mockNotification .createDateMillis).thenReturn(System.currentTimeMillis() + (60 * 60 * 1000))
-        //Mockito.`when`(mockNotification .startDateMillis).thenReturn(System.currentTimeMillis() + 2 *(60 * 60 * 1000))
-        //Mockito.`when`(mockNotification .deleted_at).thenReturn(null)
-        //Mockito.`when`(mockNotification .isSynchronized).thenReturn(true)
-    }
-
     @Test
-    fun findAll() = runBlocking {
-        Log.v(javaClass.name, "Начало тестирования findAll функции")
-        val mockNotification = buildRandomTestNote()
-        var isContain = false
+    fun runTestRepository() {
+        runBlocking(scope.coroutineContext) {
+            var isInsert = false
 
-        withContext(scope.coroutineContext) {
-            try {
-                repo.insertAll(mockNotification)
-            } catch (e: Exception) {
-                Log.e("Ошибка подключения", e.message.toString())
-            }
+            repository.insert(notification)
+            var notifications = repository.findAll()
+            if(notifications.contains(notification)) isInsert = true
 
-            for(notification in repo.findAll()) {
-                if(notification.id == mockNotification.id) {
-                    isContain = true
-                }
-            }
+            assertTrue("Insert fail" , isInsert)
 
-            assertTrue("Is not contain", isContain)
+            var isDelete = false
+
+            repository.delete(notification)
+            notifications = repository.findAll()
+            if(!notifications.contains(notification)) isDelete = true
+
+            assertTrue("Delete fail" , isDelete)
         }
     }
 
-    @Test
-    fun findActual() {
-
-    }
-
-    @Test
-    fun insertAll() {
-
-    }
-
-    @Test
-    fun delete() = runBlocking {
-        Log.v(javaClass.name, "Начало тестирования delete функции")
-        val mockNotification = buildRandomTestNote()
+    fun clearRepo(AYOUSHURE : Boolean) = runBlocking(scope.coroutineContext) {
+        val notifications = repository.findAll()
         var count = 0
 
-        withContext(scope.coroutineContext) {
-            repo.insertAll(mockNotification)
-
-            for (note in repo.findAll()) {
-                if (note.bodyText == mockNotification.bodyText) {
-                    repo.delete(note)
-                    count++
-                }
+        if(AYOUSHURE) {
+            for(notification in notifications) {
+                repository.delete(notification)
+                count++
             }
-
-            Log.v(javaClass.name, "Удаленно $count объектов")
-
-            for (note in repo.findAll()) {
-                if (note.bodyText == mockNotification.bodyText) {
-                    fail()
-                }
-            }
-
-            assertTrue(true)
         }
-    }
 
-    @Test
-    fun update() {
-
-    }
-
-    fun deleteTestNotes() {
-        Log.v(javaClass.name, "Запущен метод удаления всех тестовых заметок")
+        Log.v("Очистка репозитория", "Удалено -- $count -- объектов")
     }
 }
+
