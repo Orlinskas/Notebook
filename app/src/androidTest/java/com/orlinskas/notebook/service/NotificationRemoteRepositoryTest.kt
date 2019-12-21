@@ -1,58 +1,79 @@
 package com.orlinskas.notebook.service
 
 import android.util.Log
-import junit.framework.Assert.assertTrue
-import junit.framework.Assert.fail
-import junit.framework.TestCase
+import com.orlinskas.notebook.entity.Notification
+import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.fail
 import kotlinx.coroutines.*
-import org.junit.Before
 import org.junit.Test
-
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
+import java.util.*
 
 @RunWith(MockitoJUnitRunner::class)
 class NotificationRemoteRepositoryTest {
     private var job: Job = Job()
     private var scope = CoroutineScope(Dispatchers.Default + job)
     private val api = NotificationRemoteRepository(ApiFactory.notificationApi)
+    private val notification = buildRandomTestNote()
 
-    @Before
-    fun setUp() {
-
+    private fun buildRandomTestNote() : Notification {
+        val id = Random().nextInt(2000000000 - 10 + 1) + 10
+        val bodyText = "TestRemote"
+        val createDateMillis = System.currentTimeMillis() + (60 * 60 * 1000)
+        val startDateMillis = System.currentTimeMillis() + 2 *(60 * 60 * 1000)
+        return Notification(id, createDateMillis, startDateMillis, bodyText)
     }
 
     @Test
     fun findAll() = runBlocking {
         Log.v(javaClass.name, "Начало тестирования findAll функции")
+
         withContext(scope.coroutineContext) {
-            val apiList = api.findAll()
+            val response = api.findAll()
 
-            Log.v(javaClass.name, "Найденно -- ${apiList?.size} -- объектов на сервере")
+            Log.v(javaClass.name, "Код ответа -- ${response.code} -- (if 200 == done))")
+            Log.v(javaClass.name, "Найденно -- ${response.data.size} -- объектов на сервере")
 
-            if(apiList == null) {
-                fail("Не найденно объектов")
+            if(response.data == null) {
+                fail("Нет данных")
             }
 
-            if(apiList!!.isEmpty()) {
-                fail("Нет данных, emptyApi")
+            assertTrue(javaClass.name, response.code == 200)
+        }
+    }
+
+    @Test
+    fun insertAll() = runBlocking {
+        Log.v(javaClass.name, "Начало тестирования insertAll функции")
+
+        withContext(scope.coroutineContext) {
+            val responseList = api.insertAll(notification)
+
+            if(responseList.isEmpty()) {
+                fail("Ошибка добавления")
+            }
+
+            Log.v(javaClass.name, "Попытка добавления -- ${responseList.size} -- объектов на сервер")
+
+            for (response in responseList) {
+                Log.v(javaClass.name, "Код ответа -- ${response.code} -- объект -- ${response.data.id} ")
+                assertTrue(javaClass.name, response.code == 201)
             }
         }
     }
 
     @Test
-    fun findActual() {
-    }
+    fun delete() = runBlocking {
+        Log.v(javaClass.name, "Начало тестирования delete функции")
 
-    @Test
-    fun insertAll() {
-    }
+        withContext(scope.coroutineContext) {
+            val response = api.delete(notification)
 
-    @Test
-    fun delete() {
-    }
+            Log.v(javaClass.name, "Попытка удаления -- ${notification.id} -- объекта")
+            Log.v(javaClass.name, "Код ответа -- ${response.code} -- (200 done), удален ${notification.id}")
 
-    @Test
-    fun update() {
+            assertTrue(javaClass.name, response.code == 200)
+        }
     }
 }

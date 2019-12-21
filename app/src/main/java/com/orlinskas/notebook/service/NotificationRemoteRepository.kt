@@ -1,12 +1,14 @@
 package com.orlinskas.notebook.service
 
 import android.util.Log
-import com.orlinskas.notebook.Constants.USER_ID
 import com.orlinskas.notebook.entity.Notification
+import com.orlinskas.notebook.service.response.ResponseDELETE
+import com.orlinskas.notebook.service.response.ResponseGET
+import com.orlinskas.notebook.service.response.ResponsePOST
 
 class NotificationRemoteRepository(private val apiService: NotificationApiService) {
 
-    suspend fun findAll(): List<Notification>? {
+    suspend fun findAll(): ResponseGET {
         return try {
             apiService.findAll()
         } catch (e: Exception) {
@@ -23,7 +25,7 @@ class NotificationRemoteRepository(private val apiService: NotificationApiServic
             throw e
         }
 
-        for (notification in notifications) {
+        for (notification in notifications.data) {
             if (notification.startDateMillis > currentDateMillis && notification.deleted_at == null) {
                 actualNotifications.add(notification)
             }
@@ -32,21 +34,28 @@ class NotificationRemoteRepository(private val apiService: NotificationApiServic
         return actualNotifications
     }
 
-    suspend fun insertAll(vararg notifications: Notification?) {
+    suspend fun insertAll(vararg notifications: Notification?) : List<ResponsePOST> {
+        val responseList = ArrayList<ResponsePOST>()
+
         for (notification in notifications) {
             try {
-                apiService.add(notification!!.id)
+                if (notification != null) {
+                     responseList.add(apiService.add(notification))
+                }
             } catch (e: Exception) {
                 Log.e(javaClass.name, "Ошибка добавления на сервер -- " + (notification?.id ?: "null object"))
+                Log.e(javaClass.name, e.message.toString())
             }
         }
+
+        return responseList
     }
 
-    suspend fun delete(notification: Notification?) {
-        try {
-            apiService.delete(notification!!.id)
+    suspend fun delete(notification: Notification) : ResponseDELETE {
+        return try {
+            apiService.delete(notification.id)
         } catch (e: Exception) {
-            Log.e(javaClass.name, "Ошибка удаления с сервера -- " + (notification?.id ?: "null object"))
+            throw e
         }
     }
 

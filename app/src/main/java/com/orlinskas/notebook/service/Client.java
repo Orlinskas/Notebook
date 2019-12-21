@@ -6,11 +6,7 @@ import okhttp3.Request;
 import static com.orlinskas.notebook.Constants.USER_ID;
 
 public class Client {
-    private static String userID;
-
-    public Client() {
-        userID = USER_ID;
-    }
+    private static String userID = "+380956931630";
 
     public Client(String userID) {
         Client.userID = userID;

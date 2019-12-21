@@ -20,9 +20,9 @@ public class Constants {
     public final static String USER_ID = "+380956931630";
 
     public final static String NOTIFICATION_ID_API_NAME = "id";
-    public final static String NOTIFICATION_CREATE_DATE_API_NAME = "create_date";
-    public final static String NOTIFICATION_START_DATE_API_NAME = "start_date";
-    public final static String NOTIFICATION_BODY_TEXT_API_NAME = "body_text";
+    public final static String NOTIFICATION_CREATE_DATE_API_NAME = "creationDate";
+    public final static String NOTIFICATION_START_DATE_API_NAME = "startDate";
+    public final static String NOTIFICATION_BODY_TEXT_API_NAME = "text";
     public final static String NOTIFICATION_IS_SYNCHRONIZED_API_NAME = "is_synchronized";
     public final static String NOTIFICATION_DELETED_AT_API_NAME = "deleted_at";
 

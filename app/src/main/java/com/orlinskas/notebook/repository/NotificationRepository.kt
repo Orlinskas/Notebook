@@ -26,7 +26,7 @@ class NotificationRepository {
             Log.e(javaClass.name, SERVER_FAIL)
         }
 
-        return Synchronizer().sync(local, remote!!)
+        return Synchronizer().sync(local, remote)
     }
 
     suspend fun findActual(currentDateMillis: Long): List<Notification> {
@@ -60,10 +60,10 @@ class NotificationRepository {
         }
     }
 
-    suspend fun delete(notification: Notification?) {
+    suspend fun delete(notification: Notification) {
         try {
             database.notificationDao().delete(notification)
-            Log.v(javaClass.name, "-БД- Удален объект -- ${notification?.id}")
+            Log.v(javaClass.name, "-БД- Удален объект -- ${notification.id}")
         } catch (e: Exception) {
             Log.e(javaClass.name, DATA_BASE_FAIL)
         }

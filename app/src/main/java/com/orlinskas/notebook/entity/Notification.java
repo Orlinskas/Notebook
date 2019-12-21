@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
@@ -34,12 +35,14 @@ public class Notification implements Comparable<Notification> {
     @ColumnInfo(name = "body_text")
     private String bodyText;
 
-    @SerializedName(NOTIFICATION_IS_SYNCHRONIZED_API_NAME)
+    //@SerializedName(NOTIFICATION_IS_SYNCHRONIZED_API_NAME)
     @ColumnInfo(name = "is_synchronized")
+    @Expose(serialize = false)
     private boolean isSynchronized;
 
-    @SerializedName(NOTIFICATION_DELETED_AT_API_NAME)
+    //@SerializedName(NOTIFICATION_DELETED_AT_API_NAME)
     @ColumnInfo(name = "deleted_at")
+    @Expose(serialize = false)
     private String deleted_at;
 
     @Ignore

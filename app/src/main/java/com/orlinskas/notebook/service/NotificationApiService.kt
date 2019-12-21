@@ -1,25 +1,21 @@
 package com.orlinskas.notebook.service
 
 import com.orlinskas.notebook.entity.Notification
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import com.orlinskas.notebook.service.response.ResponseDELETE
+import com.orlinskas.notebook.service.response.ResponseGET
+import com.orlinskas.notebook.service.response.ResponsePOST
+import retrofit2.http.*
 
 
 interface NotificationApiService {
 
     @GET("notifications/")
-    suspend fun findAll() : List<Notification>
+    suspend fun findAll() : ResponseGET
 
-    @POST("notification{id}")
-    suspend fun add(@Path("id") id: Int)
+    @POST("notifications/")
+    suspend fun add(@Body notification: Notification) : ResponsePOST
 
-    @DELETE("notification{id}")
-    suspend fun delete(@Path("id") id: Int)
+    @DELETE("notifications/{id}")
+    suspend fun delete(@Path("id") id: Int) : ResponseDELETE
 }
 
-//private fun <E> List<E>.await(): List<E> {
-//    //перешел на версию retroFit 2.6.0
-//    return emptyList()
-//}
