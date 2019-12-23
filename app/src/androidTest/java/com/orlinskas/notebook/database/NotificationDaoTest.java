@@ -1,9 +1,6 @@
 package com.orlinskas.notebook.database;
 
-import android.content.Context;
 import android.util.Log;
-
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.date.DateCalculator;
@@ -27,7 +24,6 @@ import static junit.framework.TestCase.fail;
 @RunWith(MockitoJUnitRunner.class)
 public class NotificationDaoTest {
     private MyDatabase database = App.getInstance().getMyDatabase();
-    private Context context = InstrumentationRegistry.getInstrumentation().getContext();
     private Notification mockNotification = Mockito.mock(Notification.class);
 
     @Before

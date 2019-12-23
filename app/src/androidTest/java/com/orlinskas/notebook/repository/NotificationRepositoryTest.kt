@@ -1,7 +1,6 @@
 package com.orlinskas.notebook.repository
 
 import android.util.Log
-import androidx.test.platform.app.InstrumentationRegistry
 import com.orlinskas.notebook.entity.Notification
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.CoroutineScope
@@ -16,23 +15,14 @@ import java.util.*
 @RunWith(MockitoJUnitRunner::class)
 class NotificationRepositoryTest {
     private val repository = NotificationRepository()
-    private val context = InstrumentationRegistry.getInstrumentation().context
     private var job: Job = Job()
     private var scope = CoroutineScope(Dispatchers.Default + job)
-    private val notification = buildRandomTestNote()
-    private val AYOUSHURE = true
-
-    private fun buildRandomTestNote() : Notification {
-        val id = Random().nextInt(2000000000 - 10 + 1) + 10
-        val bodyText = "Test"
-        val createDateMillis = System.currentTimeMillis() + (60 * 60 * 1000)
-        val startDateMillis = System.currentTimeMillis() + 2 *(60 * 60 * 1000)
-        return Notification(id, createDateMillis, startDateMillis, bodyText)
-    }
+    private val AYOUSHURE = false
 
     @Test
     fun runTestRepository() {
         runBlocking(scope.coroutineContext) {
+            val notification = randomNotification()
             var isInsert = false
 
             repository.insert(notification)
@@ -45,13 +35,30 @@ class NotificationRepositoryTest {
 
             repository.delete(notification)
             notifications = repository.findAll()
-            if(!notifications.contains(notification)) isDelete = true
+
+            if(!notifications.contains(notification)) {
+                isDelete = true
+            }
+            for (note in notifications) {
+                if(note.is_deleted) {
+                    isDelete = true
+                    Log.v("Remote service fail ", "Local deleted")
+                }
+            }
 
             assertTrue("Delete fail" , isDelete)
         }
     }
 
-    fun clearRepo(AYOUSHURE : Boolean) = runBlocking(scope.coroutineContext) {
+    private fun randomNotification() : Notification {
+        val id = Random().nextInt(2000000000 - 10 + 1) + 10
+        val bodyText = "Test"
+        val createDateMillis = System.currentTimeMillis() + (60 * 60 * 1000)
+        val startDateMillis = System.currentTimeMillis() + 2 *(60 * 60 * 1000)
+        return Notification(id, createDateMillis, startDateMillis, bodyText)
+    }
+
+    fun clearRepo() = runBlocking(scope.coroutineContext) {
         val notifications = repository.findAll()
         var count = 0
 
@@ -60,9 +67,11 @@ class NotificationRepositoryTest {
                 repository.delete(notification)
                 count++
             }
+            Log.v("Очистка репозитория -- ", "Удалено -- $count -- объектов")
         }
-
-        Log.v("Очистка репозитория", "Удалено -- $count -- объектов")
+        else {
+            Log.v("Очистка репозитория -- ", "Нужно разрешить")
+        }
     }
 }
 
