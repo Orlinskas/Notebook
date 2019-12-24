@@ -62,6 +62,10 @@ class NotificationRepositoryTest {
         val notifications = repository.findAll()
         var count = 0
 
+        if(notifications.isEmpty()) {
+            Log.v("Очистка репозитория -- ", "Репозиторий пуст")
+        }
+
         if(AYOUSHURE) {
             for(notification in notifications) {
                 repository.delete(notification)

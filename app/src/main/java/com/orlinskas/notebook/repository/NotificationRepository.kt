@@ -1,13 +1,17 @@
 package com.orlinskas.notebook.repository
 
 import com.orlinskas.notebook.App
+import com.orlinskas.notebook.activity.ViewModel
 import com.orlinskas.notebook.database.MyDatabase
 import com.orlinskas.notebook.entity.Notification
 import com.orlinskas.notebook.service.ApiFactory
+import kotlinx.coroutines.suspendCancellableCoroutine
 
-class NotificationRepository {
+class NotificationRepository(viewModel: ViewModel) {
     private val database: MyDatabase = App.getInstance().myDatabase
     private val remoteService = ApiFactory.notificationApi
+    private val synchronizer = Synchronizer()
+    private val model = viewModel
 
     suspend fun findAll(): List<Notification> {
         val localData = database.notificationDao().findAll()
@@ -16,12 +20,15 @@ class NotificationRepository {
             val response = remoteService.findAll()
 
             if (response.code == 200) {
-                Synchronizer().sync(localData, response.data)
+                model.doneConnection()
+                synchronizer.sync(localData, response.data)
             }
             else {
+                model.failConnection()
                 localData
             }
         } catch (e : Exception) {
+            model.failConnection()
             localData
         }
     }
@@ -30,23 +37,23 @@ class NotificationRepository {
         val localData = database.notificationDao().findActual(currentDateMillis)
         localData.removeAll { notification -> notification.is_deleted  }
 
-       return try {
-            val response = remoteService.findAll()
+        return try {
+             val response = remoteService.findAll()
 
-            if (response.code == 200) {
-                for (notification in response.data) {
-                    if (notification.startDateMillis < currentDateMillis && notification.is_deleted) {
-                        response.data.remove(notification)
-                    }
-                }
-                Synchronizer().sync(localData, response.data)
-            }
-            else {
-                localData
-            }
-       } catch (e : Exception){
-           localData
-       }
+             if (response.code == 200) {
+                 for (notification in response.data) {
+                     if (notification.startDateMillis < currentDateMillis && notification.is_deleted) {
+                         response.data.remove(notification)
+                     }
+                 }
+                 synchronizer.sync(localData, response.data)
+             }
+             else {
+                 localData
+             }
+        } catch (e : Exception){
+            localData
+        }
     }
 
     suspend fun insert(notification: Notification) {
@@ -74,14 +81,20 @@ class NotificationRepository {
 
             if(response.code == 200) {
                 database.notificationDao().delete(notification)
+                model.doneConnection()
+                model.updateUI()
             }
             else {
                 notification.is_deleted = true
                 database.notificationDao().update(notification)
+                model.failConnection()
+                model.updateUI()
             }
         } catch (e : Exception) {
             notification.is_deleted = true
             database.notificationDao().update(notification)
+            model.failConnection()
+            model.updateUI()
         }
     }
 

@@ -3,18 +3,19 @@ package com.orlinskas.notebook.fragment;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import com.orlinskas.notebook.entity.Notification;
+
 public class DeleteDialogFragment extends DialogFragment {
     private DayFragmentActions fragmentActions;
-    private int deletedNotificationID;
+    private Notification notification;
 
-    DeleteDialogFragment(int deletedNotificationID) {
-        this.deletedNotificationID = deletedNotificationID;
+    DeleteDialogFragment(Notification notification) {
+        this.notification = notification;
     }
 
     @Override
@@ -34,16 +35,8 @@ public class DeleteDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(title);
         builder.setMessage(message);
-        builder.setPositiveButton(positive, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                fragmentActions.deleteNotification(deletedNotificationID);
-            }
-        });
-        builder.setNegativeButton(negative, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
+        builder.setPositiveButton(positive, (dialog, id) -> fragmentActions.deleteNotification(notification));
+        builder.setNegativeButton(negative, (dialog, id) -> dialog.cancel());
         builder.setCancelable(true);
 
         return builder.create();

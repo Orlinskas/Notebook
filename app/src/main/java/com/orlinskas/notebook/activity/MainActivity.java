@@ -9,6 +9,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.builder.DaysBuilder;
+import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.value.Day;
 import com.orlinskas.notebook.fragment.DayFragment;
 import com.orlinskas.notebook.fragment.DayFragmentActions;
@@ -42,12 +43,7 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
 
         progressBar = findViewById(R.id.activity_main_pb);
         FloatingActionButton fab = findViewById(R.id.activity_main_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openCreateNotificationActivity();
-            }
-        });
+        fab.setOnClickListener(view -> openCreateNotificationActivity());
 
         if (savedInstanceState != null) {
             days = Parcels.unwrap(savedInstanceState.getParcelable(PARCEL_DAYS));
@@ -130,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
     }
 
     @Override
-    public void deleteNotification(int deletedNotificationID) {
+    public void deleteNotification(Notification notification) {
         //not specified in the technical specifications for this window
     }
 

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,8 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.orlinskas.notebook.notificationHelper.NotificationListAdapter;
 import com.orlinskas.notebook.R;
+import com.orlinskas.notebook.notificationHelper.NotificationListAdapter;
 import com.orlinskas.notebook.value.Day;
 
 import org.parceler.Parcels;
@@ -78,31 +77,22 @@ public class DayFragment extends Fragment {
 
         final Animation clickAnimation = AnimationUtils.loadAnimation(context, R.anim.animation_button);
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.startAnimation(clickAnimation);
-                fragmentActions.openDay(day);
-            }
+        view.setOnClickListener(v -> {
+            v.startAnimation(clickAnimation);
+            fragmentActions.openDay(day);
         });
-        notificationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                view.startAnimation(clickAnimation);
-                fragmentActions.openDay(day);
-            }
+        notificationList.setOnItemClickListener((parent, view1, position, id) -> {
+            view1.startAnimation(clickAnimation);
+            fragmentActions.openDay(day);
         });
 
         if(isFullDisplay){
-            notificationList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    FragmentManager manager = getFragmentManager();
-                    DeleteDialogFragment deleteDialogFragment
-                            = new DeleteDialogFragment(day.getNotifications().get(position).getId());
-                    deleteDialogFragment.show(Objects.requireNonNull(manager), "dialog");
-                    return true;
-                }
+            notificationList.setOnItemLongClickListener((parent, view12, position, id) -> {
+                FragmentManager manager = getFragmentManager();
+                DeleteDialogFragment deleteDialogFragment
+                        = new DeleteDialogFragment(day.getNotifications().get(position));
+                deleteDialogFragment.show(Objects.requireNonNull(manager), "dialog");
+                return true;
             });
         }
 
