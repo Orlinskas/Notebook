@@ -126,20 +126,13 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
                     }
                     @Override
                     public void resumeWith(@NotNull Object o) {
-                        out();
+                        try {
+                            runOnUiThread(() -> progressBar.setVisibility(View.INVISIBLE));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }));
-    }
-
-    private void out() {
-        job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
-                (scope, continuation) -> {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    //startActivity(intent);
-                    return scope.getCoroutineContext();
-                });
     }
 
     @Override
