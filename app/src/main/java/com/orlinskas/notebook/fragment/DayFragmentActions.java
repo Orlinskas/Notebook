@@ -4,6 +4,6 @@ import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.value.Day;
 
 public interface DayFragmentActions {
-    void openDay(Day day);
+    void openDay(int dayID);
     void deleteNotification(Notification notification);
 }

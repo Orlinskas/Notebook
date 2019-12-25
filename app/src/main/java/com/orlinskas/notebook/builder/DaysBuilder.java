@@ -1,12 +1,10 @@
 package com.orlinskas.notebook.builder;
 
-import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.CustomMockObjects;
-import com.orlinskas.notebook.database.MyDatabase;
-import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.date.DateCalculator;
-import com.orlinskas.notebook.date.DateFormater;
 import com.orlinskas.notebook.date.DateCurrent;
+import com.orlinskas.notebook.date.DateFormater;
+import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.value.Day;
 
 import java.util.ArrayList;
@@ -19,10 +17,9 @@ public class DaysBuilder {
     private String currentDate;
     private List<Notification> notifications;
 
-    public DaysBuilder() {
+    public DaysBuilder(List<Notification> notifications) {
         this.currentDate = DateCurrent.getLine(DateFormater.YYYY_MM_DD);
-        MyDatabase database = App.getInstance().getMyDatabase();
-        notifications = database.notificationDao().findActual(System.currentTimeMillis());
+        this.notifications = notifications;
     }
 
     public List<Day> findActual() {

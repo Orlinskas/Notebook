@@ -9,8 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.CoroutinesFunKt;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.builder.ToastBuilder;
@@ -21,8 +24,8 @@ import com.orlinskas.notebook.repository.NotificationRepository;
 import com.orlinskas.notebook.value.Day;
 
 import org.jetbrains.annotations.NotNull;
-import org.parceler.Parcels;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CancellationException;
 
@@ -36,14 +39,15 @@ import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.Job;
 
 import static com.orlinskas.notebook.Constants.AFTER_CREATE_OPEN_DAY;
+import static com.orlinskas.notebook.Constants.DAY_ID;
 import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
-import static com.orlinskas.notebook.Constants.PARCEL_DAY;
 
-public class ConcreteDayActivity extends AppCompatActivity implements DayFragmentActions, ViewModel {
+public class ConcreteDayActivity extends AppCompatActivity implements DayFragmentActions, ConnectionCallBack {
     private ProgressBar progressBar;
-    private Day day;
+    private LiveData<List<Day>> daysData;
+    private int dayID;
     private Job job = null;
-    private CoroutineScope scope = CoroutinesFunKt.getScope();
+    private CoroutineScope scope = CoroutinesFunKt.getMainScope();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +58,16 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
         FloatingActionButton fab = findViewById(R.id.activity_concrete_day_fab);
         fab.setOnClickListener(view -> openCreateNotificationActivity());
 
+        daysData = App.getInstance().getDaysLiveData();
+        daysData.observe(this, days -> {
+            ConcreteDayActivity.this.showDayNotifications();
+        });
+
         if(savedInstanceState != null) {
-            day = Parcels.unwrap(savedInstanceState.getParcelable(PARCEL_DAY));
+            dayID = savedInstanceState.getInt(DAY_ID);
         }
         else {
-            day = Parcels.unwrap(Objects.requireNonNull(getIntent().getExtras()).getParcelable(PARCEL_DAY));
+            dayID = Objects.requireNonNull(getIntent().getExtras()).getInt("dayID");
         }
 
         showDayNotifications();
@@ -70,7 +79,7 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
         Fragment fragment = fm.findFragmentById(R.id.activity_concrete_day_container);
         if (fragment == null) {
             Bundle bundle = new Bundle();
-            bundle.putParcelable(PARCEL_DAY, Parcels.wrap(day));
+            bundle.putInt(DAY_ID, dayID);
             bundle.putBoolean(IS_FULL_DISPLAY, true);
 
             fragment = new DayFragment();
@@ -79,6 +88,8 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
             fm.beginTransaction()
                     .add(R.id.activity_concrete_day_container, fragment)
                     .commit();
+        } else {
+            fm.beginTransaction().detach(fragment).attach(fragment).commit();
         }
     }
 
@@ -86,20 +97,17 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
         Intent intent = new Intent(getApplicationContext(), CreateNotificationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.setAction(AFTER_CREATE_OPEN_DAY);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(PARCEL_DAY, Parcels.wrap(day));
-        intent.putExtras(bundle);
         startActivity(intent);
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(PARCEL_DAY, Parcels.wrap(day));
+        outState.putInt(DAY_ID, dayID);
     }
 
     @Override
-    public void openDay(Day day) {
+    public void openDay(int dayID) {
         //not specified in the technical specifications for this window
     }
 
@@ -110,15 +118,28 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
         NotificationRepository repository = new NotificationRepository(this);
 
         job = BuildersKt.launch(Dispatchers::getIO, Dispatchers.getIO(), CoroutineStart.DEFAULT,
-                (scope, coroutine) -> repository.delete(notification, new Continuation<Unit>() {
+                (scope, coroutine) -> repository.delete(notification, new Continuation<MutableLiveData<List<Day>>>() {
                     @NotNull
                     @Override
                     public CoroutineContext getContext() {
                         return Dispatchers.getIO();
                     }
                     @Override
-                    public void resumeWith(@NotNull Object o) {}
+                    public void resumeWith(@NotNull Object o) {
+                        out();
+                    }
                 }));
+    }
+
+    private void out() {
+        job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
+                (scope, continuation) -> {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    //startActivity(intent);
+                    return scope.getCoroutineContext();
+                });
     }
 
     @Override
@@ -126,7 +147,7 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
         job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
                 (scope, continuation) -> {
                     ToastBuilder.doToast(getApplicationContext(), "Удаленно локально");
-                    return null;
+                    return scope.getCoroutineContext();
                 });
         return null;
     }
@@ -136,23 +157,9 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
         job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
                 (scope, continuation) -> {
                     ToastBuilder.doToast(getApplicationContext(), "Удаленно на сервере");
-                    return null;
+                    return scope.getCoroutineContext();
                 });
         return null;
-    }
-
-    @Override
-    public Object updateUI(@NotNull Continuation<? super Unit> o) {
-        job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
-                (scope, continuation) -> {
-            progressBar.setVisibility(View.INVISIBLE);
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            return null;
-        });
-        return null;
-
     }
 
     @Override

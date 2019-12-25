@@ -1,15 +1,8 @@
 package com.orlinskas.notebook.activity;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-
-import com.orlinskas.notebook.App;
-import com.orlinskas.notebook.builder.ToastBuilder;
-import com.orlinskas.notebook.database.MyDatabase;
-import com.orlinskas.notebook.entity.Notification;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -25,20 +18,39 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
+import com.orlinskas.notebook.CoroutinesFunKt;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.builder.NotificationBuilder;
-import com.orlinskas.notebook.date.DateFormater;
+import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.date.DateCurrent;
+import com.orlinskas.notebook.date.DateFormater;
+import com.orlinskas.notebook.entity.Notification;
+import com.orlinskas.notebook.repository.NotificationRepository;
+import com.orlinskas.notebook.value.Day;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-public class CreateNotificationActivity extends AppCompatActivity {
+import kotlin.Unit;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.CoroutineContext;
+import kotlinx.coroutines.BuildersKt;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.CoroutineStart;
+import kotlinx.coroutines.Job;
+
+public class CreateNotificationActivity extends AppCompatActivity implements ConnectionCallBack{
     private ProgressBar progressBar;
     private EditText notificationBody;
     private TextView dateTimeTV;
     private Calendar dateTime;
+    private Job job = null;
+    private CoroutineScope scope = CoroutinesFunKt.getIoScope();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,21 +64,15 @@ public class CreateNotificationActivity extends AppCompatActivity {
         final Button createButton = findViewById(R.id.activity_create_notification_btn_create);
         final Animation clickAnimation = AnimationUtils.loadAnimation(this, R.anim.animation_button);
 
-        relativeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                relativeLayout.startAnimation(clickAnimation);
-                setDate();
-            }
+        relativeLayout.setOnClickListener(v -> {
+            relativeLayout.startAnimation(clickAnimation);
+            setDate();
         });
 
-        createButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createButton.startAnimation(clickAnimation);
-                if(checkValidData()){
-                    new CreateNotificationTask().execute();
-                }
+        createButton.setOnClickListener(v -> {
+            createButton.startAnimation(clickAnimation);
+            if(checkValidData()){
+                createNotification();
             }
         });
 
@@ -132,37 +138,45 @@ public class CreateNotificationActivity extends AppCompatActivity {
         return true;
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class CreateNotificationTask extends AsyncTask<Void, Void, Void> {
-        private String bodyText;
-        private String dateTime;
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-            bodyText = notificationBody.getText().toString();
-            dateTime = dateTimeTV.getText().toString();
-        }
+    private void createNotification() {
+        progressBar.setVisibility(View.VISIBLE);
+        String bodyText = notificationBody.getText().toString();
+        String dateTime = dateTimeTV.getText().toString();
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-            NotificationBuilder builder = new NotificationBuilder(getApplicationContext());
-            Notification notification = builder.build(bodyText, dateTime);
-            MyDatabase database = App.getInstance().getMyDatabase();
-            database.notificationDao().insertAll(notification);
-            return null;
-        }
+        NotificationBuilder builder = new NotificationBuilder(getApplicationContext());
+        Notification notification = builder.build(bodyText, dateTime);
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            progressBar.setVisibility(View.INVISIBLE);
-            ToastBuilder.doToast(getApplicationContext(), "Done");
-            openPreviousActivity();
-        }
+        NotificationRepository repository = new NotificationRepository(this);
+
+        job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
+                (scope, continuation) -> { repository.insert(notification, new Continuation<MutableLiveData<List<Day>>>() {
+                    @NotNull
+                    @Override
+                    public CoroutineContext getContext() {
+                        return scope.getCoroutineContext();
+                    }
+                    @Override
+                    public void resumeWith(@NotNull Object o) {
+                        openPreviousActivity();
+                    }
+                });
+                return scope.getCoroutineContext();
+        });
+    }
+
+    @Override
+    public Object failConnection(@NotNull Continuation<? super Unit> continuation) {
+        return null;
+    }
+
+    @Override
+    public Object doneConnection(@NotNull Continuation<? super Unit> continuation) {
+        return null;
     }
 
     private void openPreviousActivity() {
+        progressBar.setVisibility(View.INVISIBLE);
+        ToastBuilder.doToast(getApplicationContext(), "Done");
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

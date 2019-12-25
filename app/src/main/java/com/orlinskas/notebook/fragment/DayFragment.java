@@ -15,21 +15,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LiveData;
 
+import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.notificationHelper.NotificationListAdapter;
 import com.orlinskas.notebook.value.Day;
 
-import org.parceler.Parcels;
-
+import java.util.List;
 import java.util.Objects;
 
 import static com.orlinskas.notebook.Constants.COUNT_NOTIFICATION_IN_SHORT_LIST;
+import static com.orlinskas.notebook.Constants.DAY_ID;
 import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
-import static com.orlinskas.notebook.Constants.PARCEL_DAY;
 
 public class DayFragment extends Fragment {
-    private Day day;
+    private int dayID;
+    private LiveData<List<Day>> daysData;
     private DayFragmentActions fragmentActions;
     private Context context;
     private boolean isFullDisplay;
@@ -39,6 +41,7 @@ public class DayFragment extends Fragment {
         super.onAttach(context);
         this.context = context;
         fragmentActions = (DayFragmentActions) context;
+        daysData = App.getInstance().getDaysLiveData();
     }
 
     @Nullable
@@ -47,14 +50,16 @@ public class DayFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_day, container, false);
 
         if(savedInstanceState != null) {
-            day = Parcels.unwrap(savedInstanceState.getParcelable(PARCEL_DAY));
+            dayID = savedInstanceState.getInt(DAY_ID);
         }
         else {
             if (getArguments() != null) {
-                day = Parcels.unwrap(getArguments().getParcelable(PARCEL_DAY));
+                dayID = getArguments().getInt(DAY_ID);
                 isFullDisplay = getArguments().getBoolean(IS_FULL_DISPLAY);
             }
         }
+
+        Day day = daysData.getValue().get(dayID);
 
         TextView dayName = view.findViewById(R.id.fragment_notification_tv_day_name);
         TextView dayDate = view.findViewById(R.id.fragment_notification_tv_day_date);
@@ -79,11 +84,11 @@ public class DayFragment extends Fragment {
 
         view.setOnClickListener(v -> {
             v.startAnimation(clickAnimation);
-            fragmentActions.openDay(day);
+            fragmentActions.openDay(dayID);
         });
         notificationList.setOnItemClickListener((parent, view1, position, id) -> {
             view1.startAnimation(clickAnimation);
-            fragmentActions.openDay(day);
+            fragmentActions.openDay(dayID);
         });
 
         if(isFullDisplay){
@@ -127,6 +132,6 @@ public class DayFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(PARCEL_DAY, Parcels.wrap(day));
+        outState.putInt(DAY_ID, dayID);
     }
 }

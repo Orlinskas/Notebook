@@ -1,40 +1,50 @@
 package com.orlinskas.notebook.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.orlinskas.notebook.R;
-import com.orlinskas.notebook.builder.ToastBuilder;
-import com.orlinskas.notebook.builder.DaysBuilder;
-import com.orlinskas.notebook.entity.Notification;
-import com.orlinskas.notebook.value.Day;
-import com.orlinskas.notebook.fragment.DayFragment;
-import com.orlinskas.notebook.fragment.DayFragmentActions;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 
-import org.parceler.Parcels;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.orlinskas.notebook.App;
+import com.orlinskas.notebook.CoroutinesFunKt;
+import com.orlinskas.notebook.R;
+import com.orlinskas.notebook.entity.Notification;
+import com.orlinskas.notebook.fragment.DayFragment;
+import com.orlinskas.notebook.fragment.DayFragmentActions;
+import com.orlinskas.notebook.repository.NotificationRepository;
+import com.orlinskas.notebook.value.Day;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CancellationException;
 
+import kotlin.Unit;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.CoroutineContext;
+import kotlinx.coroutines.BuildersKt;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.CoroutineStart;
+import kotlinx.coroutines.Job;
+
+import static com.orlinskas.notebook.Constants.DAY_ID;
 import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
-import static com.orlinskas.notebook.Constants.PARCEL_DAY;
-import static com.orlinskas.notebook.Constants.PARCEL_DAYS;
 
-public class MainActivity extends AppCompatActivity implements DayFragmentActions {
-    private List<Day> days;
+public class MainActivity extends AppCompatActivity implements DayFragmentActions, ConnectionCallBack {
     private ProgressBar progressBar;
+    private LiveData<List<Day>> daysData;
+    private NotificationRepository repository = new NotificationRepository(this);
+    private Job job = null;
+    private CoroutineScope scope = CoroutinesFunKt.getIoScope();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +55,28 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
         FloatingActionButton fab = findViewById(R.id.activity_main_fab);
         fab.setOnClickListener(view -> openCreateNotificationActivity());
 
-        if (savedInstanceState != null) {
-            days = Parcels.unwrap(savedInstanceState.getParcelable(PARCEL_DAYS));
-        } else {
-            new FindDaysTask().execute();
-        }
+        job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
+                (scope, continuation) -> {
+                    repository.findActual(System.currentTimeMillis(), new Continuation<MutableLiveData<List<Day>>>() {
+                        @NotNull
+                        @Override
+                        public CoroutineContext getContext() {
+                            return MainActivity.this.scope.getCoroutineContext();
+                        }
+
+                        @Override
+                        public void resumeWith(@NotNull Object o) {
+                            //daysData = (LiveData<List<Day>>) o;
+                        }
+                    });
+                    return scope.getCoroutineContext();
+                });
+
+        //getLifecycle().addObserver(repository);
+        daysData = App.getInstance().getDaysLiveData();
+        daysData.observe(this, days -> {
+                MainActivity.this.showDaysList();
+        });
     }
 
     @Override
@@ -69,41 +96,24 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class FindDaysTask extends AsyncTask<Void, Void, List<Day>> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-        }
+    @Override
+    public Object failConnection(@NotNull Continuation<? super Unit> continuation) {
+        return null;
+    }
 
-        @Override
-        protected List<Day> doInBackground(Void... voids) {
-            DaysBuilder DaysBuilder = new DaysBuilder();
-            return DaysBuilder.findActual();
-        }
-
-        @Override
-        protected void onPostExecute(List<Day> days) {
-            super.onPostExecute(days);
-            if (days.size() > 0) {
-                MainActivity.this.days = days;
-                showDaysList();
-            } else {
-                ToastBuilder.doToast(getApplicationContext(), "Failed to load");
-            }
-            progressBar.setVisibility(View.INVISIBLE);
-        }
+    @Override
+    public Object doneConnection(@NotNull Continuation<? super Unit> continuation) {
+        return null;
     }
 
     private void showDaysList() {
         FragmentManager fm = getSupportFragmentManager();
 
-        for (Day day : days) {
+        for (Day day : Objects.requireNonNull(daysData.getValue())) {
             Fragment fragment = fm.findFragmentById(R.id.activity_main_ll_days_container);
             if (fragment == null) {
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(PARCEL_DAY, Parcels.wrap(day));
+                bundle.putInt(DAY_ID, daysData.getValue().indexOf(day));
 
                 fragment = new DayFragment();
                 fragment.setArguments(bundle);
@@ -111,14 +121,16 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
                 fm.beginTransaction()
                         .add(R.id.activity_main_ll_days_container, fragment)
                         .commit();
+            } else {
+                fm.beginTransaction().detach(fragment).attach(fragment).commit();
             }
         }
     }
 
     @Override
-    public void openDay(Day day) {
+    public void openDay(int dayID) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(PARCEL_DAY, Parcels.wrap(day));
+        bundle.putInt(DAY_ID, dayID);
         bundle.putBoolean(IS_FULL_DISPLAY, true);
         Intent intent = new Intent(getApplicationContext(), ConcreteDayActivity.class);
         intent.putExtras(bundle);
@@ -137,8 +149,8 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(PARCEL_DAYS, Parcels.wrap(days));
+    protected void onDestroy() {
+        super.onDestroy();
+        job.cancel(new CancellationException());
     }
 }

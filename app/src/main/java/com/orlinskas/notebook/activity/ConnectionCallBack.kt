@@ -1,7 +1,6 @@
 package com.orlinskas.notebook.activity
 
-interface ViewModel {
-    suspend fun updateUI()
+interface ConnectionCallBack {
     suspend fun failConnection()
     suspend fun doneConnection()
 }

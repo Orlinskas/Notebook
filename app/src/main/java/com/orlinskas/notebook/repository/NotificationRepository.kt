@@ -1,43 +1,53 @@
 package com.orlinskas.notebook.repository
 
+import androidx.lifecycle.*
 import com.orlinskas.notebook.App
-import com.orlinskas.notebook.activity.ViewModel
+import com.orlinskas.notebook.activity.ConnectionCallBack
+import com.orlinskas.notebook.builder.DaysBuilder
 import com.orlinskas.notebook.database.MyDatabase
 import com.orlinskas.notebook.entity.Notification
 import com.orlinskas.notebook.service.ApiFactory
-import kotlinx.coroutines.suspendCancellableCoroutine
+import com.orlinskas.notebook.value.Day
 
-class NotificationRepository(viewModel: ViewModel) {
-    private val database: MyDatabase = App.getInstance().myDatabase
+class NotificationRepository(connectionCallBack: ConnectionCallBack) : LifecycleObserver {
+    private val database: MyDatabase = App.instance.myDatabase
     private val remoteService = ApiFactory.notificationApi
     private val synchronizer = Synchronizer()
-    private val model = viewModel
+    private val model = connectionCallBack
+    private val allLiveData = App.instance.allNotificationsLiveData
+    private val actualLiveData = App.instance.actualNotificationsLiveData
+    private val daysData = App.instance.daysLiveData
 
-    suspend fun findAll(): List<Notification> {
+    //@OnLifecycleEvent(Lifecycle.Event.ON_START)
+    suspend fun findAll(): MutableLiveData<List<Notification>> {
         val localData = database.notificationDao().findAll()
+        allLiveData.value = localData
 
-        return try {
+        try {
             val response = remoteService.findAll()
 
             if (response.code == 200) {
                 model.doneConnection()
-                synchronizer.sync(localData, response.data)
+                val syncData = synchronizer.sync(localData, response.data)
+                allLiveData.value = syncData
             }
             else {
                 model.failConnection()
-                localData
             }
         } catch (e : Exception) {
             model.failConnection()
-            localData
         }
+
+        return allLiveData
     }
 
-    suspend fun findActual(currentDateMillis: Long): List<Notification> {
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    suspend fun findActual(currentDateMillis: Long): MutableLiveData<List<Day>> {
         val localData = database.notificationDao().findActual(currentDateMillis)
-        localData.removeAll { notification -> notification.is_deleted  }
+        localData.removeAll { notification -> notification.is_deleted }
+        daysData.postValue(DaysBuilder(localData).findActual())
 
-        return try {
+        try {
              val response = remoteService.findAll()
 
              if (response.code == 200) {
@@ -46,17 +56,20 @@ class NotificationRepository(viewModel: ViewModel) {
                          response.data.remove(notification)
                      }
                  }
-                 synchronizer.sync(localData, response.data)
+                 val syncData = synchronizer.sync(localData, response.data)
+                 daysData.postValue(DaysBuilder(syncData).findActual())
              }
              else {
-                 localData
+                 model.failConnection()
              }
         } catch (e : Exception){
-            localData
+            model.failConnection()
         }
+
+        return daysData
     }
 
-    suspend fun insert(notification: Notification) {
+    suspend fun insert(notification: Notification) : MutableLiveData<List<Day>> {
         try {
             val response = remoteService.add(notification)
 
@@ -64,38 +77,42 @@ class NotificationRepository(viewModel: ViewModel) {
                 val remoteNotification = response.data
                 remoteNotification.isSynchronized = true
                 database.notificationDao().insertAll(remoteNotification)
+                model.doneConnection()
             }
             else {
                 notification.isSynchronized = false
                 database.notificationDao().insertAll(notification)
+                model.failConnection()
             }
         } catch (e : Exception) {
             notification.isSynchronized = false
             database.notificationDao().insertAll(notification)
+            model.failConnection()
         }
+
+        return findActual(System.currentTimeMillis())
     }
 
-    suspend fun delete(notification: Notification) {
+    suspend fun delete(notification: Notification) : MutableLiveData<List<Day>> {
         try {
            val response = remoteService.delete(notification.id)
 
             if(response.code == 200) {
                 database.notificationDao().delete(notification)
                 model.doneConnection()
-                model.updateUI()
             }
             else {
                 notification.is_deleted = true
                 database.notificationDao().update(notification)
                 model.failConnection()
-                model.updateUI()
             }
         } catch (e : Exception) {
             notification.is_deleted = true
             database.notificationDao().update(notification)
             model.failConnection()
-            model.updateUI()
         }
+
+        return findActual(System.currentTimeMillis())
     }
 
     suspend fun sync() : Boolean {
