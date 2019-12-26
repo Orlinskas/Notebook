@@ -16,7 +16,6 @@ import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.fragment.DayFragment;
 import com.orlinskas.notebook.fragment.DayFragmentActions;
-import com.orlinskas.notebook.ui.CreateNotificationActivity;
 import com.orlinskas.notebook.ui.viewModel.MainViewModel;
 import com.orlinskas.notebook.value.Day;
 
@@ -54,7 +53,7 @@ public class MainView extends AppCompatActivity implements DayFragmentActions {
     }
 
     private void openCreateNotificationActivity() {
-        Intent intent = new Intent(getApplicationContext(), CreateNotificationActivity.class);
+        Intent intent = new Intent(getApplicationContext(), CreateNotificationView.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }

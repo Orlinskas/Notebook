@@ -17,7 +17,6 @@ import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.fragment.DayFragment;
 import com.orlinskas.notebook.fragment.DayFragmentActions;
-import com.orlinskas.notebook.ui.CreateNotificationActivity;
 import com.orlinskas.notebook.ui.viewModel.MainViewModel;
 
 import java.util.Objects;
@@ -90,7 +89,7 @@ public class ConcreteDayView extends AppCompatActivity implements DayFragmentAct
     }
 
     public void openCreateNotificationActivity() {
-        Intent intent = new Intent(getApplicationContext(), CreateNotificationActivity.class);
+        Intent intent = new Intent(getApplicationContext(), CreateNotificationView.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.setAction(AFTER_CREATE_OPEN_DAY);
         startActivity(intent);

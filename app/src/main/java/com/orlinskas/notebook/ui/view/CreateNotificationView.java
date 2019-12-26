@@ -1,12 +1,13 @@
-package com.orlinskas.notebook.ui;
+package com.orlinskas.notebook.ui.view;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -18,37 +19,28 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
-import com.orlinskas.notebook.CoroutinesFunKt;
+import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.builder.NotificationBuilder;
 import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.date.DateCurrent;
 import com.orlinskas.notebook.date.DateFormater;
 import com.orlinskas.notebook.entity.Notification;
-import com.orlinskas.notebook.repository.NotificationRepository;
-import com.orlinskas.notebook.ui.view.MainView;
-
-import org.jetbrains.annotations.NotNull;
+import com.orlinskas.notebook.ui.viewModel.MainViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
-import kotlin.Unit;
-import kotlin.coroutines.Continuation;
-import kotlin.coroutines.CoroutineContext;
-import kotlinx.coroutines.BuildersKt;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.CoroutineStart;
-import kotlinx.coroutines.Job;
-
-public class CreateNotificationActivity extends AppCompatActivity {
+public class CreateNotificationView extends AppCompatActivity {
     private ProgressBar progressBar;
     private EditText notificationBody;
     private TextView dateTimeTV;
     private Calendar dateTime;
-    private Job job = null;
-    private CoroutineScope scope = CoroutinesFunKt.getIoScope();
+    private RelativeLayout layout;
+    private MainViewModel model;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +50,7 @@ public class CreateNotificationActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.activity_create_notification_pb);
         notificationBody = findViewById(R.id.activity_create_notification_et_note);
         dateTimeTV = findViewById(R.id.activity_create_notification_tv_date_value);
+        layout = findViewById(R.id.activity_create_notification_rl);
         final RelativeLayout relativeLayout = findViewById(R.id.activity_create_notification_rl_date_block);
         final Button createButton = findViewById(R.id.activity_create_notification_btn_create);
         final Animation clickAnimation = AnimationUtils.loadAnimation(this, R.anim.animation_button);
@@ -77,10 +70,21 @@ public class CreateNotificationActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             dateTimeTV.setText(savedInstanceState.getString("date"));
         }
+
+        model = ViewModelProviders.of(this).get(MainViewModel.class);
+
+        model.getRepositoryStatusData().observe(this, repositoryStatusEnum -> {
+            if (repositoryStatusEnum == Enums.RepositoryStatus.LOADING) {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+            if (repositoryStatusEnum == Enums.RepositoryStatus.READY) {
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     public void setDate() {
-        new DatePickerDialog(CreateNotificationActivity.this, datePickerListener,
+        new DatePickerDialog(CreateNotificationView.this, datePickerListener,
                 dateTime.get(Calendar.YEAR),
                 dateTime.get(Calendar.MONTH),
                 dateTime.get(Calendar.DAY_OF_MONTH))
@@ -88,7 +92,7 @@ public class CreateNotificationActivity extends AppCompatActivity {
     }
 
     public void setTime() {
-        new TimePickerDialog(CreateNotificationActivity.this, timePickerListener,
+        new TimePickerDialog(CreateNotificationView.this, timePickerListener,
                 dateTime.get(Calendar.HOUR_OF_DAY),
                 dateTime.get(Calendar.MINUTE), true)
                 .show();
@@ -137,33 +141,23 @@ public class CreateNotificationActivity extends AppCompatActivity {
     }
 
     private void createNotification() {
-        progressBar.setVisibility(View.VISIBLE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm != null) {
+            imm.hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus()).getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+
         String bodyText = notificationBody.getText().toString();
         String dateTime = dateTimeTV.getText().toString();
 
         NotificationBuilder builder = new NotificationBuilder(getApplicationContext());
         Notification notification = builder.build(bodyText, dateTime);
 
-        NotificationRepository repository = new NotificationRepository();
+        model.createNotification(notification);
 
-        job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
-                (scope, continuation) -> { repository.insert(notification, new Continuation<Unit>() {
-                    @NotNull
-                    @Override
-                    public CoroutineContext getContext() {
-                        return scope.getCoroutineContext();
-                    }
-                    @Override
-                    public void resumeWith(@NotNull Object o) {
-                        openPreviousActivity();
-                    }
-                });
-                return scope.getCoroutineContext();
-        });
-    }
+        ToastBuilder.createSnackBar(layout, "Создается, можно создать новую");
 
-    private void openPreviousActivity() {
-        //runOnUiThread(super::onBackPressed);
+        notificationBody.setText("");
+        dateTimeTV.setText("—");
     }
 
     @Override

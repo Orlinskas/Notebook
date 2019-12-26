@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.orlinskas.notebook.Constants;
 import com.orlinskas.notebook.CoroutinesFunKt;
 import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.builder.ToastBuilder;
@@ -79,6 +80,10 @@ public class MainViewModel extends AndroidViewModel {
         return daysData;
     }
 
+    public LiveData<Enum<Enums.RepositoryStatus>> getRepositoryStatusData() {
+        return repositoryStatusData;
+    }
+
     public void deleteNotification(Notification notification) {
         job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
                 (scope, coroutine) -> repository.delete(notification, new Continuation<Unit>() {
@@ -94,17 +99,30 @@ public class MainViewModel extends AndroidViewModel {
                 }));
     }
 
-    public LiveData<Enum<Enums.RepositoryStatus>> getRepositoryStatusData() {
-        return repositoryStatusData;
+    public void createNotification(Notification notification) {
+        job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
+                (scope, continuation) -> { repository.insert(notification, new Continuation<Unit>() {
+                    @NotNull
+                    @Override
+                    public CoroutineContext getContext() {
+                        return scope.getCoroutineContext();
+                    }
+                    @Override
+                    public void resumeWith(@NotNull Object o) {
+                        showConnectionStatus();
+                    }
+                });
+                    return scope.getCoroutineContext();
+                });
     }
 
     private void showConnectionStatus() {
        Enum<Enums.ConnectionStatus> status = connectionStatusData.getValue();
         if (status == Enums.ConnectionStatus.CONNECTION_DONE) {
-            doToast("Connection Done");
+            doToast(Constants.REMOTE);
         }
         if (status== Enums.ConnectionStatus.CONNECTION_FAIL) {
-            doToast("Connection Fail");
+            doToast(Constants.LOCAL);
         }
     }
 

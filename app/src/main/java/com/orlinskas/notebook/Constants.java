@@ -33,4 +33,7 @@ public class Constants {
 
     public final static String SERVER_DONE = "Успешный запрос на сервер";
     public final static String SERVER_FAIL = "Ошибка запроса к серверу";
+
+    public final static String LOCAL = "Локальная работа";
+    public final static String REMOTE = "Подключено удаленно";
 }

@@ -29,7 +29,7 @@
         </activity>
 
         <activity
-            android:name=".ui.CreateNotificationActivity"
+            android:name=".ui.view.CreateNotificationView"
             android:label="@string/app_name">
         </activity>
 
