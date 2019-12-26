@@ -17,6 +17,8 @@ public class App extends Application {
     private MutableLiveData<List<Notification>> actualNotificationsData;
     private MutableLiveData<List<Notification>> allNotificationsData;
     private MutableLiveData<List<Day>> daysData;
+    private MutableLiveData<Enum<Enums.RepositoryStatus>> repositoryStatusData;
+    private MutableLiveData<Enum<Enums.ConnectionStatus>> connectionStatusData;
 
     @Override
     public void onCreate() {
@@ -27,6 +29,8 @@ public class App extends Application {
         actualNotificationsData = new MutableLiveData<>();
         allNotificationsData = new MutableLiveData<>();
         daysData = new MutableLiveData<>();
+        repositoryStatusData = new MutableLiveData<>();
+        connectionStatusData = new MutableLiveData<>();
     }
 
     public static App getInstance() {
@@ -47,5 +51,13 @@ public class App extends Application {
 
     public MutableLiveData<List<Day>> getDaysLiveData() {
         return daysData;
+    }
+
+    public MutableLiveData<Enum<Enums.RepositoryStatus>> getRepositoryStatusData() {
+        return repositoryStatusData;
+    }
+
+    public MutableLiveData<Enum<Enums.ConnectionStatus>> getConnectionStatusData() {
+        return connectionStatusData;
     }
 }

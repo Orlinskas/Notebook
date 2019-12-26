@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements DayFragmentAction
 
         job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
                 (scope, continuation) -> {
-                    repository.findActual(System.currentTimeMillis(), new Continuation<MutableLiveData<List<Day>>>() {
+                    repository.findActual(System.currentTimeMillis(), new Continuation<Unit>() {
                         @NotNull
                         @Override
                         public CoroutineContext getContext() {
