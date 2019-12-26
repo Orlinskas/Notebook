@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.activity;
+package com.orlinskas.notebook.ui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -18,7 +18,6 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
 
 import com.orlinskas.notebook.CoroutinesFunKt;
 import com.orlinskas.notebook.R;
@@ -28,13 +27,12 @@ import com.orlinskas.notebook.date.DateCurrent;
 import com.orlinskas.notebook.date.DateFormater;
 import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.repository.NotificationRepository;
-import com.orlinskas.notebook.value.Day;
+import com.orlinskas.notebook.ui.view.MainView;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
@@ -44,7 +42,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.CoroutineStart;
 import kotlinx.coroutines.Job;
 
-public class CreateNotificationActivity extends AppCompatActivity implements ConnectionCallBack{
+public class CreateNotificationActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private EditText notificationBody;
     private TextView dateTimeTV;
@@ -146,10 +144,10 @@ public class CreateNotificationActivity extends AppCompatActivity implements Con
         NotificationBuilder builder = new NotificationBuilder(getApplicationContext());
         Notification notification = builder.build(bodyText, dateTime);
 
-        NotificationRepository repository = new NotificationRepository(this);
+        NotificationRepository repository = new NotificationRepository();
 
         job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
-                (scope, continuation) -> { repository.insert(notification, new Continuation<MutableLiveData<List<Day>>>() {
+                (scope, continuation) -> { repository.insert(notification, new Continuation<Unit>() {
                     @NotNull
                     @Override
                     public CoroutineContext getContext() {
@@ -164,21 +162,11 @@ public class CreateNotificationActivity extends AppCompatActivity implements Con
         });
     }
 
-    @Override
-    public Object failConnection(@NotNull Continuation<? super Unit> continuation) {
-        return null;
-    }
-
-    @Override
-    public Object doneConnection(@NotNull Continuation<? super Unit> continuation) {
-        return null;
-    }
-
     private void openPreviousActivity() {
         runOnUiThread(() -> {
             progressBar.setVisibility(View.INVISIBLE);
             ToastBuilder.doToast(getApplicationContext(), "Done");
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), MainView.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });

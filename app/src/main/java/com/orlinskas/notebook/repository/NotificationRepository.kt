@@ -1,12 +1,14 @@
 package com.orlinskas.notebook.repository
 
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.MutableLiveData
 import com.orlinskas.notebook.App
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.builder.DaysBuilder
 import com.orlinskas.notebook.database.MyDatabase
 import com.orlinskas.notebook.entity.Notification
 import com.orlinskas.notebook.service.ApiFactory
+import com.orlinskas.notebook.value.Day
 
 class NotificationRepository : LifecycleObserver {
     private val database: MyDatabase = App.instance.myDatabase
@@ -16,6 +18,18 @@ class NotificationRepository : LifecycleObserver {
     private val daysData = App.instance.daysLiveData
     private val repositoryStatusData = App.instance.repositoryStatusData
     private val connectionStatusData = App.instance.connectionStatusData
+
+    suspend fun fastStart(): MutableLiveData<MutableList<Day>> {
+        repositoryStatusData.postValue(Enums.RepositoryStatus.LOADING)
+
+        val localData = database.notificationDao().findActual(System.currentTimeMillis())
+        localData.removeAll { notification -> notification.is_deleted }
+        daysData.postValue(DaysBuilder(localData).findActual())
+
+        repositoryStatusData.postValue(Enums.RepositoryStatus.READY)
+
+        return daysData
+    }
 
     //@OnLifecycleEvent(Lifecycle.Event.ON_START)
     suspend fun findAll() {

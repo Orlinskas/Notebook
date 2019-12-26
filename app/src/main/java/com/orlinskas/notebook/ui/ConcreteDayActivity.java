@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.activity;
+package com.orlinskas.notebook.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orlinskas.notebook.App;
@@ -42,7 +41,7 @@ import static com.orlinskas.notebook.Constants.AFTER_CREATE_OPEN_DAY;
 import static com.orlinskas.notebook.Constants.DAY_ID;
 import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
 
-public class ConcreteDayActivity extends AppCompatActivity implements DayFragmentActions, ConnectionCallBack {
+public class ConcreteDayActivity extends AppCompatActivity implements DayFragmentActions {
     private ProgressBar progressBar;
     private LiveData<List<Day>> daysData;
     private int dayID;
@@ -115,10 +114,10 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
     public void deleteNotification(Notification notification) {
         progressBar.setVisibility(View.VISIBLE);
 
-        NotificationRepository repository = new NotificationRepository(this);
+        NotificationRepository repository = new NotificationRepository();
 
         job = BuildersKt.launch(Dispatchers::getIO, Dispatchers.getIO(), CoroutineStart.DEFAULT,
-                (scope, coroutine) -> repository.delete(notification, new Continuation<MutableLiveData<List<Day>>>() {
+                (scope, coroutine) -> repository.delete(notification, new Continuation<Unit>() {
                     @NotNull
                     @Override
                     public CoroutineContext getContext() {
@@ -133,26 +132,6 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
                         }
                     }
                 }));
-    }
-
-    @Override
-    public Object failConnection(@NotNull Continuation<? super Unit> o) {
-        job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
-                (scope, continuation) -> {
-                    ToastBuilder.doToast(getApplicationContext(), "Удаленно локально");
-                    return scope.getCoroutineContext();
-                });
-        return null;
-    }
-
-    @Override
-    public Object doneConnection(@NotNull Continuation<? super Unit> o) {
-        job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
-                (scope, continuation) -> {
-                    ToastBuilder.doToast(getApplicationContext(), "Удаленно на сервере");
-                    return scope.getCoroutineContext();
-                });
-        return null;
     }
 
     @Override

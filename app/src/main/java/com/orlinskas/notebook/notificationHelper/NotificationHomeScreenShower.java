@@ -1,8 +1,9 @@
 package com.orlinskas.notebook.notificationHelper;
 
 import com.orlinskas.notebook.R;
-import com.orlinskas.notebook.activity.MainActivity;
 import com.orlinskas.notebook.entity.Notification;
+import com.orlinskas.notebook.ui.view.MainView;
+
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -16,7 +17,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 class NotificationHomeScreenShower {
     void create(Context context, Notification userNotification) {
-        Intent resultIntent = new Intent(context, MainActivity.class);
+        Intent resultIntent = new Intent(context, MainView.class);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);

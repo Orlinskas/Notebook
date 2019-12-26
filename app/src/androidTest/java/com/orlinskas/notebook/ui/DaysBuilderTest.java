@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.activity;
+package com.orlinskas.notebook.ui;
 
 import com.orlinskas.notebook.builder.DaysBuilder;
 import com.orlinskas.notebook.date.DateCalculator;
