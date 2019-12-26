@@ -2,7 +2,6 @@ package com.orlinskas.notebook.ui.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -20,8 +19,6 @@ import com.orlinskas.notebook.fragment.DayFragmentActions;
 import com.orlinskas.notebook.ui.CreateNotificationActivity;
 import com.orlinskas.notebook.ui.viewModel.MainViewModel;
 import com.orlinskas.notebook.value.Day;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -48,19 +45,10 @@ public class MainView extends AppCompatActivity implements DayFragmentActions {
 
         model.getRepositoryStatusData().observe(this, repositoryStatusEnum -> {
             if (repositoryStatusEnum == Enums.RepositoryStatus.LOADING) {
-                //startProgress();
+                startProgress();
             }
-            if (repositoryStatusEnum == Enums.RepositoryStatus.LOADING) {
-                //stopProgress();
-            }
-        });
-
-        model.getConnectionStatusData().observe(this, connectionStatusEnum -> {
-            if(connectionStatusEnum == Enums.ConnectionStatus.CONNECTION_DONE) {
-                //showToast("Connection Done");
-            }
-            if(connectionStatusEnum == Enums.ConnectionStatus.CONNECTION_FAIL) {
-                //showToast("Connection False");
+            if (repositoryStatusEnum == Enums.RepositoryStatus.READY) {
+                stopProgress();
             }
         });
     }
@@ -104,15 +92,6 @@ public class MainView extends AppCompatActivity implements DayFragmentActions {
         Intent intent = new Intent(getBaseContext(), ConcreteDayView.class);
         intent.putExtras(bundle);
         startActivity(intent);
-    }
-
-    public void showToast(@NotNull String message) {
-        try {
-           // ToastBuilder.doToast(getBaseContext(), message);
-        } catch (Exception e) {
-            Log.wtf("--", e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     public void startProgress() {

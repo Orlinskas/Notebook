@@ -2,6 +2,7 @@ package com.orlinskas.notebook.ui.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.fragment.DayFragment;
@@ -42,6 +44,15 @@ public class ConcreteDayView extends AppCompatActivity implements DayFragmentAct
 
         model.getDaysData().observe(this, days -> showDayNotifications());
 
+        model.getRepositoryStatusData().observe(this, repositoryStatusEnum -> {
+            if (repositoryStatusEnum == Enums.RepositoryStatus.LOADING) {
+                startProgress();
+            }
+            if (repositoryStatusEnum == Enums.RepositoryStatus.READY) {
+                stopProgress();
+            }
+        });
+
         if(savedInstanceState != null) {
             dayID = savedInstanceState.getInt(DAY_ID);
         }
@@ -70,17 +81,19 @@ public class ConcreteDayView extends AppCompatActivity implements DayFragmentAct
         }
     }
 
+    public void startProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void stopProgress() {
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
     public void openCreateNotificationActivity() {
         Intent intent = new Intent(getApplicationContext(), CreateNotificationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.setAction(AFTER_CREATE_OPEN_DAY);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(DAY_ID, dayID);
     }
 
     @Override
@@ -91,5 +104,11 @@ public class ConcreteDayView extends AppCompatActivity implements DayFragmentAct
     @Override
     public void deleteNotification(Notification notification) {
         model.deleteNotification(notification);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(DAY_ID, dayID);
     }
 }

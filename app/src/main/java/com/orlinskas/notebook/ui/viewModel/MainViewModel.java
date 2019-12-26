@@ -1,6 +1,7 @@
 package com.orlinskas.notebook.ui.viewModel;
 
 import android.app.Application;
+import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -35,6 +36,7 @@ public class MainViewModel extends AndroidViewModel {
     private LiveData<List<Day>> daysData;
     private Job job;
     private CoroutineScope scope = CoroutinesFunKt.getIoScope();
+    private Handler handler = new Handler();
 
     public MainViewModel(@NonNull Application application) {
         super(application);
@@ -48,7 +50,7 @@ public class MainViewModel extends AndroidViewModel {
                         }
                         @Override
                         public void resumeWith(@NotNull Object o) {
-
+                            showConnectionStatus();
                         }
                     });
                     return scope.getCoroutineContext();
@@ -67,7 +69,7 @@ public class MainViewModel extends AndroidViewModel {
                             }
                             @Override
                             public void resumeWith(@NotNull Object o) {
-
+                                showConnectionStatus();
                             }
                         }));
             } catch (InterruptedException e) {
@@ -87,23 +89,13 @@ public class MainViewModel extends AndroidViewModel {
                     }
                     @Override
                     public void resumeWith(@NotNull Object o) {
-
+                        showConnectionStatus();
                     }
                 }));
     }
 
     public LiveData<Enum<Enums.RepositoryStatus>> getRepositoryStatusData() {
         return repositoryStatusData;
-    }
-
-    public LiveData<Enum<Enums.ConnectionStatus>> getConnectionStatusData() {
-        return connectionStatusData;
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        job.cancel(new CancellationException());
     }
 
     private void showConnectionStatus() {
@@ -117,6 +109,12 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     private void doToast(String message) {
-        ToastBuilder.doToast(getApplication().getApplicationContext(), message);
+        handler.post(() -> ToastBuilder.doToast(getApplication().getBaseContext(), message));
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        job.cancel(new CancellationException());
     }
 }
