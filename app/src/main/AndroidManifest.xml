@@ -34,7 +34,7 @@
         </activity>
 
         <activity
-            android:name=".ui.ConcreteDayActivity"
+            android:name=".ui.view.ConcreteDayView"
             android:label="@string/app_name">
         </activity>
 

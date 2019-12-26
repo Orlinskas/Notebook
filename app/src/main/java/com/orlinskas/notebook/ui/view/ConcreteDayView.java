@@ -1,52 +1,33 @@
-package com.orlinskas.notebook.ui;
+package com.orlinskas.notebook.ui.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.orlinskas.notebook.App;
-import com.orlinskas.notebook.CoroutinesFunKt;
 import com.orlinskas.notebook.R;
-import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.fragment.DayFragment;
 import com.orlinskas.notebook.fragment.DayFragmentActions;
-import com.orlinskas.notebook.repository.NotificationRepository;
-import com.orlinskas.notebook.value.Day;
+import com.orlinskas.notebook.ui.CreateNotificationActivity;
+import com.orlinskas.notebook.ui.viewModel.MainViewModel;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CancellationException;
-
-import kotlin.Unit;
-import kotlin.coroutines.Continuation;
-import kotlin.coroutines.CoroutineContext;
-import kotlinx.coroutines.BuildersKt;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.CoroutineStart;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.Job;
 
 import static com.orlinskas.notebook.Constants.AFTER_CREATE_OPEN_DAY;
 import static com.orlinskas.notebook.Constants.DAY_ID;
 import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
 
-public class ConcreteDayActivity extends AppCompatActivity implements DayFragmentActions {
+public class ConcreteDayView extends AppCompatActivity implements DayFragmentActions {
     private ProgressBar progressBar;
-    private LiveData<List<Day>> daysData;
     private int dayID;
-    private Job job = null;
-    private CoroutineScope scope = CoroutinesFunKt.getMainScope();
+    private MainViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,19 +38,16 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
         FloatingActionButton fab = findViewById(R.id.activity_concrete_day_fab);
         fab.setOnClickListener(view -> openCreateNotificationActivity());
 
-        daysData = App.getInstance().getDaysLiveData();
-        daysData.observe(this, days -> {
-            ConcreteDayActivity.this.showDayNotifications();
-        });
+        model = ViewModelProviders.of(this).get(MainViewModel.class);
+
+        model.getDaysData().observe(this, days -> showDayNotifications());
 
         if(savedInstanceState != null) {
             dayID = savedInstanceState.getInt(DAY_ID);
         }
         else {
-            dayID = Objects.requireNonNull(getIntent().getExtras()).getInt("dayID");
+            dayID = Objects.requireNonNull(getIntent().getExtras()).getInt(DAY_ID);
         }
-
-        showDayNotifications();
     }
 
     private void showDayNotifications() {
@@ -112,33 +90,6 @@ public class ConcreteDayActivity extends AppCompatActivity implements DayFragmen
 
     @Override
     public void deleteNotification(Notification notification) {
-        progressBar.setVisibility(View.VISIBLE);
-
-        NotificationRepository repository = new NotificationRepository();
-
-        job = BuildersKt.launch(Dispatchers::getIO, Dispatchers.getIO(), CoroutineStart.DEFAULT,
-                (scope, coroutine) -> repository.delete(notification, new Continuation<Unit>() {
-                    @NotNull
-                    @Override
-                    public CoroutineContext getContext() {
-                        return Dispatchers.getIO();
-                    }
-                    @Override
-                    public void resumeWith(@NotNull Object o) {
-                        try {
-                            runOnUiThread(() -> progressBar.setVisibility(View.INVISIBLE));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(job != null) {
-            job.cancel(new CancellationException());
-        }
+        model.deleteNotification(notification);
     }
 }

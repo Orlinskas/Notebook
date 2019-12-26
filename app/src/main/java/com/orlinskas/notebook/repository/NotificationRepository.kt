@@ -15,9 +15,9 @@ class NotificationRepository : LifecycleObserver {
     private val remoteService = ApiFactory.notificationApi
     private val synchronizer = Synchronizer()
     private val notificationsData = App.instance.allNotificationsLiveData
-    private val daysData = App.instance.daysLiveData
-    private val repositoryStatusData = App.instance.repositoryStatusData
-    private val connectionStatusData = App.instance.connectionStatusData
+    val daysData: MutableLiveData<MutableList<Day>> = App.instance.daysLiveData
+    val repositoryStatusData: MutableLiveData<Enum<Enums.RepositoryStatus>> = App.instance.repositoryStatusData
+    val connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>> = App.instance.connectionStatusData
 
     suspend fun fastStart(): MutableLiveData<MutableList<Day>> {
         repositoryStatusData.postValue(Enums.RepositoryStatus.LOADING)

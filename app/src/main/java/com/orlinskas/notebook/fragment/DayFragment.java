@@ -20,6 +20,7 @@ import androidx.lifecycle.LiveData;
 import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.notificationHelper.NotificationListAdapter;
+import com.orlinskas.notebook.repository.NotificationRepository;
 import com.orlinskas.notebook.value.Day;
 
 import java.util.List;
@@ -35,13 +36,14 @@ public class DayFragment extends Fragment {
     private DayFragmentActions fragmentActions;
     private Context context;
     private boolean isFullDisplay;
+    private NotificationRepository repository = new NotificationRepository();
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
         fragmentActions = (DayFragmentActions) context;
-        daysData = App.getInstance().getDaysLiveData();
+        daysData = repository.getDaysData();
     }
 
     @Nullable

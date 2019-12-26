@@ -2,24 +2,21 @@ package com.orlinskas.notebook.ui.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.R;
-import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.fragment.DayFragment;
 import com.orlinskas.notebook.fragment.DayFragmentActions;
-import com.orlinskas.notebook.ui.ConcreteDayActivity;
 import com.orlinskas.notebook.ui.CreateNotificationActivity;
 import com.orlinskas.notebook.ui.viewModel.MainViewModel;
 import com.orlinskas.notebook.value.Day;
@@ -34,7 +31,6 @@ import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
 public class MainView extends AppCompatActivity implements DayFragmentActions {
     private ProgressBar progressBar;
     private MainViewModel model;
-    private LiveData<List<Day>> modelDaysData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,30 +42,25 @@ public class MainView extends AppCompatActivity implements DayFragmentActions {
         fab.setOnClickListener(view -> openCreateNotificationActivity());
 
         model = ViewModelProviders.of(this).get(MainViewModel.class);
-        modelDaysData = model.getDaysData();
-        modelDaysData.observe(this, days -> updateUI());
 
-        model.repositoryStatusData.observe(this, new Observer<Enum<Enums.RepositoryStatus>>() {
-            @Override
-            public void onChanged(Enum<Enums.RepositoryStatus> repositoryStatusEnum) {
-                if (repositoryStatusEnum == Enums.RepositoryStatus.LOADING) {
-                    startProgress();
-                }
-                if (repositoryStatusEnum == Enums.RepositoryStatus.LOADING) {
-                    stopProgress();
-                }
+        model.getDaysData().observe(this, days ->
+                updateUI());
+
+        model.getRepositoryStatusData().observe(this, repositoryStatusEnum -> {
+            if (repositoryStatusEnum == Enums.RepositoryStatus.LOADING) {
+                //startProgress();
+            }
+            if (repositoryStatusEnum == Enums.RepositoryStatus.LOADING) {
+                //stopProgress();
             }
         });
 
-        model.connectionStatusData.observe(this, new Observer<Enum<Enums.ConnectionStatus>>() {
-            @Override
-            public void onChanged(Enum<Enums.ConnectionStatus> connectionStatusEnum) {
-                if(connectionStatusEnum == Enums.ConnectionStatus.CONNECTION_DONE) {
-                    showToast("Connection Done");
-                }
-                if(connectionStatusEnum == Enums.ConnectionStatus.CONNECTION_FAIL) {
-                    showToast("Connection False");
-                }
+        model.getConnectionStatusData().observe(this, connectionStatusEnum -> {
+            if(connectionStatusEnum == Enums.ConnectionStatus.CONNECTION_DONE) {
+                //showToast("Connection Done");
+            }
+            if(connectionStatusEnum == Enums.ConnectionStatus.CONNECTION_FAIL) {
+                //showToast("Connection False");
             }
         });
     }
@@ -81,7 +72,7 @@ public class MainView extends AppCompatActivity implements DayFragmentActions {
     }
 
     public void updateUI() {
-        List<Day> days = modelDaysData.getValue();
+        List<Day> days = model.getDaysData().getValue();
 
         FragmentManager fm = getSupportFragmentManager();
 
@@ -110,13 +101,18 @@ public class MainView extends AppCompatActivity implements DayFragmentActions {
         Bundle bundle = new Bundle();
         bundle.putInt(DAY_ID, dayID);
         bundle.putBoolean(IS_FULL_DISPLAY, true);
-        Intent intent = new Intent(getApplicationContext(), ConcreteDayActivity.class);
+        Intent intent = new Intent(getBaseContext(), ConcreteDayView.class);
         intent.putExtras(bundle);
         startActivity(intent);
     }
 
     public void showToast(@NotNull String message) {
-        ToastBuilder.doToast(getApplicationContext(), message);
+        try {
+           // ToastBuilder.doToast(getBaseContext(), message);
+        } catch (Exception e) {
+            Log.wtf("--", e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public void startProgress() {

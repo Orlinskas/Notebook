@@ -163,13 +163,7 @@ public class CreateNotificationActivity extends AppCompatActivity {
     }
 
     private void openPreviousActivity() {
-        runOnUiThread(() -> {
-            progressBar.setVisibility(View.INVISIBLE);
-            ToastBuilder.doToast(getApplicationContext(), "Done");
-            Intent intent = new Intent(getApplicationContext(), MainView.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        });
+        //runOnUiThread(super::onBackPressed);
     }
 
     @Override

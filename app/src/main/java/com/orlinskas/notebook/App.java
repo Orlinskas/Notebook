@@ -28,7 +28,7 @@ public class App extends Application {
                 .build();
         actualNotificationsData = new MutableLiveData<>();
         allNotificationsData = new MutableLiveData<>();
-        daysData = new MutableLiveData<>();
+        daysData             = new MutableLiveData<>();
         repositoryStatusData = new MutableLiveData<>();
         connectionStatusData = new MutableLiveData<>();
     }

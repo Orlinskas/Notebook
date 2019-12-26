@@ -1,15 +1,10 @@
 package com.orlinskas.notebook.ui.viewModel;
 
-import android.app.Application;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.orlinskas.notebook.CoroutinesFunKt;
-import com.orlinskas.notebook.Enums;
-import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.repository.NotificationRepository;
 import com.orlinskas.notebook.value.Day;
@@ -28,16 +23,13 @@ import kotlinx.coroutines.CoroutineStart;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.Job;
 
-public class MainViewModel extends AndroidViewModel {
-    private NotificationRepository repository = new NotificationRepository();
-    private LiveData<Enum<Enums.RepositoryStatus>> repositoryStatusData = repository.getRepositoryStatusData();
-    private LiveData<Enum<Enums.ConnectionStatus>> connectionStatusData = repository.getConnectionStatusData();
+public class ConcreteDayViewModel extends ViewModel {
     private LiveData<List<Day>> daysData;
     private Job job;
     private CoroutineScope scope = CoroutinesFunKt.getIoScope();
+    private NotificationRepository repository = new NotificationRepository();
 
-    public MainViewModel(@NonNull Application application) {
-        super(application);
+    public ConcreteDayViewModel() {
         job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
                 (scope, continuation) -> {
                     repository.findActual(System.currentTimeMillis(), new Continuation<Unit>() {
@@ -48,37 +40,32 @@ public class MainViewModel extends AndroidViewModel {
                         }
                         @Override
                         public void resumeWith(@NotNull Object o) {
-
                         }
                     });
                     return scope.getCoroutineContext();
                 });
     }
 
-    public LiveData<List<Day>> getDaysData()  {
+    public LiveData<List<Day>> getDaysData() throws InterruptedException {
         if(daysData == null) {
-            try {
-                daysData = BuildersKt.runBlocking(scope.getCoroutineContext(),
-                        (scope, continuation) -> repository.fastStart(new Continuation<MutableLiveData<List<Day>>>() {
-                            @NotNull
-                            @Override
-                            public CoroutineContext getContext() {
-                                return scope.getCoroutineContext();
-                            }
-                            @Override
-                            public void resumeWith(@NotNull Object o) {
+            daysData = BuildersKt.runBlocking(scope.getCoroutineContext(),
+                    (scope, continuation) -> repository.fastStart(new Continuation<MutableLiveData<List<Day>>>() {
+                        @NotNull
+                        @Override
+                        public CoroutineContext getContext() {
+                            return scope.getCoroutineContext();
+                        }
+                        @Override
+                        public void resumeWith(@NotNull Object o) {
 
-                            }
-                        }));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                        }
+                    }));
         }
         return daysData;
     }
 
     public void deleteNotification(Notification notification) {
-        job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
+        job = BuildersKt.launch(Dispatchers::getIO, Dispatchers.getIO(), CoroutineStart.DEFAULT,
                 (scope, coroutine) -> repository.delete(notification, new Continuation<Unit>() {
                     @NotNull
                     @Override
@@ -92,31 +79,9 @@ public class MainViewModel extends AndroidViewModel {
                 }));
     }
 
-    public LiveData<Enum<Enums.RepositoryStatus>> getRepositoryStatusData() {
-        return repositoryStatusData;
-    }
-
-    public LiveData<Enum<Enums.ConnectionStatus>> getConnectionStatusData() {
-        return connectionStatusData;
-    }
-
     @Override
     protected void onCleared() {
         super.onCleared();
         job.cancel(new CancellationException());
-    }
-
-    private void showConnectionStatus() {
-       Enum<Enums.ConnectionStatus> status = connectionStatusData.getValue();
-        if (status == Enums.ConnectionStatus.CONNECTION_DONE) {
-            doToast("Connection Done");
-        }
-        if (status== Enums.ConnectionStatus.CONNECTION_FAIL) {
-            doToast("Connection Fail");
-        }
-    }
-
-    private void doToast(String message) {
-        ToastBuilder.doToast(getApplication().getApplicationContext(), message);
     }
 }
