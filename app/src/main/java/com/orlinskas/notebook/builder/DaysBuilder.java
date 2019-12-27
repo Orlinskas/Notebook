@@ -4,8 +4,8 @@ import com.orlinskas.notebook.CustomMockObjects;
 import com.orlinskas.notebook.date.DateCalculator;
 import com.orlinskas.notebook.date.DateCurrent;
 import com.orlinskas.notebook.date.DateFormater;
-import com.orlinskas.notebook.MVVM.model.Notification;
-import com.orlinskas.notebook.MVVM.model.Day;
+import com.orlinskas.notebook.mVVM.model.Notification;
+import com.orlinskas.notebook.mVVM.model.Day;
 
 import java.util.ArrayList;
 import java.util.Date;

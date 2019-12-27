@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.MVVM.fragment;
+package com.orlinskas.notebook.mVVM.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -21,7 +21,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.notificationHelper.NotificationListAdapter;
-import com.orlinskas.notebook.MVVM.model.Day;
+import com.orlinskas.notebook.mVVM.model.Day;
 
 import java.util.Objects;
 

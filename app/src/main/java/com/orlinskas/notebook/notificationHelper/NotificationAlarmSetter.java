@@ -5,7 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
-import com.orlinskas.notebook.MVVM.model.Notification;
+import com.orlinskas.notebook.mVVM.model.Notification;
 
 public class NotificationAlarmSetter {
     public void set(Context context, Notification notification) {

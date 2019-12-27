@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.date.DateFormater;
-import com.orlinskas.notebook.MVVM.model.Notification;
+import com.orlinskas.notebook.mVVM.model.Notification;
 
 import java.util.Collections;
 import java.util.Date;

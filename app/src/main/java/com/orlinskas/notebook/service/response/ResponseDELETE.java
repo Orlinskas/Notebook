@@ -1,7 +1,7 @@
 package com.orlinskas.notebook.service.response;
 
 import com.google.gson.annotations.SerializedName;
-import com.orlinskas.notebook.MVVM.model.Notification;
+import com.orlinskas.notebook.mVVM.model.Notification;
 
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;

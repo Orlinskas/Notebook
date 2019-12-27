@@ -1,6 +1,6 @@
-package com.orlinskas.notebook.MVVM.fragment;
+package com.orlinskas.notebook.mVVM.fragment;
 
-import com.orlinskas.notebook.MVVM.model.Notification;
+import com.orlinskas.notebook.mVVM.model.Notification;
 
 public interface DayFragmentActions {
     void openDay(int dayID);

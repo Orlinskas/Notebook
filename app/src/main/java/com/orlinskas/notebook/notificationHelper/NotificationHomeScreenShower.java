@@ -1,8 +1,8 @@
 package com.orlinskas.notebook.notificationHelper;
 
 import com.orlinskas.notebook.R;
-import com.orlinskas.notebook.MVVM.model.Notification;
-import com.orlinskas.notebook.MVVM.view.MainView;
+import com.orlinskas.notebook.mVVM.model.Notification;
+import com.orlinskas.notebook.mVVM.view.MainView;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;

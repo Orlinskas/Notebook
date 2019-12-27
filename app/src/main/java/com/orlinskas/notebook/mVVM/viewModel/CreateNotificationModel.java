@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.MVVM.viewModel;
+package com.orlinskas.notebook.mVVM.viewModel;
 
 import android.app.Application;
 import android.os.Handler;
@@ -12,7 +12,7 @@ import com.orlinskas.notebook.Constants;
 import com.orlinskas.notebook.CoroutinesFunKt;
 import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.builder.ToastBuilder;
-import com.orlinskas.notebook.MVVM.model.Notification;
+import com.orlinskas.notebook.mVVM.model.Notification;
 import com.orlinskas.notebook.repository.NotificationRepository;
 
 import org.jetbrains.annotations.NotNull;

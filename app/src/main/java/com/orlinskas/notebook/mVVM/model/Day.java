@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.MVVM.model;
+package com.orlinskas.notebook.mVVM.model;
 
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;

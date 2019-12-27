@@ -1,6 +1,6 @@
 package com.orlinskas.notebook.service
 
-import com.orlinskas.notebook.MVVM.model.Notification
+import com.orlinskas.notebook.mVVM.model.Notification
 import com.orlinskas.notebook.service.response.ResponseDELETE
 import com.orlinskas.notebook.service.response.ResponseGET
 import com.orlinskas.notebook.service.response.ResponsePOST

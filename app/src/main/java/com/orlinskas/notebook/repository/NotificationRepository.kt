@@ -1,24 +1,25 @@
 package com.orlinskas.notebook.repository
 
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.orlinskas.notebook.App
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.builder.DaysBuilder
 import com.orlinskas.notebook.database.MyDatabase
-import com.orlinskas.notebook.MVVM.model.Notification
-import com.orlinskas.notebook.MVVM.model.Day
+import com.orlinskas.notebook.mVVM.model.Notification
+import com.orlinskas.notebook.mVVM.model.Day
 
 class NotificationRepository : LifecycleObserver {
     private val database: MyDatabase = App.instance.myDatabase
     private val remoteService = App.instance.remoteService
     private val synchronizer = Synchronizer()
     private val notificationsData = App.instance.allNotificationsLiveData
-    val daysData: MutableLiveData<MutableList<Day>> = App.instance.daysLiveData
+    val daysData: MutableLiveData<List<Day>> = App.instance.daysLiveData
     val repositoryStatusData: MutableLiveData<Enum<Enums.RepositoryStatus>> = App.instance.repositoryStatusData
     val connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>> = App.instance.connectionStatusData
 
-    suspend fun fastStart(): MutableLiveData<MutableList<Day>> {
+    suspend fun fastStart(): LiveData<List<Day>> {
         repositoryStatusData.postValue(Enums.RepositoryStatus.LOADING)
 
         val localData = database.notificationDao().findActual(System.currentTimeMillis())

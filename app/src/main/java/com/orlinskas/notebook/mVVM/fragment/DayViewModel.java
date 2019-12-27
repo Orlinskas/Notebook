@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.MVVM.fragment;
+package com.orlinskas.notebook.mVVM.fragment;
 
 import android.app.Application;
 
@@ -10,7 +10,7 @@ import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.CoroutinesFunKt;
 import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.repository.NotificationRepository;
-import com.orlinskas.notebook.MVVM.model.Day;
+import com.orlinskas.notebook.mVVM.model.Day;
 
 import org.jetbrains.annotations.NotNull;
 

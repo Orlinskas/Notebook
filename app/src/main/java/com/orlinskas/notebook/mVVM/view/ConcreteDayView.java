@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.MVVM.view;
+package com.orlinskas.notebook.mVVM.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +16,10 @@ import com.orlinskas.notebook.Constants;
 import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.builder.ToastBuilder;
-import com.orlinskas.notebook.MVVM.model.Notification;
-import com.orlinskas.notebook.MVVM.fragment.DayView;
-import com.orlinskas.notebook.MVVM.fragment.DayFragmentActions;
-import com.orlinskas.notebook.MVVM.viewModel.ConcreteDayViewModel;
+import com.orlinskas.notebook.mVVM.model.Notification;
+import com.orlinskas.notebook.mVVM.fragment.DayView;
+import com.orlinskas.notebook.mVVM.fragment.DayFragmentActions;
+import com.orlinskas.notebook.mVVM.viewModel.ConcreteDayViewModel;
 
 import java.util.Objects;
 
