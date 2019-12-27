@@ -9,21 +9,20 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 
-import com.orlinskas.notebook.App;
+import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.notificationHelper.NotificationListAdapter;
-import com.orlinskas.notebook.repository.NotificationRepository;
 import com.orlinskas.notebook.value.Day;
 
-import java.util.List;
 import java.util.Objects;
 
 import static com.orlinskas.notebook.Constants.COUNT_NOTIFICATION_IN_SHORT_LIST;
@@ -32,24 +31,26 @@ import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
 
 public class DayFragment extends Fragment {
     private int dayID;
-    private LiveData<List<Day>> daysData;
     private DayFragmentActions fragmentActions;
     private Context context;
     private boolean isFullDisplay;
-    private NotificationRepository repository = new NotificationRepository();
+    private ProgressBar progressBar;
+    private DayFragmentViewModel model;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
         fragmentActions = (DayFragmentActions) context;
-        daysData = repository.getDaysData();
+        model = ViewModelProviders.of(this).get(DayFragmentViewModel.class);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_day, container, false);
+
+        progressBar = view.findViewById(R.id.fragment_day_pb);
 
         if(savedInstanceState != null) {
             dayID = savedInstanceState.getInt(DAY_ID);
@@ -61,8 +62,22 @@ public class DayFragment extends Fragment {
             }
         }
 
-        Day day = daysData.getValue().get(dayID);
+        model.getDaysData().observe(this, days ->
+                updateUI(days.get(dayID), view));
 
+        model.getRepositoryStatusData().observe(this, status -> {
+            if (status == Enums.RepositoryStatus.LOADING) {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+            if (status == Enums.RepositoryStatus.READY) {
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        return view;
+    }
+
+    private void updateUI(Day day, View view) {
         TextView dayName = view.findViewById(R.id.fragment_notification_tv_day_name);
         TextView dayDate = view.findViewById(R.id.fragment_notification_tv_day_date);
         ListView notificationList = view.findViewById(R.id.fragment_notification_ll_notification_container);
@@ -102,8 +117,6 @@ public class DayFragment extends Fragment {
                 return true;
             });
         }
-
-        return view;
     }
 
     private void setListViewHeightBasedOnChildren(ListView listView) {
