@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.mVVM.viewModel
+package com.orlinskas.notebook.mVVM.fragment
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -6,13 +6,12 @@ import androidx.lifecycle.LiveData
 import com.orlinskas.notebook.App
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.mVVM.model.Day
-import com.orlinskas.notebook.mVVM.model.Notification
 import kotlinx.coroutines.*
+import java.util.concurrent.CancellationException
 
-class ConcreteDayViewModel(application: Application) : AndroidViewModel(application) {
+class DayViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = App.getInstance().repository
     val repositoryStatusData: LiveData<Enum<Enums.RepositoryStatus>> = repository.repositoryStatusData
-    val connectionStatusData: LiveData<Enum<Enums.ConnectionStatus>> = repository.connectionStatusData
     lateinit var daysData: LiveData<List<Day>>
     private val job: Job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
@@ -25,16 +24,8 @@ class ConcreteDayViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    fun deleteNotification(notification: Notification) {
-        scope.launch {
-            withContext(Dispatchers.IO) {
-                repository.delete(notification)
-            }
-        }
-    }
-
     override fun onCleared() {
         super.onCleared()
-        scope.cancel()
+        scope.cancel(CancellationException())
     }
 }
