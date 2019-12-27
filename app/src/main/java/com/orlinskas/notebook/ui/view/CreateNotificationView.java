@@ -28,7 +28,7 @@ import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.date.DateCurrent;
 import com.orlinskas.notebook.date.DateFormater;
 import com.orlinskas.notebook.entity.Notification;
-import com.orlinskas.notebook.ui.viewModel.MainViewModel;
+import com.orlinskas.notebook.ui.viewModel.CreateNotificationModel;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -40,7 +40,7 @@ public class CreateNotificationView extends AppCompatActivity {
     private TextView dateTimeTV;
     private Calendar dateTime;
     private RelativeLayout layout;
-    private MainViewModel model;
+    private CreateNotificationModel model;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,7 +71,7 @@ public class CreateNotificationView extends AppCompatActivity {
             dateTimeTV.setText(savedInstanceState.getString("date"));
         }
 
-        model = ViewModelProviders.of(this).get(MainViewModel.class);
+        model = ViewModelProviders.of(this).get(CreateNotificationModel.class);
 
         model.getRepositoryStatusData().observe(this, repositoryStatusEnum -> {
             if (repositoryStatusEnum == Enums.RepositoryStatus.LOADING) {

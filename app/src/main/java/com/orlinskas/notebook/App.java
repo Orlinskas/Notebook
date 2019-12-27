@@ -7,6 +7,9 @@ import androidx.room.Room;
 
 import com.orlinskas.notebook.database.MyDatabase;
 import com.orlinskas.notebook.entity.Notification;
+import com.orlinskas.notebook.repository.NotificationRepository;
+import com.orlinskas.notebook.service.ApiFactory;
+import com.orlinskas.notebook.service.NotificationApiService;
 import com.orlinskas.notebook.value.Day;
 
 import java.util.List;
@@ -14,11 +17,13 @@ import java.util.List;
 public class App extends Application {
     public static App instance;
     private MyDatabase myDatabase;
+    private NotificationApiService remoteService;
     private MutableLiveData<List<Notification>> actualNotificationsData;
     private MutableLiveData<List<Notification>> allNotificationsData;
     private MutableLiveData<List<Day>> daysData;
     private MutableLiveData<Enum<Enums.RepositoryStatus>> repositoryStatusData;
     private MutableLiveData<Enum<Enums.ConnectionStatus>> connectionStatusData;
+    private NotificationRepository repository;
 
     @Override
     public void onCreate() {
@@ -31,6 +36,8 @@ public class App extends Application {
         daysData             = new MutableLiveData<>();
         repositoryStatusData = new MutableLiveData<>();
         connectionStatusData = new MutableLiveData<>();
+        repository = new NotificationRepository();
+        remoteService = ApiFactory.INSTANCE.getNotificationApi();
     }
 
     public static App getInstance() {
@@ -59,5 +66,13 @@ public class App extends Application {
 
     public MutableLiveData<Enum<Enums.ConnectionStatus>> getConnectionStatusData() {
         return connectionStatusData;
+    }
+
+    public NotificationRepository getRepository() {
+        return repository;
+    }
+
+    public NotificationApiService getRemoteService() {
+        return remoteService;
     }
 }

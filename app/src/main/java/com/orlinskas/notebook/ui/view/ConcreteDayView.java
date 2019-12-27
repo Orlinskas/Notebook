@@ -17,7 +17,7 @@ import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.fragment.DayFragment;
 import com.orlinskas.notebook.fragment.DayFragmentActions;
-import com.orlinskas.notebook.ui.viewModel.MainViewModel;
+import com.orlinskas.notebook.ui.viewModel.ConcreteDayViewModel;
 
 import java.util.Objects;
 
@@ -28,7 +28,7 @@ import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
 public class ConcreteDayView extends AppCompatActivity implements DayFragmentActions {
     private ProgressBar progressBar;
     private int dayID;
-    private MainViewModel model;
+    private ConcreteDayViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +39,16 @@ public class ConcreteDayView extends AppCompatActivity implements DayFragmentAct
         FloatingActionButton fab = findViewById(R.id.activity_concrete_day_fab);
         fab.setOnClickListener(view -> openCreateNotificationActivity());
 
-        model = ViewModelProviders.of(this).get(MainViewModel.class);
+        model = ViewModelProviders.of(this).get(ConcreteDayViewModel.class);
 
-        model.getDaysData().observe(this, days -> showDayNotifications());
+        model.getDaysData().observe(this, days -> updateUI());
 
         model.getRepositoryStatusData().observe(this, repositoryStatusEnum -> {
             if (repositoryStatusEnum == Enums.RepositoryStatus.LOADING) {
-                startProgress();
+                progressBar.setVisibility(View.VISIBLE);
             }
             if (repositoryStatusEnum == Enums.RepositoryStatus.READY) {
-                stopProgress();
+                progressBar.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -60,7 +60,7 @@ public class ConcreteDayView extends AppCompatActivity implements DayFragmentAct
         }
     }
 
-    private void showDayNotifications() {
+    private void updateUI() {
         FragmentManager fm = getSupportFragmentManager();
 
         Fragment fragment = fm.findFragmentById(R.id.activity_concrete_day_container);
@@ -78,14 +78,6 @@ public class ConcreteDayView extends AppCompatActivity implements DayFragmentAct
         } else {
             fm.beginTransaction().detach(fragment).attach(fragment).commit();
         }
-    }
-
-    public void startProgress() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    public void stopProgress() {
-        progressBar.setVisibility(View.INVISIBLE);
     }
 
     public void openCreateNotificationActivity() {

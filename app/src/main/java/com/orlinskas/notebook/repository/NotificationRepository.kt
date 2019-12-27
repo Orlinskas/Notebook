@@ -7,12 +7,11 @@ import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.builder.DaysBuilder
 import com.orlinskas.notebook.database.MyDatabase
 import com.orlinskas.notebook.entity.Notification
-import com.orlinskas.notebook.service.ApiFactory
 import com.orlinskas.notebook.value.Day
 
 class NotificationRepository : LifecycleObserver {
     private val database: MyDatabase = App.instance.myDatabase
-    private val remoteService = ApiFactory.notificationApi
+    private val remoteService = App.instance.remoteService
     private val synchronizer = Synchronizer()
     private val notificationsData = App.instance.allNotificationsLiveData
     val daysData: MutableLiveData<MutableList<Day>> = App.instance.daysLiveData

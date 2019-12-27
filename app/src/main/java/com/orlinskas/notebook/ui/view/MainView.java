@@ -44,10 +44,10 @@ public class MainView extends AppCompatActivity implements DayFragmentActions {
 
         model.getRepositoryStatusData().observe(this, repositoryStatusEnum -> {
             if (repositoryStatusEnum == Enums.RepositoryStatus.LOADING) {
-                startProgress();
+                progressBar.setVisibility(View.VISIBLE);
             }
             if (repositoryStatusEnum == Enums.RepositoryStatus.READY) {
-                stopProgress();
+                progressBar.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -91,14 +91,6 @@ public class MainView extends AppCompatActivity implements DayFragmentActions {
         Intent intent = new Intent(getBaseContext(), ConcreteDayView.class);
         intent.putExtras(bundle);
         startActivity(intent);
-    }
-
-    public void startProgress() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    public void stopProgress() {
-        progressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
