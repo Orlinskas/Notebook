@@ -8,11 +8,14 @@ import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.orlinskas.notebook.Constants;
 import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.R;
+import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.fragment.DayFragment;
 import com.orlinskas.notebook.fragment.DayFragmentActions;
@@ -50,6 +53,15 @@ public class MainView extends AppCompatActivity implements DayFragmentActions {
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
+
+        model.getConnectionStatusData().observe(this, status -> {
+            if (status == Enums.ConnectionStatus.CONNECTION_DONE) {
+               doToast(Constants.REMOTE);
+            }
+            if (status== Enums.ConnectionStatus.CONNECTION_FAIL) {
+                doToast(Constants.LOCAL);
+            }
+        });
     }
 
     private void openCreateNotificationActivity() {
@@ -80,6 +92,12 @@ public class MainView extends AppCompatActivity implements DayFragmentActions {
                     fm.beginTransaction().detach(fragment).attach(fragment).commit();
                 }
             }
+        }
+    }
+
+    private void doToast(String message) {
+        if (!isFinishing()) {
+            runOnUiThread(() -> ToastBuilder.doToast(getApplication().getApplicationContext(), message));
         }
     }
 

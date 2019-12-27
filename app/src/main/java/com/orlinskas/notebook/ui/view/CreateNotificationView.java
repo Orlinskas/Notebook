@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.orlinskas.notebook.Constants;
 import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.builder.NotificationBuilder;
@@ -81,6 +82,15 @@ public class CreateNotificationView extends AppCompatActivity {
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
+
+        model.getConnectionStatusData().observe(this, status -> {
+            if (status == Enums.ConnectionStatus.CONNECTION_DONE) {
+                doToast(Constants.REMOTE);
+            }
+            if (status== Enums.ConnectionStatus.CONNECTION_FAIL) {
+                doToast(Constants.LOCAL);
+            }
+        });
     }
 
     public void setDate() {
@@ -125,15 +135,15 @@ public class CreateNotificationView extends AppCompatActivity {
                 DateFormater.format(dateTimeTV.getText().toString(), DateFormater.YYYY_MM_DD_HH_MM);
 
         if(notificationBody.getText().length() < 1) {
-            ToastBuilder.doToast(this, "Empty note");
+           doToast("Empty note");
             return false;
         }
         if(notificationDate.before(DateCurrent.get())){
-            ToastBuilder.doToast(this, "Not valid date, try again");
+            doToast("Not valid date, try again");
             return false;
         }
         if(dateTimeTV.getText().toString().equals("—")){
-            ToastBuilder.doToast(this, "Not valid date, try again");
+            doToast("Not valid date, try again");
             return false;
         }
 
@@ -158,6 +168,12 @@ public class CreateNotificationView extends AppCompatActivity {
 
         notificationBody.setText("");
         dateTimeTV.setText("—");
+    }
+
+    private void doToast(String message) {
+        if (!isFinishing()) {
+            runOnUiThread(() -> ToastBuilder.doToast(getApplication().getApplicationContext(), message));
+        }
     }
 
     @Override

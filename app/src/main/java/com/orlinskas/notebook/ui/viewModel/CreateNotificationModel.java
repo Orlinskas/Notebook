@@ -58,6 +58,10 @@ public class CreateNotificationModel extends AndroidViewModel {
         return repositoryStatusData;
     }
 
+    public LiveData<Enum<Enums.ConnectionStatus>> getConnectionStatusData() {
+        return connectionStatusData;
+    }
+
     public void createNotification(Notification notification) {
         job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
                 (scope, continuation) -> { repository.insert(notification, new Continuation<Unit>() {

@@ -85,6 +85,10 @@ public class BaseViewModel extends AndroidViewModel {
         return repositoryStatusData;
     }
 
+    public LiveData<Enum<Enums.ConnectionStatus>> getConnectionStatusData() {
+        return connectionStatusData;
+    }
+
     public void deleteNotification(Notification notification) {
         job = BuildersKt.launch(scope, scope.getCoroutineContext(), CoroutineStart.DEFAULT,
                 (scope, coroutine) -> repository.delete(notification, new Continuation<Unit>() {

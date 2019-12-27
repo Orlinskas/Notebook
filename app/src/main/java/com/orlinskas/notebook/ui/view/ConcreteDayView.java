@@ -12,8 +12,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.orlinskas.notebook.Constants;
 import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.R;
+import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.entity.Notification;
 import com.orlinskas.notebook.fragment.DayFragment;
 import com.orlinskas.notebook.fragment.DayFragmentActions;
@@ -52,6 +54,15 @@ public class ConcreteDayView extends AppCompatActivity implements DayFragmentAct
             }
         });
 
+        model.getConnectionStatusData().observe(this, status -> {
+            if (status == Enums.ConnectionStatus.CONNECTION_DONE) {
+                doToast(Constants.REMOTE);
+            }
+            if (status== Enums.ConnectionStatus.CONNECTION_FAIL) {
+                doToast(Constants.LOCAL);
+            }
+        });
+
         if(savedInstanceState != null) {
             dayID = savedInstanceState.getInt(DAY_ID);
         }
@@ -77,6 +88,12 @@ public class ConcreteDayView extends AppCompatActivity implements DayFragmentAct
                     .commit();
         } else {
             fm.beginTransaction().detach(fragment).attach(fragment).commit();
+        }
+    }
+
+    private void doToast(String message) {
+        if (!isFinishing()) {
+            runOnUiThread(() -> ToastBuilder.doToast(getApplication().getApplicationContext(), message));
         }
     }
 

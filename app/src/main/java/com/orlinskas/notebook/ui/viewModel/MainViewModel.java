@@ -1,7 +1,6 @@
 package com.orlinskas.notebook.ui.viewModel;
 
 import android.app.Application;
-import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -9,10 +8,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.orlinskas.notebook.App;
-import com.orlinskas.notebook.Constants;
 import com.orlinskas.notebook.CoroutinesFunKt;
 import com.orlinskas.notebook.Enums;
-import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.repository.NotificationRepository;
 import com.orlinskas.notebook.value.Day;
 
@@ -36,7 +33,6 @@ public class MainViewModel extends AndroidViewModel {
     private LiveData<List<Day>> daysData;
     private Job job;
     private CoroutineScope scope = CoroutinesFunKt.getIoScope();
-    private Handler handler = new Handler();
 
     public MainViewModel(@NonNull Application application) {
         super(application);
@@ -50,7 +46,7 @@ public class MainViewModel extends AndroidViewModel {
                         }
                         @Override
                         public void resumeWith(@NotNull Object o) {
-                            showConnectionStatus();
+
                         }
                     });
                     return scope.getCoroutineContext();
@@ -69,7 +65,7 @@ public class MainViewModel extends AndroidViewModel {
                             }
                             @Override
                             public void resumeWith(@NotNull Object o) {
-                                showConnectionStatus();
+
                             }
                         }));
             } catch (InterruptedException e) {
@@ -83,18 +79,8 @@ public class MainViewModel extends AndroidViewModel {
         return repositoryStatusData;
     }
 
-    private void showConnectionStatus() {
-        Enum<Enums.ConnectionStatus> status = connectionStatusData.getValue();
-        if (status == Enums.ConnectionStatus.CONNECTION_DONE) {
-            doToast(Constants.REMOTE);
-        }
-        if (status== Enums.ConnectionStatus.CONNECTION_FAIL) {
-            doToast(Constants.LOCAL);
-        }
-    }
-
-    private void doToast(String message) {
-        handler.post(() -> ToastBuilder.doToast(getApplication().getBaseContext(), message));
+    public LiveData<Enum<Enums.ConnectionStatus>> getConnectionStatusData() {
+        return connectionStatusData;
     }
 
     @Override

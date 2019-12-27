@@ -18,7 +18,6 @@ public class App extends Application {
     public static App instance;
     private MyDatabase myDatabase;
     private NotificationApiService remoteService;
-    private MutableLiveData<List<Notification>> actualNotificationsData;
     private MutableLiveData<List<Notification>> allNotificationsData;
     private MutableLiveData<List<Day>> daysData;
     private MutableLiveData<Enum<Enums.RepositoryStatus>> repositoryStatusData;
@@ -29,15 +28,13 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        myDatabase = Room.databaseBuilder(this, MyDatabase.class, "notification")
-                .build();
-        actualNotificationsData = new MutableLiveData<>();
+        myDatabase = Room.databaseBuilder(this, MyDatabase.class, "notification").build();
+        remoteService = ApiFactory.INSTANCE.getNotificationApi();
         allNotificationsData = new MutableLiveData<>();
-        daysData             = new MutableLiveData<>();
+        daysData = new MutableLiveData<>();
         repositoryStatusData = new MutableLiveData<>();
         connectionStatusData = new MutableLiveData<>();
         repository = new NotificationRepository();
-        remoteService = ApiFactory.INSTANCE.getNotificationApi();
     }
 
     public static App getInstance() {
@@ -50,10 +47,6 @@ public class App extends Application {
 
     public MutableLiveData<List<Notification>> getAllNotificationsLiveData() {
         return allNotificationsData;
-    }
-
-    public MutableLiveData<List<Notification>> getActualNotificationsLiveData() {
-        return actualNotificationsData;
     }
 
     public MutableLiveData<List<Day>> getDaysLiveData() {
