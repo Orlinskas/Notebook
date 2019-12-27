@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.CustomMockObjects;
 import com.orlinskas.notebook.database.MyDatabase;
-import com.orlinskas.notebook.entity.Notification;
+import com.orlinskas.notebook.MVVM.model.Notification;
 
 class NotificationStarter {
     void start(final Context context, final int id) {

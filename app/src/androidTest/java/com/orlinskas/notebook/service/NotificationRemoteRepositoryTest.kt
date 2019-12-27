@@ -1,7 +1,7 @@
 package com.orlinskas.notebook.service
 
 import android.util.Log
-import com.orlinskas.notebook.entity.Notification
+import com.orlinskas.notebook.MVVM.model.Notification
 import junit.framework.TestCase.assertTrue
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.*

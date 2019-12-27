@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.fragment;
+package com.orlinskas.notebook.MVVM.fragment;
 
 import android.app.Application;
 
@@ -10,7 +10,7 @@ import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.CoroutinesFunKt;
 import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.repository.NotificationRepository;
-import com.orlinskas.notebook.value.Day;
+import com.orlinskas.notebook.MVVM.model.Day;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,12 +25,12 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.CoroutineStart;
 import kotlinx.coroutines.Job;
 
-public class DayFragmentViewModel extends AndroidViewModel {
+public class DayViewModel extends AndroidViewModel {
     private NotificationRepository repository = App.getInstance().getRepository();
     private LiveData<Enum<Enums.RepositoryStatus>> repositoryStatusData = repository.getRepositoryStatusData();
     private Job job;
 
-    public DayFragmentViewModel(@NonNull Application application) {
+    public DayViewModel(@NonNull Application application) {
         super(application);
         CoroutineScope scope = CoroutinesFunKt.getIoScope();
 

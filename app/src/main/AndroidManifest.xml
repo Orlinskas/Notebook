@@ -21,7 +21,7 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".ui.view.MainView" >
+        <activity android:name=".MVVM.view.MainView" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -29,12 +29,12 @@
         </activity>
 
         <activity
-            android:name=".ui.view.CreateNotificationView"
+            android:name=".MVVM.view.CreateNotificationView"
             android:label="@string/app_name">
         </activity>
 
         <activity
-            android:name=".ui.view.ConcreteDayView"
+            android:name=".MVVM.view.ConcreteDayView"
             android:label="@string/app_name">
         </activity>
 

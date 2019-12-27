@@ -1,6 +1,4 @@
-package com.orlinskas.notebook.value;
-
-import com.orlinskas.notebook.entity.Notification;
+package com.orlinskas.notebook.MVVM.model;
 
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;

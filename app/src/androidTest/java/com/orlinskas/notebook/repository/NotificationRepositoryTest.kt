@@ -1,16 +1,7 @@
 package com.orlinskas.notebook.repository
 
-import android.util.Log
-import com.orlinskas.notebook.entity.Notification
-import junit.framework.TestCase.assertTrue
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.runBlocking
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
-import java.util.*
 
 @RunWith(MockitoJUnitRunner::class)
 class NotificationRepositoryTest {

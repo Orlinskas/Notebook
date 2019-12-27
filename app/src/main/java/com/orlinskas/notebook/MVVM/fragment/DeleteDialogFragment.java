@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.fragment;
+package com.orlinskas.notebook.MVVM.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,7 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
-import com.orlinskas.notebook.entity.Notification;
+import com.orlinskas.notebook.MVVM.model.Notification;
 
 public class DeleteDialogFragment extends DialogFragment {
     private DayFragmentActions fragmentActions;

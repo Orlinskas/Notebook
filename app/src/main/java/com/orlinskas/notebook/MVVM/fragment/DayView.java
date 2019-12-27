@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.fragment;
+package com.orlinskas.notebook.MVVM.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -21,7 +21,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.notificationHelper.NotificationListAdapter;
-import com.orlinskas.notebook.value.Day;
+import com.orlinskas.notebook.MVVM.model.Day;
 
 import java.util.Objects;
 
@@ -29,20 +29,20 @@ import static com.orlinskas.notebook.Constants.COUNT_NOTIFICATION_IN_SHORT_LIST;
 import static com.orlinskas.notebook.Constants.DAY_ID;
 import static com.orlinskas.notebook.Constants.IS_FULL_DISPLAY;
 
-public class DayFragment extends Fragment {
+public class DayView extends Fragment {
     private int dayID;
     private DayFragmentActions fragmentActions;
     private Context context;
     private boolean isFullDisplay;
     private ProgressBar progressBar;
-    private DayFragmentViewModel model;
+    private DayViewModel model;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
         fragmentActions = (DayFragmentActions) context;
-        model = ViewModelProviders.of(this).get(DayFragmentViewModel.class);
+        model = ViewModelProviders.of(this).get(DayViewModel.class);
     }
 
     @Nullable

@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.ui.view;
+package com.orlinskas.notebook.MVVM.view;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -28,8 +28,8 @@ import com.orlinskas.notebook.builder.NotificationBuilder;
 import com.orlinskas.notebook.builder.ToastBuilder;
 import com.orlinskas.notebook.date.DateCurrent;
 import com.orlinskas.notebook.date.DateFormater;
-import com.orlinskas.notebook.entity.Notification;
-import com.orlinskas.notebook.ui.viewModel.CreateNotificationModel;
+import com.orlinskas.notebook.MVVM.model.Notification;
+import com.orlinskas.notebook.MVVM.viewModel.CreateNotificationModel;
 
 import java.util.Calendar;
 import java.util.Date;

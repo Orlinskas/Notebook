@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.orlinskas.notebook.entity.Notification;
+import com.orlinskas.notebook.MVVM.model.Notification;
 
 import java.util.List;
 

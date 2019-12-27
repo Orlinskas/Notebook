@@ -6,7 +6,7 @@ import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.date.DateCalculator;
 import com.orlinskas.notebook.date.DateCurrent;
 import com.orlinskas.notebook.date.DateFormater;
-import com.orlinskas.notebook.entity.Notification;
+import com.orlinskas.notebook.MVVM.model.Notification;
 
 import org.junit.Before;
 import org.junit.Test;

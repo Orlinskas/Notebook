@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.ui.view;
+package com.orlinskas.notebook.MVVM.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,11 +15,11 @@ import com.orlinskas.notebook.Constants;
 import com.orlinskas.notebook.Enums;
 import com.orlinskas.notebook.R;
 import com.orlinskas.notebook.builder.ToastBuilder;
-import com.orlinskas.notebook.entity.Notification;
-import com.orlinskas.notebook.fragment.DayFragment;
-import com.orlinskas.notebook.fragment.DayFragmentActions;
-import com.orlinskas.notebook.ui.viewModel.MainViewModel;
-import com.orlinskas.notebook.value.Day;
+import com.orlinskas.notebook.MVVM.model.Notification;
+import com.orlinskas.notebook.MVVM.fragment.DayView;
+import com.orlinskas.notebook.MVVM.fragment.DayFragmentActions;
+import com.orlinskas.notebook.MVVM.viewModel.MainViewModel;
+import com.orlinskas.notebook.MVVM.model.Day;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class MainView extends AppCompatActivity implements DayFragmentActions {
                     Bundle bundle = new Bundle();
                     bundle.putInt(DAY_ID, i);
 
-                    fragment = new DayFragment();
+                    fragment = new DayView();
                     fragment.setArguments(bundle);
 
                     fm.beginTransaction()
