@@ -21,6 +21,7 @@ import com.orlinskas.notebook.builder.NotificationBuilder
 import com.orlinskas.notebook.builder.ToastBuilder
 import com.orlinskas.notebook.date.DateCurrent
 import com.orlinskas.notebook.date.DateFormater
+import com.orlinskas.notebook.mVVM.fragment.ConnectionStatusFragment
 import com.orlinskas.notebook.mVVM.viewModel.CreateNotificationModel
 import kotlinx.android.synthetic.main.activity_create_notification.*
 import java.util.*
@@ -74,6 +75,20 @@ class CreateNotificationView : AppCompatActivity() {
                 Enums.ConnectionStatus.CONNECTION_FAIL -> doToast(Constants.LOCAL)
             }
         })
+
+        addFragmentConnectionStatus()
+    }
+
+    private fun addFragmentConnectionStatus() {
+        val fm = supportFragmentManager
+
+        var fragment = fm.findFragmentById(R.id.activity_create_notification_fragment_container)
+        if (fragment == null) {
+            fragment = ConnectionStatusFragment()
+            fm.beginTransaction()
+                    .add(R.id.activity_create_notification_fragment_container, fragment)
+                    .commit()
+        }
     }
 
     private fun setDate() {

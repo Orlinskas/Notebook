@@ -13,6 +13,7 @@ import com.orlinskas.notebook.Constants.IS_FULL_DISPLAY
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.R
 import com.orlinskas.notebook.builder.ToastBuilder
+import com.orlinskas.notebook.mVVM.fragment.ConnectionStatusFragment
 import com.orlinskas.notebook.mVVM.fragment.DayFragmentActions
 import com.orlinskas.notebook.mVVM.fragment.DayView
 import com.orlinskas.notebook.mVVM.model.Notification
@@ -51,12 +52,26 @@ class MainView : AppCompatActivity(), DayFragmentActions {
                 Enums.ConnectionStatus.CONNECTION_FAIL -> doToast(Constants.LOCAL)
             }
         })
+
+        addFragmentConnectionStatus()
     }
 
     private fun openCreateNotificationActivity() {
         val intent = Intent(applicationContext, CreateNotificationView::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
         startActivity(intent)
+    }
+
+    private fun addFragmentConnectionStatus() {
+        val fm = supportFragmentManager
+
+        var fragment = fm.findFragmentById(R.id.activity_main_fragment_container)
+        if (fragment == null) {
+            fragment = ConnectionStatusFragment()
+            fm.beginTransaction()
+                    .add(R.id.activity_main_fragment_container, fragment)
+                    .commit()
+        }
     }
 
     private fun updateUI() {

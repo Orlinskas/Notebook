@@ -11,6 +11,7 @@ import com.orlinskas.notebook.Constants.*
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.R
 import com.orlinskas.notebook.builder.ToastBuilder
+import com.orlinskas.notebook.mVVM.fragment.ConnectionStatusFragment
 import com.orlinskas.notebook.mVVM.fragment.DayFragmentActions
 import com.orlinskas.notebook.mVVM.fragment.DayView
 import com.orlinskas.notebook.mVVM.model.Notification
@@ -58,6 +59,20 @@ class ConcreteDayView : AppCompatActivity(), DayFragmentActions {
             intent.extras?.let {
                 dayID = it.getInt(DAY_ID)
             }
+        }
+
+        addFragmentConnectionStatus()
+    }
+
+    private fun addFragmentConnectionStatus() {
+        val fm = supportFragmentManager
+
+        var fragment = fm.findFragmentById(R.id.activity_concrete_day_connection_container)
+        if (fragment == null) {
+            fragment = ConnectionStatusFragment()
+            fm.beginTransaction()
+                    .add(R.id.activity_concrete_day_connection_container, fragment)
+                    .commit()
         }
     }
 

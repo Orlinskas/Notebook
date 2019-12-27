@@ -6,4 +6,9 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorRowHead">#A1A7DB</color>
     <color name="colorRowBody">#C5CAE9</color>
+
+    <color name = "holo_red_light" >#BD1919</color>
+    <color name = "holo_green_dark" >#3D9717</color>
+    <color name = "holo_orange_light">#D5B61A</color>
+    <color name = "transparent">#4A4A4A</color>
 </resources>
