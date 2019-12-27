@@ -14,7 +14,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.orlinskas.notebook.Constants.*
-import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.R
 import com.orlinskas.notebook.mVVM.model.Day
 import com.orlinskas.notebook.notificationHelper.NotificationListAdapter
@@ -37,8 +36,6 @@ class DayView : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_day, container, false)
 
-        progressBar = view.findViewById(R.id.fragment_day_pb)
-
         if (savedInstanceState != null) {
             dayID = savedInstanceState.getInt(DAY_ID)
         } else {
@@ -52,12 +49,12 @@ class DayView : Fragment() {
             updateUI(it[dayID], view)
         })
 
-        model.repositoryStatusData.observe(this, Observer {
-            when (it) {
-                Enums.RepositoryStatus.LOADING -> progressBar.visibility = View.VISIBLE
-                Enums.RepositoryStatus.READY -> progressBar.visibility = View.INVISIBLE
-            }
-        })
+//        model.repositoryStatusData.observe(this, Observer {
+//            when (it) {
+//                Enums.RepositoryStatus.LOADING -> progressBar.visibility = View.VISIBLE
+//                Enums.RepositoryStatus.READY -> progressBar.visibility = View.INVISIBLE
+//            }
+//        })
 
         return view
     }

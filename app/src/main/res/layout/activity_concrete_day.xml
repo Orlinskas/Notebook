@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/activity_concrete_day_container"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="-5dp"
         android:indeterminate="true"
         android:visibility="invisible" />
 

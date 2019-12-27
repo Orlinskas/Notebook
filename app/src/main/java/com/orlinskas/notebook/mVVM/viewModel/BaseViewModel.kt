@@ -9,6 +9,7 @@ import com.orlinskas.notebook.mVVM.model.Day
 import com.orlinskas.notebook.mVVM.model.Notification
 import kotlinx.coroutines.*
 
+//jff not use
 class BaseViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = App.getInstance().repository
     val repositoryStatusData: LiveData<Enum<Enums.RepositoryStatus>> = repository.repositoryStatusData
