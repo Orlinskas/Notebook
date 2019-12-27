@@ -29,7 +29,6 @@ class ConnectionStatusFragment : Fragment() {
             }
         })
 
-
         return view
     }
 
