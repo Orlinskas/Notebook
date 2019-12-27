@@ -1,6 +1,6 @@
 package com.orlinskas.notebook;
 
-import com.orlinskas.notebook.mVVM.model.Notification;
+import com.orlinskas.notebook.mvvm.model.Notification;
 
 public class CustomMockObjects {
     public static Notification getEmptyNotification() {

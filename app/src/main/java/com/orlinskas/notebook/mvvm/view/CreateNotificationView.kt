@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.mVVM.view
+package com.orlinskas.notebook.mvvm.view
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -14,15 +14,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.orlinskas.notebook.Constants
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.R
 import com.orlinskas.notebook.builder.NotificationBuilder
 import com.orlinskas.notebook.builder.ToastBuilder
 import com.orlinskas.notebook.date.DateCurrent
 import com.orlinskas.notebook.date.DateFormater
-import com.orlinskas.notebook.mVVM.fragment.ConnectionStatusFragment
-import com.orlinskas.notebook.mVVM.viewModel.CreateNotificationModel
+import com.orlinskas.notebook.mvvm.fragment.ConnectionStatusFragment
+import com.orlinskas.notebook.mvvm.viewModel.CreateNotificationModel
 import kotlinx.android.synthetic.main.activity_create_notification.*
 import java.util.*
 

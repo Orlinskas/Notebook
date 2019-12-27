@@ -1,6 +1,6 @@
-package com.orlinskas.notebook.mVVM.fragment
+package com.orlinskas.notebook.mvvm.fragment
 
-import com.orlinskas.notebook.mVVM.model.Notification
+import com.orlinskas.notebook.mvvm.model.Notification
 
 interface DayFragmentActions {
     fun openDay(dayID: Int)

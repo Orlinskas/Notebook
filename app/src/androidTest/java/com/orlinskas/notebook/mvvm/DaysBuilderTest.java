@@ -1,10 +1,10 @@
-package com.orlinskas.notebook.mVVM;
+package com.orlinskas.notebook.mvvm;
 
 import com.orlinskas.notebook.builder.DaysBuilder;
 import com.orlinskas.notebook.date.DateCalculator;
 import com.orlinskas.notebook.date.DateFormater;
 import com.orlinskas.notebook.date.DateCurrent;
-import com.orlinskas.notebook.mVVM.model.Day;
+import com.orlinskas.notebook.mvvm.model.Day;
 
 import org.junit.Before;
 import org.junit.Test;

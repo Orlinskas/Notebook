@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.mVVM.model;
+package com.orlinskas.notebook.mvvm.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

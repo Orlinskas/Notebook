@@ -7,8 +7,8 @@ import com.orlinskas.notebook.App
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.builder.DaysBuilder
 import com.orlinskas.notebook.database.MyDatabase
-import com.orlinskas.notebook.mVVM.model.Notification
-import com.orlinskas.notebook.mVVM.model.Day
+import com.orlinskas.notebook.mvvm.model.Notification
+import com.orlinskas.notebook.mvvm.model.Day
 
 class NotificationRepository : LifecycleObserver {
     private val database: MyDatabase = App.instance.myDatabase

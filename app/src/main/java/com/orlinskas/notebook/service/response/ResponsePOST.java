@@ -1,7 +1,7 @@
 package com.orlinskas.notebook.service.response;
 
 import com.google.gson.annotations.SerializedName;
-import com.orlinskas.notebook.mVVM.model.Notification;
+import com.orlinskas.notebook.mvvm.model.Notification;
 
 public class ResponsePOST {
 

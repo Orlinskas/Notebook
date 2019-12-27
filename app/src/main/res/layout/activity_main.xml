@@ -7,7 +7,7 @@
     android:id="@+id/activity_main_rl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mVVM.view.MainView">
+    tools:context=".mvvm.view.MainView">
 
     <ScrollView
         android:id="@+id/activity_main_sv"

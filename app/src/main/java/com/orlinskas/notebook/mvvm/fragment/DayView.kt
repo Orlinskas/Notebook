@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.mVVM.fragment
+package com.orlinskas.notebook.mvvm.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -15,7 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.orlinskas.notebook.Constants.*
 import com.orlinskas.notebook.R
-import com.orlinskas.notebook.mVVM.model.Day
+import com.orlinskas.notebook.mvvm.model.Day
 import com.orlinskas.notebook.notificationHelper.NotificationListAdapter
 import kotlinx.android.synthetic.main.fragment_day.*
 import java.util.*

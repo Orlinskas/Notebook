@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.mVVM.fragment
+package com.orlinskas.notebook.mvvm.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

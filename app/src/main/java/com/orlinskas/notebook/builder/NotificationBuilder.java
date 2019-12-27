@@ -3,7 +3,7 @@ package com.orlinskas.notebook.builder;
 import android.content.Context;
 
 import com.orlinskas.notebook.notificationHelper.NotificationAlarmSetter;
-import com.orlinskas.notebook.mVVM.model.Notification;
+import com.orlinskas.notebook.mvvm.model.Notification;
 import com.orlinskas.notebook.date.DateFormater;
 
 import java.util.Date;

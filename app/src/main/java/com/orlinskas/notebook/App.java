@@ -6,11 +6,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
 import com.orlinskas.notebook.database.MyDatabase;
-import com.orlinskas.notebook.mVVM.model.Notification;
+import com.orlinskas.notebook.mvvm.model.Notification;
 import com.orlinskas.notebook.repository.NotificationRepository;
 import com.orlinskas.notebook.service.ApiFactory;
 import com.orlinskas.notebook.service.NotificationApiService;
-import com.orlinskas.notebook.mVVM.model.Day;
+import com.orlinskas.notebook.mvvm.model.Day;
 
 import java.util.List;
 

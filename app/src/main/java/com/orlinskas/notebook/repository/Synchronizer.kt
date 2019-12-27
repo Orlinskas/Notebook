@@ -1,7 +1,7 @@
 package com.orlinskas.notebook.repository
 
 import android.util.Log
-import com.orlinskas.notebook.mVVM.model.Notification
+import com.orlinskas.notebook.mvvm.model.Notification
 
 class Synchronizer {
     fun sync(localData: Any, remoteData: Any): List<Notification> {

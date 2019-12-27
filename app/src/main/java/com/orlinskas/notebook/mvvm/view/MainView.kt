@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.mVVM.view
+package com.orlinskas.notebook.mvvm.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,17 +7,16 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.orlinskas.notebook.Constants
 import com.orlinskas.notebook.Constants.DAY_ID
 import com.orlinskas.notebook.Constants.IS_FULL_DISPLAY
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.R
 import com.orlinskas.notebook.builder.ToastBuilder
-import com.orlinskas.notebook.mVVM.fragment.ConnectionStatusFragment
-import com.orlinskas.notebook.mVVM.fragment.DayFragmentActions
-import com.orlinskas.notebook.mVVM.fragment.DayView
-import com.orlinskas.notebook.mVVM.model.Notification
-import com.orlinskas.notebook.mVVM.viewModel.MainViewModel
+import com.orlinskas.notebook.mvvm.fragment.ConnectionStatusFragment
+import com.orlinskas.notebook.mvvm.fragment.DayFragmentActions
+import com.orlinskas.notebook.mvvm.fragment.DayView
+import com.orlinskas.notebook.mvvm.model.Notification
+import com.orlinskas.notebook.mvvm.viewModel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainView : AppCompatActivity(), DayFragmentActions {

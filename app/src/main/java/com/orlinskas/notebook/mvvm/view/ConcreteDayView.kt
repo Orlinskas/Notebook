@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.mVVM.view
+package com.orlinskas.notebook.mvvm.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,11 +11,11 @@ import com.orlinskas.notebook.Constants.*
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.R
 import com.orlinskas.notebook.builder.ToastBuilder
-import com.orlinskas.notebook.mVVM.fragment.ConnectionStatusFragment
-import com.orlinskas.notebook.mVVM.fragment.DayFragmentActions
-import com.orlinskas.notebook.mVVM.fragment.DayView
-import com.orlinskas.notebook.mVVM.model.Notification
-import com.orlinskas.notebook.mVVM.viewModel.ConcreteDayViewModel
+import com.orlinskas.notebook.mvvm.fragment.ConnectionStatusFragment
+import com.orlinskas.notebook.mvvm.fragment.DayFragmentActions
+import com.orlinskas.notebook.mvvm.fragment.DayView
+import com.orlinskas.notebook.mvvm.model.Notification
+import com.orlinskas.notebook.mvvm.viewModel.ConcreteDayViewModel
 import kotlinx.android.synthetic.main.activity_concrete_day.*
 
 class ConcreteDayView : AppCompatActivity(), DayFragmentActions {

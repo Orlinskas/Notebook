@@ -1,14 +1,13 @@
-package com.orlinskas.notebook.mVVM.viewModel
+package com.orlinskas.notebook.mvvm.viewModel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import com.orlinskas.notebook.App
 import com.orlinskas.notebook.Enums
-import com.orlinskas.notebook.mVVM.model.Notification
+import com.orlinskas.notebook.mvvm.model.Notification
 import kotlinx.coroutines.*
 
-class CreateNotificationModel(application: Application) : AndroidViewModel(application) {
+class CreateNotificationModel : ViewModel() {
     private val repository = App.getInstance().repository
     val repositoryStatusData: LiveData<Enum<Enums.RepositoryStatus>> = repository.repositoryStatusData
     val connectionStatusData: LiveData<Enum<Enums.ConnectionStatus>> = repository.connectionStatusData
