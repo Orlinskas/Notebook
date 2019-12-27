@@ -1,6 +1,5 @@
 package com.orlinskas.notebook.mVVM.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +22,6 @@ class ConnectionStatusFragment : Fragment() {
 
         val image = view.findViewById<ImageView>(R.id.fragment_internet_connection_iv)
 
-        setWaitImage(image)
         connectionStatusData.observe(this, Observer {
             when (it) {
                 Enums.ConnectionStatus.CONNECTION_DONE -> setDoneImage(image)
@@ -32,18 +30,18 @@ class ConnectionStatusFragment : Fragment() {
         })
 
 
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return view
     }
 
     private fun setDoneImage(imageView: ImageView) {
-        IconTinter.tintImageView(imageView, R.color.holo_green_dark)
+        if (!activity?.isFinishing!!) {
+            IconTinter.tintImageView(imageView, R.color.holo_green_dark)
+        }
     }
 
     private fun setFailImage(imageView: ImageView) {
-        IconTinter.tintImageView(imageView, R.color.holo_red_light)
-    }
-
-    private fun setWaitImage(imageView: ImageView) {
-        IconTinter.tintImageView(imageView, R.color.holo_orange_light)
+        if (!activity?.isFinishing!!) {
+            IconTinter.tintImageView(imageView, R.color.holo_red_light)
+        }
     }
 }
