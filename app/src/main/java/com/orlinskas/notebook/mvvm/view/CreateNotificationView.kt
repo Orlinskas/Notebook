@@ -61,10 +61,10 @@ class CreateNotificationView : AppCompatActivity() {
 
         model = ViewModelProviders.of(this).get(CreateNotificationModel::class.java)
 
-        model.repositoryStatusData.observe(this, Observer {
+        model.downloadStatusData.observe(this, Observer {
             when (it) {
-                Enums.RepositoryStatus.LOADING -> progressBar.visibility = View.VISIBLE
-                Enums.RepositoryStatus.READY -> progressBar.visibility = View.INVISIBLE
+                Enums.DownloadStatus.LOADING -> progressBar.visibility = View.VISIBLE
+                Enums.DownloadStatus.READY -> progressBar.visibility = View.INVISIBLE
             }
         })
 

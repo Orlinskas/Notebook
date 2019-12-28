@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.orlinskas.notebook.App;
 
 public class ToastBuilder {
 

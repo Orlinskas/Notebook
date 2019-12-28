@@ -2,7 +2,6 @@ package com.orlinskas.notebook.database;
 
 import android.util.Log;
 
-import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.date.DateCalculator;
 import com.orlinskas.notebook.date.DateCurrent;
 import com.orlinskas.notebook.date.DateFormater;

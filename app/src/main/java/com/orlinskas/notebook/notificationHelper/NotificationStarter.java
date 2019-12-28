@@ -3,7 +3,6 @@ package com.orlinskas.notebook.notificationHelper;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.orlinskas.notebook.App;
 import com.orlinskas.notebook.CustomMockObjects;
 import com.orlinskas.notebook.database.MyDatabase;
 import com.orlinskas.notebook.mvvm.model.Notification;

@@ -6,7 +6,6 @@ import com.orlinskas.notebook.service.response.ResponseGET
 import com.orlinskas.notebook.service.response.ResponsePOST
 import retrofit2.http.*
 
-
 interface NotificationApiService {
 
     @GET("notifications/")

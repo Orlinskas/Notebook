@@ -1,7 +1,7 @@
 package com.orlinskas.notebook;
 
 public class Enums {
-    public enum RepositoryStatus {
+    public enum DownloadStatus {
         LOADING,
         READY
     }

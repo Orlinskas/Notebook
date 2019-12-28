@@ -3,37 +3,38 @@ package com.orlinskas.notebook.repository
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.orlinskas.notebook.App
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.builder.DaysBuilder
 import com.orlinskas.notebook.database.MyDatabase
+import com.orlinskas.notebook.di.DaggerNotificationComponent
 import com.orlinskas.notebook.mvvm.model.Notification
 import com.orlinskas.notebook.mvvm.model.Day
+import com.orlinskas.notebook.service.NotificationApiService
 
-class NotificationRepository : LifecycleObserver {
-    private val database: MyDatabase = App.instance.myDatabase
-    private val remoteService = App.instance.remoteService
-    private val synchronizer = Synchronizer()
-    private val notificationsData = App.instance.allNotificationsLiveData
-    val daysData: MutableLiveData<List<Day>> = App.instance.daysLiveData
-    val repositoryStatusData: MutableLiveData<Enum<Enums.RepositoryStatus>> = App.instance.repositoryStatusData
-    val connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>> = App.instance.connectionStatusData
+class NotificationRepository(var database: MyDatabase, var remoteService: NotificationApiService,
+                             var synchronizer: Synchronizer) : LifecycleObserver {
+
+    private val component = DaggerNotificationComponent.builder().build()
+    private val notificationsData = component.allNotificationsData
+    val daysData: MutableLiveData<List<Day>> = component.daysData
+    private val downloadStatusData: MutableLiveData<Enum<Enums.DownloadStatus>> = component.downloadStatusData
+    val connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>> = component.connectionStatusData
 
     suspend fun fastStart(): LiveData<List<Day>> {
-        repositoryStatusData.postValue(Enums.RepositoryStatus.LOADING)
+        downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
 
         val localData = database.notificationDao().findActual(System.currentTimeMillis())
         localData.removeAll { notification -> notification.is_deleted }
         daysData.postValue(DaysBuilder(localData).findActual())
 
-        repositoryStatusData.postValue(Enums.RepositoryStatus.READY)
+        downloadStatusData.postValue(Enums.DownloadStatus.READY)
 
         return daysData
     }
 
     //@OnLifecycleEvent(Lifecycle.Event.ON_START)
     suspend fun findAll() {
-        repositoryStatusData.postValue(Enums.RepositoryStatus.LOADING)
+        downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
 
         val localData = database.notificationDao().findAll()
         notificationsData.postValue(localData)
@@ -54,11 +55,11 @@ class NotificationRepository : LifecycleObserver {
             connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_FAIL)
         }
 
-        repositoryStatusData.postValue(Enums.RepositoryStatus.READY)
+        downloadStatusData.postValue(Enums.DownloadStatus.READY)
     }
 
     suspend fun findActual(currentDateMillis: Long) {
-        repositoryStatusData.postValue(Enums.RepositoryStatus.LOADING)
+        downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
 
         val localData = database.notificationDao().findActual(currentDateMillis)
         localData.removeAll { notification -> notification.is_deleted }
@@ -84,11 +85,11 @@ class NotificationRepository : LifecycleObserver {
             connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_FAIL)
         }
 
-        repositoryStatusData.postValue(Enums.RepositoryStatus.READY)
+        downloadStatusData.postValue(Enums.DownloadStatus.READY)
     }
 
     suspend fun insert(notification: Notification) {
-        repositoryStatusData.postValue(Enums.RepositoryStatus.LOADING)
+        downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
 
         try {
             val response = remoteService.add(notification)
@@ -113,11 +114,11 @@ class NotificationRepository : LifecycleObserver {
 
         findActual(System.currentTimeMillis())
 
-        repositoryStatusData.postValue(Enums.RepositoryStatus.READY)
+        downloadStatusData.postValue(Enums.DownloadStatus.READY)
     }
 
     suspend fun delete(notification: Notification) {
-        repositoryStatusData.postValue(Enums.RepositoryStatus.LOADING)
+        downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
 
         try {
            val response = remoteService.delete(notification.id)
@@ -142,7 +143,7 @@ class NotificationRepository : LifecycleObserver {
 
         findActual(System.currentTimeMillis())
 
-        repositoryStatusData.postValue(Enums.RepositoryStatus.READY)
+        downloadStatusData.postValue(Enums.DownloadStatus.READY)
     }
 
     suspend fun sync() : Boolean {
