@@ -7,16 +7,20 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.orlinskas.notebook.App
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.R
-import com.orlinskas.notebook.di.DaggerNotificationComponent
-import com.orlinskas.notebook.di.NotificationComponent
 import com.orlinskas.notebook.visual.IconTinter
+import javax.inject.Inject
 
 class ConnectionStatusFragment : Fragment() {
-    private val component = DaggerNotificationComponent.builder().build()
-    private val connectionStatusData: LiveData<Enum<Enums.ConnectionStatus>> = component.connectionStatusData
+    @Inject lateinit var connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>>
+
+    init {
+        App().getComponent().inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_connection_status, container, false)

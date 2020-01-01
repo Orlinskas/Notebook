@@ -3,22 +3,26 @@ package com.orlinskas.notebook.repository
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.orlinskas.notebook.App
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.builder.DaysBuilder
 import com.orlinskas.notebook.database.MyDatabase
-import com.orlinskas.notebook.di.DaggerNotificationComponent
 import com.orlinskas.notebook.mvvm.model.Notification
 import com.orlinskas.notebook.mvvm.model.Day
 import com.orlinskas.notebook.service.NotificationApiService
+import javax.inject.Inject
 
-class NotificationRepository(var database: MyDatabase, var remoteService: NotificationApiService,
-                             var synchronizer: Synchronizer) : LifecycleObserver {
+class NotificationRepository(private var database: MyDatabase, private var remoteService: NotificationApiService,
+                             private var synchronizer: Synchronizer) : LifecycleObserver {
 
-    private val component = DaggerNotificationComponent.builder().build()
-    private val notificationsData = component.allNotificationsData
-    val daysData: MutableLiveData<List<Day>> = component.daysData
-    private val downloadStatusData: MutableLiveData<Enum<Enums.DownloadStatus>> = component.downloadStatusData
-    val connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>> = component.connectionStatusData
+    @Inject lateinit var notificationsData: MutableLiveData<List<Notification>>
+    @Inject lateinit var daysData: MutableLiveData<List<Day>>
+    @Inject lateinit var downloadStatusData: MutableLiveData<Enum<Enums.DownloadStatus>>
+    @Inject lateinit var connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>>
+
+    init {
+        App().getComponent().inject(this)
+    }
 
     suspend fun fastStart(): LiveData<List<Day>> {
         downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
@@ -32,7 +36,6 @@ class NotificationRepository(var database: MyDatabase, var remoteService: Notifi
         return daysData
     }
 
-    //@OnLifecycleEvent(Lifecycle.Event.ON_START)
     suspend fun findAll() {
         downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
 
