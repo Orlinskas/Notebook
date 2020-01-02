@@ -1,30 +1,26 @@
 package com.orlinskas.notebook.di.component
 
-import androidx.lifecycle.MutableLiveData
-import com.orlinskas.notebook.Enums
-import com.orlinskas.notebook.di.module.*
+import com.orlinskas.notebook.di.module.LiveDataModule
+import com.orlinskas.notebook.di.module.RepositoryModule
 import com.orlinskas.notebook.mvvm.fragment.ConnectionStatusFragment
-import com.orlinskas.notebook.mvvm.model.Day
-import com.orlinskas.notebook.mvvm.model.Notification
+import com.orlinskas.notebook.mvvm.fragment.DayViewModel
+import com.orlinskas.notebook.mvvm.viewModel.BaseViewModel
+import com.orlinskas.notebook.mvvm.viewModel.ConcreteDayViewModel
+import com.orlinskas.notebook.mvvm.viewModel.CreateNotificationModel
 import com.orlinskas.notebook.mvvm.viewModel.MainViewModel
-import com.orlinskas.notebook.mvvm.viewModel.NotificationViewModel
 import com.orlinskas.notebook.notificationHelper.NotificationStarter
 import com.orlinskas.notebook.repository.NotificationRepository
-
 import dagger.Component
-import dagger.Provides
 
 @Component(modules = [RepositoryModule::class, LiveDataModule::class])
 interface AppComponent {
-    fun getRepo(): NotificationRepository
-    fun getDownloadStatusData(): MutableLiveData<Enum<Enums.DownloadStatus>>
-    fun getConnectionStatusData(): MutableLiveData<Enum<Enums.ConnectionStatus>>
-    fun getAllNotificationsData(): MutableLiveData<List<Notification>>
-    fun getDaysData(): MutableLiveData<List<Day>>
     fun inject(notificationRepository: NotificationRepository)
     fun inject(fragment: ConnectionStatusFragment)
     fun inject(model: MainViewModel)
-    fun inject(model: NotificationViewModel)
+    fun inject(model: BaseViewModel)
+    fun inject(model: ConcreteDayViewModel)
+    fun inject(model: CreateNotificationModel)
+    fun inject(model: DayViewModel)
     fun inject(target: NotificationStarter)
 }
 

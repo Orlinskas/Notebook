@@ -1,6 +1,6 @@
 package com.orlinskas.notebook.mvvm.viewModel
 
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.orlinskas.notebook.App.Component.app
 import com.orlinskas.notebook.Enums
@@ -11,11 +11,11 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 //jff not use
-class BaseViewModel : ViewModel(), NotificationViewModel {
+class BaseViewModel : ViewModel() {
     @Inject lateinit var repository: NotificationRepository
-    @Inject lateinit var downloadStatusData: LiveData<Enum<Enums.DownloadStatus>>
-    @Inject lateinit var connectionStatusData: LiveData<Enum<Enums.ConnectionStatus>>
-    @Inject lateinit var daysData: LiveData<List<Day>>
+    @Inject lateinit var downloadStatusData: MutableLiveData<Enum<Enums.DownloadStatus>>
+    @Inject lateinit var connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>>
+    @Inject lateinit var daysData: MutableLiveData<List<Day>>
     private val job: Job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 

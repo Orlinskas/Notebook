@@ -1,17 +1,18 @@
 package com.orlinskas.notebook.mvvm.fragment
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.orlinskas.notebook.App.Component.app
 import com.orlinskas.notebook.mvvm.model.Day
-import com.orlinskas.notebook.mvvm.viewModel.NotificationViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
-class DayViewModel(application: Application) : AndroidViewModel(application), NotificationViewModel {
-    @Inject lateinit var daysData: LiveData<List<Day>>
+class DayViewModel : ViewModel() {
+    @Inject lateinit var daysData: MutableLiveData<List<Day>>
     private val job: Job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
