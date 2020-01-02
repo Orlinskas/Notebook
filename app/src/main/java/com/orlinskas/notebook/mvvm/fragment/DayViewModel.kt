@@ -3,7 +3,7 @@ package com.orlinskas.notebook.mvvm.fragment
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.orlinskas.notebook.App
+import com.orlinskas.notebook.App.Component.app
 import com.orlinskas.notebook.mvvm.model.Day
 import com.orlinskas.notebook.mvvm.viewModel.NotificationViewModel
 import kotlinx.coroutines.*
@@ -16,7 +16,7 @@ class DayViewModel(application: Application) : AndroidViewModel(application), No
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
     init {
-        App().getComponent().inject(this)
+        app.getComponent().inject(this)
     }
 
     override fun onCleared() {

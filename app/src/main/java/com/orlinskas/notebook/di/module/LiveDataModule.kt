@@ -1,4 +1,4 @@
-package com.orlinskas.notebook.di
+package com.orlinskas.notebook.di.module
 
 import androidx.lifecycle.MutableLiveData
 
@@ -14,22 +14,22 @@ import dagger.Provides
 @Module
 class LiveDataModule {
     @Provides
-    fun repositoryStatusData(): MutableLiveData<Enum<Enums.DownloadStatus>> {
+    fun provideRepositoryStatusData(): MutableLiveData<Enum<Enums.DownloadStatus>> {
         return MutableLiveData()
     }
 
     @Provides
-    fun connectionStatusData(): MutableLiveData<Enum<Enums.ConnectionStatus>> {
+    fun provideConnectionStatusData(): MutableLiveData<Enum<Enums.ConnectionStatus>> {
         return MutableLiveData()
     }
 
     @Provides
-    fun allNotificationsData(): MutableLiveData<List<Notification>> {
+    fun provideAllNotificationsData(): MutableLiveData<List<Notification>> {
         return MutableLiveData()
     }
 
     @Provides
-    fun daysData(): MutableLiveData<List<Day>> {
+    fun provideDaysData(): MutableLiveData<List<Day>> {
         return MutableLiveData()
     }
 }

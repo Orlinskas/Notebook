@@ -3,25 +3,24 @@ package com.orlinskas.notebook.repository
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.orlinskas.notebook.App
+import com.orlinskas.notebook.App.Component.app
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.builder.DaysBuilder
 import com.orlinskas.notebook.database.MyDatabase
-import com.orlinskas.notebook.mvvm.model.Notification
 import com.orlinskas.notebook.mvvm.model.Day
+import com.orlinskas.notebook.mvvm.model.Notification
 import com.orlinskas.notebook.service.NotificationApiService
 import javax.inject.Inject
 
 class NotificationRepository(private var database: MyDatabase, private var remoteService: NotificationApiService,
                              private var synchronizer: Synchronizer) : LifecycleObserver {
-
-    @Inject lateinit var notificationsData: MutableLiveData<List<Notification>>
-    @Inject lateinit var daysData: MutableLiveData<List<Day>>
-    @Inject lateinit var downloadStatusData: MutableLiveData<Enum<Enums.DownloadStatus>>
-    @Inject lateinit var connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>>
+   @Inject lateinit var notificationsData: MutableLiveData<List<Notification>>
+   @Inject lateinit var daysData: MutableLiveData<List<Day>>
+   @Inject lateinit var downloadStatusData: MutableLiveData<Enum<Enums.DownloadStatus>>
+   @Inject lateinit var connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>>
 
     init {
-        App().getComponent().inject(this)
+       app.getComponent().inject(this)
     }
 
     suspend fun fastStart(): LiveData<List<Day>> {

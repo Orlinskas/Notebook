@@ -2,20 +2,20 @@ package com.orlinskas.notebook.notificationHelper
 
 import android.content.Context
 import android.os.AsyncTask
+import androidx.room.Room
 import com.orlinskas.notebook.App
 import com.orlinskas.notebook.CustomMockObjects
 import com.orlinskas.notebook.database.MyDatabase
 import com.orlinskas.notebook.mvvm.model.Notification
 import javax.inject.Inject
 
-class NotificationStarter {
-    @Inject lateinit var database: MyDatabase
+class NotificationStarter { //костыль
+    lateinit var database : MyDatabase
 
-    init {
-        App().getComponent().inject(this)
-    }
 
     fun start(context: Context, id: Int) {
+        database = Room.databaseBuilder(context, MyDatabase::class.java, "notification").build()
+
         AsyncTask.execute {
             val notification = findNotification(id)
             val notificationHomeScreenShower = NotificationHomeScreenShower()

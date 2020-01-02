@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.orlinskas.notebook.App
+import com.orlinskas.notebook.App.Component.app
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.R
 import com.orlinskas.notebook.visual.IconTinter
@@ -19,7 +18,7 @@ class ConnectionStatusFragment : Fragment() {
     @Inject lateinit var connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>>
 
     init {
-        App().getComponent().inject(this)
+        app.getComponent().inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

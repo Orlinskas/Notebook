@@ -2,7 +2,7 @@ package com.orlinskas.notebook.mvvm.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.orlinskas.notebook.App
+import com.orlinskas.notebook.App.Component.app
 import com.orlinskas.notebook.Enums
 import com.orlinskas.notebook.mvvm.model.Day
 import com.orlinskas.notebook.mvvm.model.Notification
@@ -19,7 +19,7 @@ class ConcreteDayViewModel : ViewModel(), NotificationViewModel {
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
     init {
-        App().getComponent().inject(this)
+        app.getComponent().inject(this)
 
         runBlocking {
             daysData = withContext(Dispatchers.IO) {
