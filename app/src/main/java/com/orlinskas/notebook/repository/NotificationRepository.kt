@@ -60,6 +60,60 @@ class NotificationRepository(private var database: MyDatabase, private var remot
         downloadStatusData.postValue(Enums.DownloadStatus.READY)
     }
 
+    suspend fun findActualLocal(currentDateMillis: Long) : List<Notification> {
+        val localData = database.notificationDao().findActual(currentDateMillis)
+        localData.removeAll { notification -> notification.is_deleted }
+        return localData
+    }
+
+    suspend fun findActualRemote(currentDateMillis: Long) : List<Notification> {
+        try {
+            val response = remoteService.findAll()
+
+            return if (response.code == 200) {
+                connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_DONE)
+                for (notification in response.data) {
+                    if (notification.startDateMillis < currentDateMillis && notification.is_deleted) {
+                        response.data.remove(notification)
+                    }
+                }
+                response.data
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            return emptyList()
+        }
+    }
+
+    suspend fun findActual(currentDateMillis: Long, isConnect: Boolean) : List<Notification> {
+        val localData = database.notificationDao().findActual(currentDateMillis)
+        localData.removeAll { notification -> notification.is_deleted }
+
+        if(isConnect) {
+            try {
+                val response = remoteService.findAll()
+
+                if (response.code == 200) {
+                    connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_DONE)
+                    for (notification in response.data) {
+                        if (notification.startDateMillis < currentDateMillis && notification.is_deleted) {
+                            response.data.remove(notification)
+                        }
+                    }
+                    return synchronizer.sync(localData, response.data)
+                } else {
+                    return localData
+                }
+            } catch (e: Exception) {
+                return localData
+            }
+        }
+        else {
+            return localData
+        }
+    }
+
     suspend fun findActual(currentDateMillis: Long) {
         downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
 
