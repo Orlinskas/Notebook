@@ -14,21 +14,25 @@ import dagger.Provides
 @Module
 class LiveDataModule {
     @Provides
+    @Singleton
     fun provideRepositoryStatusData(): MutableLiveData<Enum<Enums.DownloadStatus>> {
         return MutableLiveData()
     }
 
     @Provides
+    @Singleton
     fun provideConnectionStatusData(): MutableLiveData<Enum<Enums.ConnectionStatus>> {
         return MutableLiveData()
     }
 
     @Provides
+    @Singleton
     fun provideAllNotificationsData(): MutableLiveData<List<Notification>> {
         return MutableLiveData()
     }
 
     @Provides
+    @Singleton
     fun provideDaysData(): MutableLiveData<List<Day>> {
         return MutableLiveData()
     }

@@ -8,17 +8,20 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 
 @Module
-class ApiModule() {
+class ApiModule {
 
     @Provides
+    @Singleton
     fun provideNotificationApi(retrofit: Retrofit): NotificationApiService {
         return retrofit.create(NotificationApiService::class.java)
     }
 
     @Provides
+    @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
@@ -27,6 +30,7 @@ class ApiModule() {
             .build()
 
     @Provides
+    @Singleton
     fun provideClient(): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
 

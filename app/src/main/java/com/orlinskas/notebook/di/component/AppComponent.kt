@@ -11,8 +11,10 @@ import com.orlinskas.notebook.mvvm.viewModel.MainViewModel
 import com.orlinskas.notebook.notificationHelper.NotificationStarter
 import com.orlinskas.notebook.repository.NotificationRepository
 import dagger.Component
+import javax.inject.Singleton
 
 @Component(modules = [RepositoryModule::class, LiveDataModule::class])
+@Singleton
 interface AppComponent {
     fun inject(notificationRepository: NotificationRepository)
     fun inject(fragment: ConnectionStatusFragment)
