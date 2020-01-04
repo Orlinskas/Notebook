@@ -45,13 +45,6 @@ class MainView : AppCompatActivity(), DayFragmentActions {
             }
         })
 
-        model.connectionStatusData.observe(this, Observer {
-            //when (it) {
-            //    Enums.ConnectionStatus.CONNECTION_DONE -> doToast(Constants.REMOTE)
-            //    Enums.ConnectionStatus.CONNECTION_FAIL -> doToast(Constants.LOCAL)
-            //}
-        })
-
         addFragmentConnectionStatus()
     }
 
@@ -96,7 +89,6 @@ class MainView : AppCompatActivity(), DayFragmentActions {
                 }
             }
         }
-
     }
 
     private fun doToast(message: String) {

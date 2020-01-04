@@ -1,3 +1,3 @@
 package com.orlinskas.notebook
 
-class Response(T:Any, code: Int)
+class Response(var data: Any?, var code: Int)
