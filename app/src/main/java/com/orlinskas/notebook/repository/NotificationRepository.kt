@@ -1,77 +1,30 @@
 package com.orlinskas.notebook.repository
 
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.orlinskas.notebook.App.Component.app
-import com.orlinskas.notebook.Enums
-import com.orlinskas.notebook.builder.DaysBuilder
 import com.orlinskas.notebook.database.MyDatabase
-import com.orlinskas.notebook.mvvm.model.Day
 import com.orlinskas.notebook.mvvm.model.Notification
 import com.orlinskas.notebook.service.NotificationApiService
 import javax.inject.Inject
 
-class NotificationRepository(private var database: MyDatabase, private var remoteService: NotificationApiService,
-                             private var synchronizer: Synchronizer) : LifecycleObserver {
-   @Inject lateinit var notificationsData: MutableLiveData<List<Notification>>
-   @Inject lateinit var daysData: MutableLiveData<List<Day>>
-   @Inject lateinit var downloadStatusData: MutableLiveData<Enum<Enums.DownloadStatus>>
-   @Inject lateinit var connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>>
+class NotificationRepository @Inject constructor(private var database: MyDatabase,
+                             private var remoteService: NotificationApiService) : LifecycleObserver {
 
-    init {
-       app.getComponent().inject(this)
-    }
+    //init {
+    //   app.getComponent().inject(this)
+    //}
 
-    suspend fun fastStart(): LiveData<List<Day>> {
-        downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
-
-        val localData = database.notificationDao().findActual(System.currentTimeMillis())
-        localData.removeAll { notification -> notification.is_deleted }
-        daysData.postValue(DaysBuilder(localData).findActual())
-
-        downloadStatusData.postValue(Enums.DownloadStatus.READY)
-
-        return daysData
-    }
-
-    suspend fun findAll() {
-        downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
-
-        val localData = database.notificationDao().findAll()
-        notificationsData.postValue(localData)
-
-        try {
-            val response = remoteService.findAll()
-
-            if (response.code == 200) {
-                connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_DONE)
-
-                val syncData = synchronizer.sync(localData, response.data)
-                notificationsData.postValue(syncData)
-            }
-            else {
-                connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_FAIL)
-            }
-        } catch (e : Exception) {
-            connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_FAIL)
-        }
-
-        downloadStatusData.postValue(Enums.DownloadStatus.READY)
-    }
-
-    suspend fun findActualLocal(currentDateMillis: Long) : List<Notification> {
+    suspend fun findActualLocal(currentDateMillis: Long): List<Notification> {
         val localData = database.notificationDao().findActual(currentDateMillis)
         localData.removeAll { notification -> notification.is_deleted }
         return localData
     }
 
-    suspend fun findActualRemote(currentDateMillis: Long) : List<Notification> {
+    suspend fun findActualRemote(currentDateMillis: Long): List<Notification> {
         try {
             val response = remoteService.findAll()
 
             return if (response.code == 200) {
-                connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_DONE)
                 for (notification in response.data) {
                     if (notification.startDateMillis < currentDateMillis && notification.is_deleted) {
                         response.data.remove(notification)
@@ -86,120 +39,46 @@ class NotificationRepository(private var database: MyDatabase, private var remot
         }
     }
 
-    suspend fun findActual(currentDateMillis: Long, isConnect: Boolean) : List<Notification> {
-        val localData = database.notificationDao().findActual(currentDateMillis)
-        localData.removeAll { notification -> notification.is_deleted }
-
-        if(isConnect) {
-            try {
-                val response = remoteService.findAll()
-
-                if (response.code == 200) {
-                    connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_DONE)
-                    for (notification in response.data) {
-                        if (notification.startDateMillis < currentDateMillis && notification.is_deleted) {
-                            response.data.remove(notification)
-                        }
-                    }
-                    return synchronizer.sync(localData, response.data)
-                } else {
-                    return localData
-                }
-            } catch (e: Exception) {
-                return localData
-            }
-        }
-        else {
-            return localData
-        }
-    }
-
-    suspend fun findActual(currentDateMillis: Long) {
-        downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
-
-        val localData = database.notificationDao().findActual(currentDateMillis)
-        localData.removeAll { notification -> notification.is_deleted }
-        daysData.postValue(DaysBuilder(localData).findActual())
-
-        try {
-             val response = remoteService.findAll()
-
-             if (response.code == 200) {
-                 connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_DONE)
-                 for (notification in response.data) {
-                     if (notification.startDateMillis < currentDateMillis && notification.is_deleted) {
-                         response.data.remove(notification)
-                     }
-                 }
-                 val syncData = synchronizer.sync(localData, response.data)
-                 daysData.postValue(DaysBuilder(syncData).findActual())
-             }
-             else {
-                 connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_FAIL)
-             }
-        } catch (e : Exception){
-            connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_FAIL)
-        }
-
-        downloadStatusData.postValue(Enums.DownloadStatus.READY)
-    }
-
-    suspend fun insert(notification: Notification) {
-        downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
-
+    //return remote connection status
+    suspend fun insert(notification: Notification): Boolean {
         try {
             val response = remoteService.add(notification)
 
-            if (response.code == 201) {
-                connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_DONE)
-
+            return if (response.code == 201) {
                 val remoteNotification = response.data
                 remoteNotification.isSynchronized = true
                 database.notificationDao().insertAll(remoteNotification)
-            }
-            else {
+                true
+            } else {
                 notification.isSynchronized = false
                 database.notificationDao().insertAll(notification)
-                connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_FAIL)
+                false
             }
         } catch (e : Exception) {
             notification.isSynchronized = false
             database.notificationDao().insertAll(notification)
-            connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_FAIL)
+            return false
         }
-
-        findActual(System.currentTimeMillis())
-
-        downloadStatusData.postValue(Enums.DownloadStatus.READY)
     }
 
-    suspend fun delete(notification: Notification) {
-        downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
-
+    //return remote connection status
+    suspend fun delete(notification: Notification): Boolean {
         try {
            val response = remoteService.delete(notification.id)
 
-            if(response.code == 200) {
-                connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_DONE)
-
+            return if(response.code == 200) {
                 database.notificationDao().delete(notification)
-            }
-            else {
-                connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_FAIL)
-
+                true
+            } else {
                 notification.is_deleted = true
                 database.notificationDao().update(notification)
+                false
             }
         } catch (e : Exception) {
-            connectionStatusData.postValue(Enums.ConnectionStatus.CONNECTION_FAIL)
-
             notification.is_deleted = true
             database.notificationDao().update(notification)
+            return false
         }
-
-        findActual(System.currentTimeMillis())
-
-        downloadStatusData.postValue(Enums.DownloadStatus.READY)
     }
 
     suspend fun sync() : Boolean {

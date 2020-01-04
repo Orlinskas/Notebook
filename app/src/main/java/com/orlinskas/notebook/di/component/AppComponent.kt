@@ -2,8 +2,7 @@ package com.orlinskas.notebook.di.component
 
 import com.orlinskas.notebook.di.module.LiveDataModule
 import com.orlinskas.notebook.di.module.RepositoryModule
-import com.orlinskas.notebook.interactor.BaseInteractor
-import com.orlinskas.notebook.interactor.FindActualNotificationInteractor
+import com.orlinskas.notebook.interactor.FindActualNotificationUseCase
 import com.orlinskas.notebook.mvvm.fragment.ConnectionStatusFragment
 import com.orlinskas.notebook.mvvm.fragment.DayViewModel
 import com.orlinskas.notebook.mvvm.viewModel.BaseViewModel
@@ -26,7 +25,7 @@ interface AppComponent {
     fun inject(model: CreateNotificationModel)
     fun inject(model: DayViewModel)
     fun inject(target: NotificationStarter)
-    fun inject(notificationInteractor: FindActualNotificationInteractor)
+    fun inject(notificationUseCase: FindActualNotificationUseCase)
     fun inject(interactor: BaseInteractor)
 }
 
