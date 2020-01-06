@@ -1,39 +1,51 @@
 package com.orlinskas.notebook.interactor
 
+import com.orlinskas.notebook.NetworkHandler
 import com.orlinskas.notebook.Response
 import com.orlinskas.notebook.builder.DaysBuilder
 import com.orlinskas.notebook.repository.NotificationRepository
 import com.orlinskas.notebook.repository.Synchronizer
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
-class FindActualNotificationUseCase(val iteractor: IteractorCallBack) : Interactor {
-    @Inject internal lateinit var repository: NotificationRepository
-    @Inject internal lateinit var synchronizer: Synchronizer
+class FindActualNotificationUseCase
+@Inject constructor(var repository: NotificationRepository, var synchronizer: Synchronizer,
+                    private var networkHandler: NetworkHandler): BaseUseCase() {
 
     private val job: Job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
-    override fun run() {
+    override suspend fun run(): Response {
         val currentDateMillis = System.currentTimeMillis()
 
-        val response = Response(null, 404)
+        if (networkHandler.isConnected) {
+            try {
+                val local = scope.async {
+                    repository.findActualLocal(currentDateMillis)
+                }
 
-        scope.launch {
-            val local = async {
+                val remote = scope.async {
+                    repository.findActualRemote(currentDateMillis)
+                }
+
+                val syncList = DaysBuilder(synchronizer.sync(local.await(), remote.await())).findActual()
+
+                return Response(syncList, 200)
+
+            } catch (e: Exception) {
+                return Response(null, 404)
+            }
+        } else {
+            val local = scope.async {
                 repository.findActualLocal(currentDateMillis)
             }
 
-            response.data = DaysBuilder(local.await()).findActual()
-            iteractor.callBack(response)
+            val localList = DaysBuilder(local.await()).findActual()
 
-            val remote = async {
-                repository.findActualRemote(currentDateMillis)
-            }
-
-            response.data = DaysBuilder(synchronizer.sync(local.await(), remote.await())).findActual()
-            response.code = 200
-            iteractor.callBack(response)
+            return Response(localList, 404)
         }
     }
 }

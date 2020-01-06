@@ -34,6 +34,8 @@ class MainView : AppCompatActivity(), DayFragmentActions {
 
         model = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
+        model.findActual()
+
         model.daysData.observe(this, Observer {
             updateUI()
         })

@@ -24,7 +24,7 @@ class BaseViewModel : ViewModel() {
 
         scope.launch {
             withContext(Dispatchers.IO) {
-                repository.findActual(System.currentTimeMillis())
+               // repository.findActual(System.currentTimeMillis())
             }
         }
     }

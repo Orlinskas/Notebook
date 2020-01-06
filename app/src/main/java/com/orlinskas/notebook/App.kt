@@ -3,9 +3,7 @@ package com.orlinskas.notebook
 import android.app.Application
 import com.orlinskas.notebook.di.component.AppComponent
 import com.orlinskas.notebook.di.component.DaggerAppComponent
-import com.orlinskas.notebook.di.module.ContextModule
-import com.orlinskas.notebook.di.module.LiveDataModule
-import com.orlinskas.notebook.di.module.RepositoryModule
+import com.orlinskas.notebook.di.module.*
 
 class App : Application() {
     lateinit var appComponent: AppComponent
@@ -22,11 +20,13 @@ class App : Application() {
 
     fun getComponent() : AppComponent = appComponent
 
-     private fun buildComponent(): AppComponent {
-         return DaggerAppComponent.builder()
-                 .contextModule(ContextModule(applicationContext))
-                 .liveDataModule(LiveDataModule())
-                 .repositoryModule(RepositoryModule())
-                 .build()
-     }
+    private fun buildComponent(): AppComponent {
+        return DaggerAppComponent.builder()
+                .contextModule(ContextModule(applicationContext))
+                .liveDataModule(LiveDataModule())
+                .repositoryModule(RepositoryModule())
+                .synchronizerModule(SynchronizerModule())
+                .networkHandlerModule(NetworkHandlerModule())
+                .build()
+    }
 }

@@ -12,7 +12,6 @@ import javax.inject.Inject
 class NotificationStarter { //костыль
     lateinit var database : MyDatabase
 
-
     fun start(context: Context, id: Int) {
         database = Room.databaseBuilder(context, MyDatabase::class.java, "notification").build()
 

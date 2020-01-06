@@ -21,12 +21,6 @@ class ConcreteDayViewModel : ViewModel() {
 
     init {
         app.getComponent().inject(this)
-
-        runBlocking {
-            daysData = withContext(Dispatchers.IO) {
-                repository.daysData
-            }
-        }
     }
 
     fun deleteNotification(notification: Notification) {

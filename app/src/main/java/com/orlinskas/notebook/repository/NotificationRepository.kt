@@ -1,18 +1,12 @@
 package com.orlinskas.notebook.repository
 
 import androidx.lifecycle.LifecycleObserver
-import com.orlinskas.notebook.App.Component.app
 import com.orlinskas.notebook.database.MyDatabase
 import com.orlinskas.notebook.mvvm.model.Notification
 import com.orlinskas.notebook.service.NotificationApiService
-import javax.inject.Inject
 
-class NotificationRepository @Inject constructor(private var database: MyDatabase,
+class NotificationRepository (private var database: MyDatabase,
                              private var remoteService: NotificationApiService) : LifecycleObserver {
-
-    //init {
-    //   app.getComponent().inject(this)
-    //}
 
     suspend fun findActualLocal(currentDateMillis: Long): List<Notification> {
         val localData = database.notificationDao().findActual(currentDateMillis)
