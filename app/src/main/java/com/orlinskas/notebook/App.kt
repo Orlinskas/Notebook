@@ -27,6 +27,7 @@ class App : Application() {
                 .repositoryModule(RepositoryModule())
                 .synchronizerModule(SynchronizerModule())
                 .networkHandlerModule(NetworkHandlerModule())
+                .interactorModule(InteractorModule())
                 .build()
     }
 }

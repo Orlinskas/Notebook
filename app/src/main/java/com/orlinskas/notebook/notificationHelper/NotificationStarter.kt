@@ -3,11 +3,9 @@ package com.orlinskas.notebook.notificationHelper
 import android.content.Context
 import android.os.AsyncTask
 import androidx.room.Room
-import com.orlinskas.notebook.App
-import com.orlinskas.notebook.CustomMockObjects
+import com.orlinskas.notebook.MockObject
 import com.orlinskas.notebook.database.MyDatabase
 import com.orlinskas.notebook.mvvm.model.Notification
-import javax.inject.Inject
 
 class NotificationStarter { //костыль
     lateinit var database : MyDatabase
@@ -31,6 +29,6 @@ class NotificationStarter { //костыль
             }
         }
 
-        return CustomMockObjects.getEmptyNotification()
+        return MockObject.getEmptyNotification()
     }
 }

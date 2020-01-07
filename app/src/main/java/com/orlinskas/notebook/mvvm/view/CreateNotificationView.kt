@@ -21,6 +21,7 @@ import com.orlinskas.notebook.builder.ToastBuilder
 import com.orlinskas.notebook.date.DateCurrent
 import com.orlinskas.notebook.date.DateFormater
 import com.orlinskas.notebook.mvvm.fragment.ConnectionStatusFragment
+import com.orlinskas.notebook.mvvm.viewModel.BaseViewModel
 import com.orlinskas.notebook.mvvm.viewModel.CreateNotificationModel
 import kotlinx.android.synthetic.main.activity_create_notification.*
 import java.util.*
@@ -31,7 +32,7 @@ class CreateNotificationView : AppCompatActivity() {
     private lateinit var dateTimeTV: TextView
     private lateinit var dateTime: Calendar
     private lateinit var layout: RelativeLayout
-    private lateinit var model: CreateNotificationModel
+    private lateinit var model: BaseViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +60,7 @@ class CreateNotificationView : AppCompatActivity() {
             }
         }
 
-        model = ViewModelProviders.of(this).get(CreateNotificationModel::class.java)
+        model = ViewModelProviders.of(this).get(BaseViewModel::class.java)
 
         model.downloadStatusData.observe(this, Observer {
             when (it) {

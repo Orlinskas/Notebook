@@ -1,12 +1,13 @@
 package com.orlinskas.notebook.mvvm.viewModel
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.orlinskas.notebook.App.Component.app
 import com.orlinskas.notebook.Enums
-import com.orlinskas.notebook.interactor.CreateNotificationUseCase
-import com.orlinskas.notebook.interactor.DeleteNotificationUseCase
-import com.orlinskas.notebook.interactor.FindActualNotificationUseCase
+import com.orlinskas.notebook.builder.ToastBuilder
+import com.orlinskas.notebook.interactor.*
+import com.orlinskas.notebook.interactor.BaseUseCase.NULL
 import com.orlinskas.notebook.mvvm.model.Day
 import com.orlinskas.notebook.mvvm.model.Notification
 import com.orlinskas.notebook.repository.NotificationRepository
@@ -21,6 +22,9 @@ class BaseViewModel : ViewModel() {
     @Inject lateinit var createNotificationUseCase: CreateNotificationUseCase
     @Inject lateinit var findActualNotificationUseCase: FindActualNotificationUseCase
     @Inject lateinit var deleteNotificationUseCase: DeleteNotificationUseCase
+    @Inject lateinit var updateUseCase: UpdateDataUseCase
+    @Inject lateinit var syncDataUseCase: SyncDataUseCase
+    @Inject lateinit var context: Context
 
     private val job: Job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
@@ -37,7 +41,7 @@ class BaseViewModel : ViewModel() {
                 daysData.postValue(it.data as List<Day>?)
                 handleConnection(it.code)
             } catch (e: Exception) {
-                //error
+                ToastBuilder.doToast(context, e.message.toString())
             } finally {
                 downloadStatusData.postValue(Enums.DownloadStatus.READY)
             }
@@ -65,12 +69,24 @@ class BaseViewModel : ViewModel() {
     }
 
     private fun updateDaysData() {
-        findActualNotificationUseCase(params = System.currentTimeMillis()) {
+        updateUseCase(params = System.currentTimeMillis()) {
             try {
                 daysData.postValue(it.data as List<Day>?)
                 handleConnection(it.code)
             } catch (e: Exception) {
-                //error
+                ToastBuilder.doToast(context, e.message.toString())
+            }
+        }
+    }
+
+    private fun syncData() {
+        syncDataUseCase(params = NULL()) {
+            if(it.data as Boolean) {
+                updateDaysData()
+                ToastBuilder.doToast(context, "Синхронизировано")
+            }
+            else {
+                ToastBuilder.doToast(context, "Не синхронизировано с сервером")
             }
         }
     }

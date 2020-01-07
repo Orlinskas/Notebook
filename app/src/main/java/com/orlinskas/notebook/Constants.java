@@ -19,7 +19,7 @@ public class Constants {
     public final static String NOTIFICATION_PATH = "notification/";
 
     public final static String DEFAULT_USER_ID = "+380956931630";
-    public final static int OK_HTTP_TIMEOUT = 10;
+    public final static int OK_HTTP_TIMEOUT = 2;
 
     public final static String NOTIFICATION_ID_API_NAME = "id";
     public final static String NOTIFICATION_CREATE_DATE_API_NAME = "creationDate";

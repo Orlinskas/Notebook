@@ -15,13 +15,14 @@ import com.orlinskas.notebook.mvvm.fragment.ConnectionStatusFragment
 import com.orlinskas.notebook.mvvm.fragment.DayFragmentActions
 import com.orlinskas.notebook.mvvm.fragment.DayView
 import com.orlinskas.notebook.mvvm.model.Notification
+import com.orlinskas.notebook.mvvm.viewModel.BaseViewModel
 import com.orlinskas.notebook.mvvm.viewModel.ConcreteDayViewModel
 import kotlinx.android.synthetic.main.activity_concrete_day.*
 
 class ConcreteDayView : AppCompatActivity(), DayFragmentActions {
     private lateinit var progressBar: ProgressBar
     private var dayID: Int = 0
-    private lateinit var model: ConcreteDayViewModel
+    private lateinit var model: BaseViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +33,7 @@ class ConcreteDayView : AppCompatActivity(), DayFragmentActions {
             openCreateNotificationActivity()
         }
 
-        model = ViewModelProviders.of(this).get(ConcreteDayViewModel::class.java)
+        model = ViewModelProviders.of(this).get(BaseViewModel::class.java)
 
         model.daysData.observe(this, Observer {
             updateUI()

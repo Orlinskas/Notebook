@@ -1,6 +1,6 @@
 package com.orlinskas.notebook.builder;
 
-import com.orlinskas.notebook.CustomMockObjects;
+import com.orlinskas.notebook.MockObject;
 import com.orlinskas.notebook.date.DateCalculator;
 import com.orlinskas.notebook.date.DateCurrent;
 import com.orlinskas.notebook.date.DateFormater;
@@ -59,7 +59,7 @@ public class DaysBuilder {
         }
 
         if(dayNotifications.size() == 0) {
-            dayNotifications.add(CustomMockObjects.getEmptyNotification());
+            dayNotifications.add(MockObject.getEmptyNotification());
         }
 
         return dayNotifications;

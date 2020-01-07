@@ -1,9 +1,6 @@
 package com.orlinskas.notebook.di.component
 
-import com.orlinskas.notebook.di.module.LiveDataModule
-import com.orlinskas.notebook.di.module.NetworkHandlerModule
-import com.orlinskas.notebook.di.module.RepositoryModule
-import com.orlinskas.notebook.di.module.SynchronizerModule
+import com.orlinskas.notebook.di.module.*
 import com.orlinskas.notebook.mvvm.fragment.ConnectionStatusFragment
 import com.orlinskas.notebook.mvvm.fragment.DayViewModel
 import com.orlinskas.notebook.mvvm.viewModel.BaseViewModel
@@ -14,7 +11,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Component(modules = [RepositoryModule::class, LiveDataModule::class, SynchronizerModule::class,
-                        NetworkHandlerModule::class])
+                        NetworkHandlerModule::class, InteractorModule::class])
 
 @Singleton
 interface AppComponent {
