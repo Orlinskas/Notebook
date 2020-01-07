@@ -45,13 +45,6 @@ class ConcreteDayView : AppCompatActivity(), DayFragmentActions {
             }
         })
 
-        model.connectionStatusData.observe(this, Observer {
-            //when (it) {
-            //    Enums.ConnectionStatus.CONNECTION_DONE -> doToast(REMOTE)
-            //    Enums.ConnectionStatus.CONNECTION_FAIL -> doToast(LOCAL)
-            //}
-        })
-
         if (savedInstanceState != null) {
             dayID = savedInstanceState.getInt(DAY_ID)
         }

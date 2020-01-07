@@ -27,7 +27,6 @@ interface AppComponent {
     fun inject(model: ConcreteDayViewModel)
     fun inject(model: CreateNotificationModel)
     fun inject(model: DayViewModel)
-    fun inject(iteractor: FindActualNotificationUseCase)
 }
 
 
