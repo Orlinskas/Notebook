@@ -16,6 +16,7 @@ class BaseViewModel : ViewModel() {
     @Inject lateinit var downloadStatusData: MutableLiveData<Enum<Enums.DownloadStatus>>
     @Inject lateinit var connectionStatusData: MutableLiveData<Enum<Enums.ConnectionStatus>>
     @Inject lateinit var daysData: MutableLiveData<List<Day>>
+
     private val job: Job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 

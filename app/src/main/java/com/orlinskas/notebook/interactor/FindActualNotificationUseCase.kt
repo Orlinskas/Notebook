@@ -13,22 +13,19 @@ import javax.inject.Inject
 
 class FindActualNotificationUseCase
 @Inject constructor(var repository: NotificationRepository, var synchronizer: Synchronizer,
-                    private var networkHandler: NetworkHandler): BaseUseCase() {
+                    private var networkHandler: NetworkHandler): BaseUseCase<Response, Long>() {
 
-    private val job: Job = Job()
-    private val scope = CoroutineScope(Dispatchers.IO + job)
+    private val scope = CoroutineScope(Dispatchers.IO + Job())
 
-    override suspend fun run(): Response {
-        val currentDateMillis = System.currentTimeMillis()
-
+    override suspend fun run(params: Long): Response {
         if (networkHandler.isConnected) {
             try {
                 val local = scope.async {
-                    repository.findActualLocal(currentDateMillis)
+                    repository.findActualLocal(params)
                 }
 
                 val remote = scope.async {
-                    repository.findActualRemote(currentDateMillis)
+                    repository.findActualRemote(params)
                 }
 
                 val syncList = DaysBuilder(synchronizer.sync(local.await(), remote.await())).findActual()
@@ -40,7 +37,7 @@ class FindActualNotificationUseCase
             }
         } else {
             val local = scope.async {
-                repository.findActualLocal(currentDateMillis)
+                repository.findActualLocal(params)
             }
 
             val localList = DaysBuilder(local.await()).findActual()

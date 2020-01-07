@@ -16,23 +16,28 @@ class MainViewModel: ViewModel() {
 
     init {
         app.getComponent().inject(this)
-        downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
     }
 
     fun findActual() {
-        findActualNotificationUseCase {
+        downloadStatusData.postValue(Enums.DownloadStatus.LOADING)
+
+        findActualNotificationUseCase(params = System.currentTimeMillis()) {
             try {
                 daysData.postValue(it.data as List<Day>?)
-                connectionStatusData.postValue(when (it.code) {
-                    200 -> Enums.ConnectionStatus.CONNECTION_DONE
-                    404 -> Enums.ConnectionStatus.CONNECTION_FAIL
-                    else -> Enums.ConnectionStatus.CONNECTION_FAIL
-                })
+                handleConnection(it.code)
             } catch (e: Exception) {
                 //error
             } finally {
                 downloadStatusData.postValue(Enums.DownloadStatus.READY)
             }
         }
+    }
+
+    private fun handleConnection(code: Int) {
+        connectionStatusData.postValue(when (code) {
+            200 -> Enums.ConnectionStatus.CONNECTION_DONE
+            404 -> Enums.ConnectionStatus.CONNECTION_FAIL
+            else -> Enums.ConnectionStatus.CONNECTION_FAIL
+        })
     }
 }

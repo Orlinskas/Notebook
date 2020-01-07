@@ -1,14 +1,16 @@
 package com.orlinskas.notebook.interactor
 
-import com.orlinskas.notebook.Response
 import kotlinx.coroutines.*
 
-abstract class BaseUseCase {
-    abstract suspend fun run(): Response
+abstract class BaseUseCase<out Response, in Params> {
 
-    operator fun invoke(onResult: (Response) -> Unit = {}) {
+    abstract suspend fun run(params: Params): Response
+
+    operator fun invoke(params: Params, onResult: (Response) -> Unit = {}) {
         val scope = CoroutineScope(Dispatchers.IO + Job())
-        val job = scope.async { run() }
+        val job = scope.async { run(params) }
         scope.launch(Dispatchers.Main) { onResult(job.await()) }
     }
+
+    class NULL
 }
