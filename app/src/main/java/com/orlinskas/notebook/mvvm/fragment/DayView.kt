@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -24,7 +23,6 @@ class DayView : Fragment() {
     private var dayID: Int = 0
     private var isFullDisplay: Boolean = false
     private lateinit var fragmentActions: DayFragmentActions
-    private lateinit var progressBar: ProgressBar
     private lateinit var model: DayViewModel
 
     override fun onAttach(context: Context) {
@@ -48,13 +46,6 @@ class DayView : Fragment() {
         model.daysData.observe(this, Observer {
             updateUI(it[dayID], view)
         })
-
-//        model.repositoryStatusData.observe(this, Observer {
-//            when (it) {
-//                Enums.RepositoryStatus.LOADING -> progressBar.visibility = View.VISIBLE
-//                Enums.RepositoryStatus.READY -> progressBar.visibility = View.INVISIBLE
-//            }
-//        })
 
         return view
     }
